@@ -1677,7 +1677,7 @@ window.RSD_runCalculator = function (profile) {
   var calc=(p.get("calc")||"").toLowerCase();
   var profile=(p.get("profile")||"").toLowerCase();
   var P=window.RSD_PROFILES||{};
-  function show(id){ ["rsd-calc-root-wrap","rsd-qualify-greeting","rsd-hub"].forEach(function(x){var e=document.getElementById(x); if(e) e.style.display=(x===id?"":"none");}); }
+  function show(id){ ["rsd-calc-root-wrap","rsd-qualify-greeting","rsd-hub"].forEach(function(x){var e=document.getElementById(x); if(e) e.style.display=(x===id?"block":"none");}); }
   if(source==="calculator" && P[profile]){ show("rsd-qualify-greeting"); window.RSD_runChooser(); }
   else if(P[calc]){ show("rsd-calc-root-wrap"); window.RSD_runCalculator(P[calc]); }
   else { show("rsd-hub"); }
