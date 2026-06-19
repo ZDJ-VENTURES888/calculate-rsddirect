@@ -263,7 +263,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
       </div>
       <p class="hint" id="introHint">Switch on at least one focus above to continue.</p>
     </div>
-    <p class="foot">Digitizing Reality, Elevating Sales™ · Prototype clone — not connected to the live site flow.</p>
+    <p class="foot">Digitizing Reality, Elevating Sales™ · © 2026 Real Space Digital · Your numbers stay private — we only use them to build your report.</p>
   </section>
 
   <!-- ============ SCREEN 2: CALCULATE ============ -->
@@ -375,7 +375,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
     </div>
     <div class="m-body">
       <form id="leadForm" novalidate>
-        <input class="inp" id="f-name" type="text" placeholder="Full name" autocomplete="name" required>
+        <input class="inp" id="f-first" type="text" placeholder="First name" autocomplete="given-name" required>
+        <input class="inp" id="f-last" type="text" placeholder="Last name" autocomplete="family-name">
         <input class="inp" id="f-company" type="text" placeholder="Business name" autocomplete="organization">
         <input class="inp" id="f-email" type="email" placeholder="Email address" autocomplete="email" required>
         <input class="inp" id="f-phone" type="tel" placeholder="Mobile phone" autocomplete="tel">
@@ -1009,13 +1010,13 @@ function buildPricing(){
 }
 
 /* ====================== MODAL: lead capture ====================== */
-function openModal(){ $("overlay").classList.add("open"); $("f-name").focus(); }
+function openModal(){ $("overlay").classList.add("open"); $("f-first").focus(); }
 function closeModal(){ $("overlay").classList.remove("open"); }
 
 function buildLeadPayload(){
   var profs=activeProfiles();
   var total=totalLeak();
-  var name=$("f-name").value.trim(); var sp=name.indexOf(" ");
+  var first=$("f-first").value.trim(); var last=$("f-last").value.trim(); var name=(first+" "+last).trim();
   var lanes=profs.map(function(pid){
     var r=state.results[pid]; var rec=recommend(pid,r.hero);
     return { profile:pid, label:PROFILES[pid].label, estimate:Math.round(r.hero),
@@ -1024,10 +1025,10 @@ function buildLeadPayload(){
   var primary=lanes.slice().sort(function(a,b){return b.estimate-a.estimate;})[0]||{};
   var allRec=[]; lanes.forEach(function(l){ l.recommended.forEach(function(k){ if(allRec.indexOf(k)===-1) allRec.push(k); }); });
   return {
-    source:"RSD Always-On Calculator (clone)",
+    source:"RSD Always-On Revenue Calculator",
     profile:profs.join("+"),
     submitted_at:new Date().toISOString(),
-    name:name, first_name: sp===-1?name:name.slice(0,sp), last_name: sp===-1?"":name.slice(sp+1),
+    name:name, first_name: first, last_name: last,
     company:$("f-company").value.trim(), email:$("f-email").value.trim(), phone:$("f-phone").value.trim(),
     sms_optin: $("f-sms").checked ? "yes":"no",
     upgrade_true_twin: state.upgradeTwin ? "yes":"no",
@@ -1100,8 +1101,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
   $("leadForm").addEventListener("submit", function(e){
     e.preventDefault();
-    var name=$("f-name").value.trim(), email=$("f-email").value.trim();
-    if(!name || !email){ $("formMsg").style.color="var(--amber)"; $("formMsg").textContent="Please add your name and email."; return; }
+    var first=$("f-first").value.trim(), email=$("f-email").value.trim();
+    if(!first || !email){ $("formMsg").style.color="var(--amber)"; $("formMsg").textContent="Please add your name and email."; return; }
     var btn=$("leadSubmit"); btn.disabled=true; btn.textContent="Sending…";
     var payload=buildLeadPayload();
     sendEmails(payload);
