@@ -3,1685 +3,1124 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>RSD Calculators &amp; Phase 1 Builder | Real Space Digital</title>
-<meta name="description" content="See what slow replies or idle revenue cost you — then build your Phase 1, your way." />
+<title>RSD Always-On Revenue Calculator | Real Space Digital</title>
+<meta name="description" content="See what slow replies, missed jobs, and manual workflows quietly cost you — then see the path to win it back." />
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- EmailJS browser SDK (runs in the visitor's browser) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 /******************************************************************
- * RSD Calculator — Dark / Amber theme
- * Top-2% UX restyle. Class names unchanged; engine + pages untouched.
+ * RSD Always-On Revenue Calculator — CLONE / PROTOTYPE
+ * Dark / Amber theme cloned from calculate.rsddirect.com.
+ * Standalone: does NOT replace the live app.
  ******************************************************************/
-:root {
-  --ink: #08090c;          /* canvas */
-  --ink-2: #0d0f14;
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-2: rgba(255, 255, 255, 0.055);
-  --surface-3: rgba(255, 255, 255, 0.08);
-  --cream: #ECE7DD;
-  --muted: rgba(236, 231, 221, 0.66);
-  --muted-2: rgba(236, 231, 221, 0.46);
-  --gold: #C9A961;
-  --amber: #F2A93B;
-  --amber-hi: #F8CE7E;
-  --green: #5FD08A;
-  --hairline: rgba(201, 169, 97, 0.18);
-  --hairline-soft: rgba(255, 255, 255, 0.08);
-  --grad-amber: linear-gradient(135deg, #F8CE7E 0%, #F2A93B 42%, #C9821F 100%);
-  --glow-amber: 0 14px 44px rgba(242, 150, 40, 0.34), 0 0 0 1px rgba(248, 206, 126, 0.45) inset;
-  --shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
-  --radius-xl: 28px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --focus: 0 0 0 4px rgba(242, 169, 59, 0.38);
+:root{
+  --ink:#08090c; --ink-2:#0d0f14;
+  --surface:rgba(255,255,255,.035); --surface-2:rgba(255,255,255,.055); --surface-3:rgba(255,255,255,.08);
+  --cream:#ECE7DD; --muted:rgba(236,231,221,.66); --muted-2:rgba(236,231,221,.46);
+  --gold:#C9A961; --amber:#F2A93B; --amber-hi:#F8CE7E; --green:#5FD08A; --violet:#B79CFF;
+  --hairline:rgba(201,169,97,.18); --hairline-soft:rgba(255,255,255,.08);
+  --grad-amber:linear-gradient(135deg,#F8CE7E 0%,#F2A93B 42%,#C9821F 100%);
+  --glow-amber:0 14px 44px rgba(242,150,40,.34),0 0 0 1px rgba(248,206,126,.45) inset;
+  --shadow:0 40px 120px rgba(0,0,0,.6);
+  --radius-xl:28px; --radius-lg:20px; --radius-md:14px;
+  --focus:0 0 0 4px rgba(242,169,59,.38);
 }
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--cream);
-  font-family: "Outfit", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.45;
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; min-height:100vh; color:var(--cream);
+  font-family:"Outfit",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.45;
   background:
-    radial-gradient(120% 80% at 88% -10%, rgba(242, 150, 40, 0.20), transparent 46%),
-    radial-gradient(90% 70% at 8% 4%, rgba(201, 169, 97, 0.12), transparent 42%),
-    linear-gradient(180deg, #0c0e13 0%, var(--ink) 60%, #060709 100%);
-  background-attachment: fixed;
-}
-
-button, input, a { font: inherit; }
-a { color: inherit; }
-
-.wrap {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 36px 0;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.brand-mark {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--cream);
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.74rem;
-}
-
-.brand-mark::before {
-  content: "";
-  width: 11px;
-  height: 11px;
-  border-radius: 999px;
-  background: var(--grad-amber);
-  box-shadow: 0 0 14px rgba(242, 169, 59, 0.8);
-}
-
-.eyebrow {
-  color: var(--amber);
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-}
-
-.calculator-shell {
-  display: grid;
-  grid-template-columns: 1fr;
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
-  border: 1px solid var(--hairline-soft);
-}
-
-.hero {
-  position: relative;
-  padding: clamp(28px, 5vw, 64px);
-  background:
-    radial-gradient(120% 90% at 92% 6%, rgba(242, 150, 40, 0.28), transparent 40%),
-    linear-gradient(150deg, #14110b 0%, #0b0c10 52%, #060708 100%);
-  color: var(--cream);
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(115deg, transparent 0 44%, rgba(248, 206, 126, 0.06) 44% 45%, transparent 45% 100%),
-    radial-gradient(70% 60% at 100% 0%, rgba(242, 169, 59, 0.16), transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-h1 {
-  margin: 12px 0 12px;
-  max-width: 18ch;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2.2rem, 4.6vw, 4rem);
-  line-height: 1.0;
-  letter-spacing: -0.025em;
-  font-weight: 700;
-  color: #fff;
-}
-
-.hero-copy {
-  max-width: 670px;
-  margin: 0;
-  color: var(--muted);
-  font-size: clamp(1rem, 2vw, 1.18rem);
-  font-weight: 300;
-}
-
-.result-card {
-  margin-top: 32px;
-  padding: clamp(22px, 4vw, 34px);
-  border: 1px solid var(--hairline);
-  background: linear-gradient(180deg, rgba(242,169,59,0.06), rgba(255,255,255,0.02));
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-}
-
-.result-label {
-  margin: 0 0 6px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-weight: 700;
-}
-
-.hero-number {
-  display: block;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2.4rem, 6vw, 4.2rem);
-  line-height: 1.0;
-  letter-spacing: -0.02em;
-  font-weight: 700;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  max-width: 100%;
-  background: var(--grad-amber);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 6px 26px rgba(242, 150, 40, 0.35));
-}
-
-.breakdown {
-  margin: 14px 0 0;
-  color: var(--cream);
-  font-size: clamp(1.02rem, 2vw, 1.28rem);
-  font-weight: 600;
-}
-
-.disclaimer {
-  margin: 10px 0 0;
-  color: var(--muted-2);
-  font-size: 0.86rem;
-}
-
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  background: linear-gradient(180deg, var(--ink-2), #0a0b0f);
-}
-
-.controls, .conversion-panel { padding: clamp(24px, 4vw, 42px); }
-
-.section-title {
-  margin: 0 0 6px;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3.1rem);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
-  color: #fff;
-}
-
-.section-copy {
-  margin: 0 0 26px;
-  color: var(--muted);
-  max-width: 620px;
-}
-
-.input-stack { display: grid; gap: 16px; }
-
-.control-card {
-  padding: 18px;
-  background: var(--surface);
-  border: 1px solid var(--hairline-soft);
-  border-radius: var(--radius-lg);
-  transition: border-color .2s ease, background .2s ease, transform .2s ease;
-}
-.control-card:hover {
-  border-color: var(--hairline);
-  background: var(--surface-2);
-}
-
-.control-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 13px;
-}
-
-label { display: block; font-weight: 700; color: var(--cream); }
-
-.tooltip {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 0.86rem;
-  line-height: 1.4;
-  font-weight: 400;
-}
-
-.number-wrap { position: relative; flex: 0 0 118px; }
-
-.number-wrap input {
-  width: 100%;
-  padding: 11px 34px 11px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--hairline-soft);
-  background: rgba(0, 0, 0, 0.32);
-  color: var(--cream);
-  text-align: right;
-  font-weight: 700;
-  outline: none;
-}
-
-.number-wrap input:focus,
-.lead-form input:focus,
-.cta:focus-visible,
-.btn-stack:focus-visible,
-button:focus-visible {
-  box-shadow: var(--focus);
-  border-color: var(--amber);
-  outline: none;
-}
-
-.suffix, .prefix {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted);
-  font-weight: 700;
-  pointer-events: none;
-}
-.suffix { right: 12px; }
-.prefix { left: 12px; }
-.currency input { padding-left: 28px; }
-
-/* Range slider — custom, cross-browser, gold thumb with glow */
-input[type="range"] {
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  cursor: pointer;
-  margin: 6px 0 2px;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: var(--grad-amber);
-  border: 2px solid #1a1206;
-  box-shadow: 0 0 0 4px rgba(242, 169, 59, 0.18), 0 4px 12px rgba(242, 150, 40, 0.5);
-  transition: transform .12s ease;
-}
-input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
-input[type="range"]::-moz-range-thumb {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--amber);
-  border: 2px solid #1a1206;
-  box-shadow: 0 0 0 4px rgba(242, 169, 59, 0.18), 0 4px 12px rgba(242, 150, 40, 0.5);
-}
-input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.12); }
-input[type="range"]:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 999px; }
-
-.range-meta {
-  display: flex;
-  justify-content: space-between;
-  color: var(--muted-2);
-  font-size: 0.76rem;
-  margin-top: 4px;
-}
-
-.conversion-panel {
-  background:
-    radial-gradient(80% 60% at 100% 0%, rgba(242, 150, 40, 0.07), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
-  border-top: 1px solid var(--hairline-soft);
-}
-
-.callout {
-  padding: 22px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-  color: var(--cream);
-  border: 1px solid var(--hairline);
-  border-left: 3px solid var(--amber);
-  margin-bottom: 20px;
-}
-
-.callout strong {
-  color: var(--amber-hi);
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.55rem;
-  line-height: 1.05;
-  display: block;
-}
-
-.callout p { margin: 8px 0 0; color: var(--muted); }
-
-.mini-metrics {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin: 0 0 20px;
-}
-
-.mini-card {
-  padding: 18px;
-  border: 1px solid var(--hairline-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-}
-
-.mini-card span {
-  display: block;
-  color: var(--muted-2);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.mini-card b {
-  display: block;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.9rem;
-  line-height: 1;
-  color: var(--amber-hi);
-}
-
-/* Solution-stack CTA — the showcase amber button */
-.stack-cta {
-  position: relative;
-  padding: 22px;
-  margin-bottom: 20px;
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(120% 100% at 0% 0%, rgba(242, 150, 40, 0.10), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
-  border: 1px solid var(--hairline);
-  overflow: hidden;
-}
-.stack-kicker {
-  margin: 0 0 6px;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.5rem;
-  line-height: 1.05;
-  color: #fff;
-}
-.stack-copy { margin: 0 0 16px; color: var(--muted); font-size: 0.96rem; }
-
-.btn-stack {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 16px 22px;
-  border-radius: 16px;
-  text-decoration: none;
-  text-align: center;
-  color: #1c1303;
-  background: var(--grad-amber);
-  background-size: 180% 180%;
-  background-position: 0% 50%;
-  box-shadow: var(--glow-amber);
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  overflow: hidden;
-  transition: transform .18s ease, box-shadow .25s ease, background-position .5s ease;
-}
-.btn-stack::before {
-  content: "";
-  position: absolute;
-  top: 0; left: -120%;
-  width: 70%; height: 100%;
-  background: linear-gradient(110deg, transparent, rgba(255,255,255,0.55), transparent);
-  transform: skewX(-18deg);
-  transition: left .6s ease;
-}
-.btn-stack:hover {
-  transform: translateY(-2px);
-  background-position: 100% 50%;
-  box-shadow: 0 20px 56px rgba(242, 150, 40, 0.5), 0 0 0 1px rgba(248, 206, 126, 0.6) inset;
-}
-.btn-stack:hover::before { left: 130%; }
-.btn-stack-main { font-size: 1.06rem; line-height: 1.1; }
-.btn-stack-sub {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-weight: 700;
-  color: rgba(28, 19, 3, 0.72);
-}
-
-.lead-box {
-  padding: 22px;
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px solid var(--hairline-soft);
-}
-
-.lead-box h2 {
-  margin: 0 0 8px;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 2rem;
-  line-height: 0.98;
-  letter-spacing: -0.03em;
-  color: #fff;
-}
-
-.lead-box p { margin: 0 0 18px; color: var(--muted); }
-
-.lead-form { display: grid; gap: 12px; }
-.field-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-
-.lead-form input {
-  width: 100%;
-  padding: 13px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--hairline-soft);
-  background: rgba(0, 0, 0, 0.32);
-  color: var(--cream);
-  outline: none;
-}
-.lead-form input::placeholder { color: var(--muted-2); }
-
-.lead-actions { display: grid; gap: 10px; margin-top: 4px; }
-
-.btn, .cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50px;
-  padding: 13px 18px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  text-decoration: none;
-  cursor: pointer;
-  font-weight: 800;
-  text-align: center;
-  transition: transform 180ms ease, box-shadow 200ms ease, background 180ms ease, border-color 180ms ease;
-}
-.btn {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--cream);
-  border-color: var(--hairline-soft);
-}
-.btn:hover { transform: translateY(-1px); border-color: var(--gold); background: rgba(255,255,255,0.1); }
-.cta {
-  background: transparent;
-  color: var(--amber-hi);
-  border-color: var(--amber);
-}
-.cta:hover { transform: translateY(-1px); background: rgba(242, 169, 59, 0.12); box-shadow: 0 8px 28px rgba(242,150,40,0.22); }
-
-.form-message {
-  min-height: 1.4em;
-  margin: 4px 0 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-footer {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
-  color: var(--muted-2);
-  font-size: 0.9rem;
-  letter-spacing: 0.03em;
-}
-footer strong { color: var(--cream); }
-
-/* tablet: 2-up control cards + paired form fields */
-@media (min-width: 640px) {
-  .input-stack { grid-template-columns: 1fr 1fr; }
-  .field-grid { grid-template-columns: 1fr 1fr; }
-  .mini-metrics { grid-template-columns: 1fr 1fr; }
-  .lead-actions { grid-template-columns: 1fr 1fr; }
-}
-
-/* desktop: hero beside a full-width controls + conversion column */
-@media (min-width: 1000px) {
-  .calculator-shell { grid-template-columns: minmax(300px, 0.82fr) 1.18fr; align-items: stretch; }
-  .hero { min-height: 100%; }
-  .main-grid { grid-template-columns: 1fr; }
-  .conversion-panel { border-top: 1px solid var(--hairline-soft); border-left: none; }
-}
-
-/* wide desktop: give the tool more room */
-@media (min-width: 1280px) {
-  .wrap { width: min(1320px, calc(100% - 48px)); }
-  .input-stack { gap: 18px; }
-}
-
-@media (max-width: 520px) {
-  .wrap { width: min(100% - 22px, 1180px); padding: 18px 0; }
-  .topbar { align-items: flex-start; }
-  .control-head { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .number-wrap { width: 100%; flex-basis: auto; }
-  .number-wrap input { text-align: left; }
-  .suffix { right: 14px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.001ms !important;
-  }
-}
-
-/* ===== Next-step modal (post-submit → guided handoff chooser) ===== */
-.rsd-modal-overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  background: rgba(4, 5, 8, 0.66);
-  backdrop-filter: blur(6px);
-  opacity: 0; transition: opacity .3s ease;
-}
-.rsd-modal-overlay.is-open { opacity: 1; }
-.rsd-modal {
-  position: relative;
-  width: min(480px, 100%);
-  padding: 34px 30px 30px;
-  border-radius: var(--radius-xl, 28px);
-  color: var(--cream, #ECE7DD);
-  text-align: center;
-  border: 1px solid var(--hairline, rgba(201,169,97,.18));
-  border-top: 3px solid var(--amber, #F2A93B);
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(242,150,40,.16), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015)),
-    #0d0f14;
-  box-shadow: 0 40px 120px rgba(0,0,0,.6);
-  transform: translateY(14px) scale(.98); transition: transform .3s ease;
-}
-.rsd-modal-overlay.is-open .rsd-modal { transform: translateY(0) scale(1); }
-.rsd-modal-eyebrow { margin: 0 0 8px; color: var(--amber, #F2A93B); font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
-.rsd-modal-title { margin: 0 0 10px; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(1.7rem, 4vw, 2.3rem); line-height: 1.04; color: #fff; }
-.rsd-modal-copy { margin: 0 0 22px; color: var(--muted, rgba(236,231,221,.66)); font-size: .98rem; line-height: 1.5; }
-.rsd-modal-cta {
-  display: block; padding: 15px 22px; border-radius: 14px; text-decoration: none;
-  color: #1c1303; font-weight: 800; font-size: 1.02rem;
-  background: var(--grad-amber, linear-gradient(135deg,#F8CE7E,#F2A93B 42%,#C9821F));
-  box-shadow: 0 14px 44px rgba(242,150,40,.34), 0 0 0 1px rgba(248,206,126,.45) inset;
-  transition: transform .18s ease, box-shadow .25s ease;
-}
-.rsd-modal-cta:hover { transform: translateY(-2px); box-shadow: 0 20px 56px rgba(242,150,40,.5), 0 0 0 1px rgba(248,206,126,.6) inset; }
-.rsd-modal-secondary { display: inline-block; margin-top: 14px; color: var(--amber-hi, #F8CE7E); text-decoration: none; font-size: .92rem; border-bottom: 1px solid transparent; }
-.rsd-modal-secondary:hover { border-bottom-color: var(--amber, #F2A93B); }
-.rsd-modal-close {
-  position: absolute; top: 12px; right: 14px; width: 30px; height: 30px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04);
-  color: var(--muted, rgba(236,231,221,.66)); font-size: 1.1rem; line-height: 1; cursor: pointer;
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-.rsd-modal-close:hover { background: rgba(255,255,255,.1); color: #fff; border-color: var(--amber, #F2A93B); }
-@media (prefers-reduced-motion: reduce) {
-  .rsd-modal-overlay, .rsd-modal { transition-duration: .001ms !important; }
-}
-
-/******************************************************************
- * RSD QUALIFY — Calculator Handoff Chooser (dark / amber)
- * Self-scoped under .rsd-greet so it won't collide with the host page.
- ******************************************************************/
-.rsd-greet {
-  --rsd-amber: #F2A93B;
-  --rsd-amber-hi: #F8CE7E;
-  --rsd-cream: #ECE7DD;
-  --rsd-muted: rgba(236, 231, 221, 0.66);
-  --rsd-muted-2: rgba(236, 231, 221, 0.46);
-  --rsd-hair: rgba(255, 255, 255, 0.10);
-  --rsd-grad: linear-gradient(135deg, #F8CE7E 0%, #F2A93B 42%, #C9821F 100%);
-
-  position: relative; box-sizing: border-box;
-  max-width: 940px; margin: 22px auto; padding: 26px 26px 22px;
-  border-radius: 20px; color: var(--rsd-cream);
-  font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
-  border: 1px solid rgba(201, 169, 97, 0.22); border-left: 3px solid var(--rsd-amber);
-  background:
-    radial-gradient(120% 120% at 0% 0%, rgba(242, 150, 40, 0.13), transparent 60%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
-    #0d0f14;
-  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.5);
-  opacity: 0; transform: translateY(-10px);
-  transition: opacity .32s ease, transform .32s ease;
-}
-.rsd-greet * { box-sizing: border-box; }
-.rsd-greet.rsd-greet-in { opacity: 1; transform: translateY(0); }
-
-.rsd-greet-kicker { margin: 0 0 6px; color: var(--rsd-amber); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; }
-.rsd-greet-headline { margin: 0 0 8px; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(1.5rem, 3.4vw, 2.1rem); line-height: 1.08; letter-spacing: -0.02em; color: #fff; }
-.rsd-greet-headline b { background: var(--rsd-grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
-.rsd-greet-sub { margin: 0 0 18px; color: var(--rsd-muted); font-size: 0.98rem; max-width: 700px; }
-.rsd-greet-sub b { color: var(--rsd-amber-hi); font-weight: 700; }
-
-/* ---- Top range band (large SVG tiles, by calculator range) ---- */
-.rsd-range { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 4px 0 18px; }
-@media (min-width: 620px) { .rsd-range { grid-template-columns: repeat(3, 1fr); } }
-.rsd-range-tile {
-  position: relative; cursor: pointer; text-align: center;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 18px 14px; border-radius: 16px;
-  border: 1px solid var(--rsd-hair); background: rgba(255,255,255,.025);
-  color: var(--rsd-cream); font-family: inherit;
-  transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .2s ease;
-}
-.rsd-range-tile:hover { transform: translateY(-2px); border-color: rgba(201,169,97,.4); background: rgba(255,255,255,.05); }
-.rsd-range-tile:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(242,169,59,.38); }
-.rsd-range-tile.is-on {
-  border-color: var(--rsd-amber-hi);
-  background: radial-gradient(120% 120% at 50% 0%, rgba(242,150,40,.16), transparent 65%), rgba(255,255,255,.05);
-  box-shadow: 0 0 0 1px rgba(248,206,126,.5), 0 18px 46px rgba(242,150,40,.26);
-}
-.rsd-range-icon { width: 56px; height: 56px; color: var(--rsd-muted); transition: color .18s ease; }
-.rsd-range-icon svg { width: 56px; height: 56px; display: block; }
-.rsd-range-tile.is-on .rsd-range-icon { color: var(--rsd-amber-hi); }
-.rsd-range-label { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.25rem; line-height: 1.05; color: #fff; }
-.rsd-range-tile.is-on .rsd-range-label { color: var(--rsd-amber-hi); }
-.rsd-range-sub { color: var(--rsd-muted-2); font-size: 0.78rem; letter-spacing: .02em; }
-
-/* ---- Phase 1 prong grid ---- */
-.rsd-prongs { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 680px) { .rsd-prongs { grid-template-columns: 1fr 1fr; } }
-
-.rsd-prong {
-  position: relative; text-align: left; cursor: pointer;
-  padding: 18px 44px 16px 18px;
-  border-radius: 16px; border: 1px solid var(--rsd-hair);
-  background: rgba(255, 255, 255, 0.03); color: var(--rsd-cream); font-family: inherit;
-  transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .2s ease;
-}
-.rsd-prong:hover { transform: translateY(-2px); border-color: rgba(201,169,97,.4); background: rgba(255,255,255,.05); }
-.rsd-prong:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(242,169,59,.38); }
-.rsd-prong.is-on {
-  border-color: var(--rsd-amber);
-  background: radial-gradient(120% 120% at 0% 0%, rgba(242,150,40,.12), transparent 60%), rgba(255,255,255,.05);
-  box-shadow: 0 0 0 1px rgba(248,206,126,.4), 0 16px 40px rgba(242,150,40,.18);
-}
-/* the calculator-range spotlight */
-.rsd-prong.is-primary {
-  border-color: var(--rsd-amber-hi);
-  box-shadow: 0 0 0 1px rgba(248,206,126,.55), 0 20px 52px rgba(242,150,40,.3);
-}
-
-.rsd-prong-icon { display: block; width: 40px; height: 40px; margin-bottom: 12px; color: var(--rsd-amber); }
-.rsd-prong-icon svg { width: 40px; height: 40px; display: block; }
-.rsd-prong.is-on .rsd-prong-icon, .rsd-prong.is-primary .rsd-prong-icon { color: var(--rsd-amber-hi); }
-
-.rsd-prong-check {
-  position: absolute; right: 14px; top: 16px; width: 22px; height: 22px; border-radius: 7px;
-  border: 1.5px solid rgba(236,231,221,.4); background: rgba(0,0,0,.25);
-  transition: background .18s ease, border-color .18s ease;
-}
-.rsd-prong.is-on .rsd-prong-check { background: var(--rsd-grad); border-color: transparent; }
-.rsd-prong.is-on .rsd-prong-check::after {
-  content: ""; position: absolute; left: 7px; top: 3px; width: 5px; height: 10px;
-  border: solid #1c1303; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
-}
-
-.rsd-prong-badge {
-  position: absolute; top: -9px; left: 16px; padding: 3px 10px; border-radius: 999px;
-  font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
-  color: #1c1303; background: rgba(236,231,221,.85); box-shadow: 0 6px 16px rgba(0,0,0,.4);
-}
-.rsd-prong-badge.is-primary { background: var(--rsd-grad); box-shadow: 0 6px 20px rgba(242,150,40,.5); }
-
-.rsd-prong-kicker { display: block; color: var(--rsd-amber); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
-.rsd-prong-name { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.34rem; line-height: 1.1; color: #fff; margin-bottom: 5px; }
-.rsd-prong-desc { display: block; color: var(--rsd-muted); font-size: 0.9rem; line-height: 1.4; }
-
-/* ---- Prime add-on ---- */
-.rsd-addon-lead { margin: 18px 0 8px; color: var(--rsd-muted-2); font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; }
-.rsd-addon {
-  display: flex; align-items: flex-start; gap: 14px; width: 100%; text-align: left; cursor: pointer;
-  padding: 16px 18px; border-radius: 16px;
-  border: 1px dashed rgba(248,206,126,.45);
-  background: linear-gradient(180deg, rgba(242,169,59,.07), rgba(255,255,255,.01));
-  color: var(--rsd-cream); font-family: inherit;
-  transition: border-color .18s ease, background .18s ease, box-shadow .2s ease;
-}
-.rsd-addon:hover { border-color: var(--rsd-amber); }
-.rsd-addon:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(242,169,59,.38); }
-.rsd-addon.is-on { border-style: solid; border-color: var(--rsd-amber); box-shadow: 0 0 0 1px rgba(248,206,126,.4), 0 16px 40px rgba(242,150,40,.2); }
-.rsd-addon-icon { flex: 0 0 auto; width: 38px; height: 38px; color: var(--rsd-amber-hi); margin-top: 2px; }
-.rsd-addon-icon svg { width: 38px; height: 38px; display: block; }
-.rsd-addon-text { flex: 1 1 auto; }
-.rsd-addon-toggle { flex: 0 0 auto; margin-top: 2px; width: 44px; height: 26px; border-radius: 999px; background: rgba(255,255,255,.12); position: relative; transition: background .2s ease; }
-.rsd-addon.is-on .rsd-addon-toggle { background: var(--rsd-grad); }
-.rsd-addon-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s ease; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
-.rsd-addon.is-on .rsd-addon-knob { transform: translateX(18px); }
-.rsd-addon-kicker { display: block; color: var(--rsd-amber); font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 3px; }
-.rsd-addon-name { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.3rem; line-height: 1.1; color: #fff; margin-bottom: 4px; }
-.rsd-addon-desc { display: block; color: var(--rsd-muted); font-size: 0.9rem; line-height: 1.4; }
-
-/* ---- Footer / CTA ---- */
-.rsd-greet-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 20px; }
-.rsd-greet-count { color: var(--rsd-muted); font-size: 0.9rem; }
-.rsd-greet-cta {
-  position: relative; display: inline-flex; align-items: center; padding: 13px 24px; border: 0; border-radius: 14px; cursor: pointer;
-  color: #1c1303; font-weight: 800; font-size: 1rem;
-  background: var(--rsd-grad); background-size: 180% 180%; background-position: 0% 50%;
-  box-shadow: 0 12px 38px rgba(242,150,40,.34), 0 0 0 1px rgba(248,206,126,.45) inset;
-  overflow: hidden; transition: transform .18s ease, box-shadow .25s ease, background-position .5s ease, opacity .2s ease;
-}
-.rsd-greet-cta::before { content: ""; position: absolute; top: 0; left: -120%; width: 70%; height: 100%; background: linear-gradient(110deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-18deg); transition: left .6s ease; }
-.rsd-greet-cta:hover { transform: translateY(-2px); background-position: 100% 50%; box-shadow: 0 18px 50px rgba(242,150,40,.5), 0 0 0 1px rgba(248,206,126,.6) inset; }
-.rsd-greet-cta:hover::before { left: 130%; }
-.rsd-greet-cta:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(242,169,59,.4); }
-.rsd-greet-cta.is-disabled { opacity: .45; cursor: not-allowed; box-shadow: none; transform: none; }
-.rsd-greet-cta.is-disabled::before { display: none; }
-
-/* ---- Close ---- */
-.rsd-greet-close { position: absolute; top: 12px; right: 14px; width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; background: rgba(255,255,255,.04); color: var(--rsd-muted); font-size: 1.1rem; line-height: 1; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
-.rsd-greet-close:hover { background: rgba(255,255,255,.1); color: #fff; border-color: var(--rsd-amber); }
-.rsd-greet-close:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(242,169,59,.4); }
-
-@media (max-width: 560px) {
-  .rsd-greet { margin: 14px; padding: 22px 16px 18px; }
-  .rsd-greet-foot { flex-direction: column; align-items: stretch; }
-  .rsd-greet-cta { justify-content: center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .rsd-greet, .rsd-prong, .rsd-addon, .rsd-addon-knob, .rsd-greet-cta, .rsd-greet-cta::before, .rsd-greet-close { transition-duration: 0.001ms !important; }
-}
-
-/* hub */
-#rsd-hub{display:none;max-width:980px;margin:0 auto;padding:48px 18px;color:var(--cream)}
-#rsd-hub .mk{color:var(--amber);font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:.72rem}
-#rsd-hub h1{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(2.4rem,7vw,4.4rem);line-height:.98;letter-spacing:-.03em;margin:12px 0 10px;color:#fff}
-#rsd-hub .intro{color:var(--muted);max-width:600px;margin:0 0 32px;font-weight:300}
-#rsd-hub .cards{display:grid;grid-template-columns:1fr;gap:18px}
-@media(min-width:720px){#rsd-hub .cards{grid-template-columns:1fr 1fr}}
-#rsd-hub a.card{display:block;text-decoration:none;color:inherit;border:1px solid var(--hairline-soft);border-radius:22px;padding:30px 28px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));transition:.2s}
-#rsd-hub a.card:hover{transform:translateY(-3px);border-color:var(--amber);box-shadow:0 24px 60px rgba(0,0,0,.5)}
-#rsd-hub .tag{color:var(--amber);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.7rem}
-#rsd-hub .card h2{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:2rem;margin:8px 0;color:#fff}
-#rsd-hub .card p{margin:0 0 14px;color:var(--muted);font-weight:300}
-#rsd-hub .go{color:var(--amber-hi);font-weight:700}
+    radial-gradient(120% 80% at 88% -10%,rgba(242,150,40,.20),transparent 46%),
+    radial-gradient(90% 70% at 8% 4%,rgba(201,169,97,.12),transparent 42%),
+    linear-gradient(180deg,#0c0e13 0%,var(--ink) 60%,#060709 100%);
+  background-attachment:fixed;
+}
+button,input,select,a{font:inherit;}
+a{color:inherit;}
+.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:30px 0 64px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px;}
+.brand-mark{display:inline-flex;align-items:center;gap:10px;color:var(--cream);text-decoration:none;font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.74rem;}
+.brand-mark::before{content:"";width:11px;height:11px;border-radius:999px;background:var(--grad-amber);box-shadow:0 0 14px rgba(242,169,59,.8);}
+.eyebrow{color:var(--amber);font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:.7rem;}
+.serif{font-family:"Cormorant Garamond",Georgia,serif;}
+
+/* Stepper */
+.stepper{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.72rem;color:var(--muted-2);letter-spacing:.12em;text-transform:uppercase;}
+.stepper b{color:var(--cream);font-weight:700;}
+.stepper .on{color:var(--amber);}
+.stepper span.sep{opacity:.4;}
+
+/* Shell / cards */
+.shell{border-radius:var(--radius-xl);box-shadow:var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));border:1px solid var(--hairline-soft);overflow:hidden;}
+.pad{padding:clamp(24px,4.4vw,56px);}
+.hero-bg{background:radial-gradient(120% 90% at 92% 6%,rgba(242,150,40,.26),transparent 40%),linear-gradient(150deg,#14110b 0%,#0b0c10 52%,#060708 100%);}
+
+h1.display{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;line-height:1.02;letter-spacing:-.01em;font-size:clamp(2.3rem,5.6vw,4.1rem);margin:.3rem 0 .6rem;}
+.lede{color:var(--muted);font-size:clamp(1rem,1.6vw,1.18rem);max-width:62ch;margin:0 0 6px;}
+
+/* Identify screen */
+.field-label{display:block;font-weight:600;font-size:.92rem;margin:22px 0 8px;color:var(--cream);}
+.sel{width:100%;max-width:520px;padding:14px 16px;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--amber) 50%),linear-gradient(135deg,var(--amber) 50%,transparent 50%);background-position:calc(100% - 20px) center,calc(100% - 14px) center;background-size:6px 6px,6px 6px;background-repeat:no-repeat;}
+.sel:focus{outline:none;box-shadow:var(--focus);border-color:var(--amber);}
+
+.toggle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+@media(max-width:780px){.toggle-grid{grid-template-columns:1fr;}}
+.tog{position:relative;text-align:left;cursor:pointer;border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:18px 18px 16px;transition:.18s ease;display:flex;flex-direction:column;gap:6px;color:var(--cream);}
+.tog:hover{border-color:var(--hairline);background:var(--surface-2);}
+.tog[aria-pressed="true"]{border-color:color-mix(in srgb,var(--lane) 70%,transparent);background:color-mix(in srgb,var(--lane) 12%,var(--surface-2));box-shadow:0 0 0 1px color-mix(in srgb,var(--lane) 40%,transparent) inset;}
+.tog .dot{width:12px;height:12px;border-radius:999px;background:var(--lane);box-shadow:0 0 12px color-mix(in srgb,var(--lane) 80%,transparent);}
+.tog .t-top{display:flex;align-items:center;gap:10px;}
+.tog .t-title{font-weight:700;font-size:1.02rem;}
+.tog .t-sub{color:var(--muted);font-size:.86rem;}
+.tog .t-icp{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--lane);font-weight:700;opacity:.9;}
+.tog .check{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:999px;border:1.5px solid var(--hairline);display:grid;place-items:center;font-size:.8rem;color:var(--ink);background:transparent;}
+.tog[aria-pressed="true"] .check{background:var(--lane);border-color:var(--lane);}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:none;cursor:pointer;border-radius:999px;padding:15px 26px;font-weight:700;letter-spacing:.01em;transition:.18s ease;text-decoration:none;}
+.btn-amber{background:var(--grad-amber);color:#231603;box-shadow:var(--glow-amber);}
+.btn-amber:hover{transform:translateY(-1px);}
+/* Flashing green upgrade CTA */
+.btn-twin{background:linear-gradient(135deg,#7CF2A6 0%,#39C66E 55%,#1E8F4C 100%);color:#04230f;font-weight:800;animation:twinflash 1.5s ease-in-out infinite;}
+.btn-twin:hover{transform:translateY(-1px);}
+@keyframes twinflash{0%,100%{box-shadow:0 0 0 0 rgba(95,208,138,.0),0 10px 30px rgba(46,160,90,.35);}50%{box-shadow:0 0 0 8px rgba(95,208,138,.18),0 0 28px rgba(95,208,138,.85);}}
+@media(prefers-reduced-motion:reduce){.btn-twin{animation:none;}}
+/* Service context line under each recommended item */
+.stack li .desc{display:block;color:var(--muted);font-size:.82rem;margin-top:3px;line-height:1.4;}
+/* Reco overview note */
+.reco-overview{border-left:3px solid var(--amber);background:var(--surface);border-radius:12px;padding:16px 18px;margin:6px 0 20px;color:var(--muted);font-size:.95rem;}
+.reco-overview b{color:var(--cream);}
+/* True Twin upgrade block (reco page — no price) */
+.twin-up{margin-top:22px;border-radius:var(--radius-lg);border:1px solid color-mix(in srgb,var(--green) 50%,transparent);background:linear-gradient(180deg,rgba(95,208,138,.10),rgba(255,255,255,.02));padding:22px;}
+.twin-up .tu-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800;}
+.twin-up h3{margin:.25rem 0 .35rem;font-size:1.35rem;font-family:"Cormorant Garamond",serif;}
+.twin-up p{color:var(--muted);margin:0 0 14px;max-width:64ch;}
+.twin-up.added{box-shadow:0 0 0 1px var(--green) inset;}
+.twin-added-note{color:var(--green);font-weight:700;font-size:.9rem;margin-top:10px;display:none;}
+.twin-up.added .twin-added-note{display:block;}
+/* Pricing add-on card */
+.addon{margin-top:18px;border-radius:var(--radius-lg);border:1px dashed color-mix(in srgb,var(--green) 55%,transparent);background:linear-gradient(180deg,rgba(95,208,138,.08),rgba(255,255,255,.015));padding:22px;}
+.addon.reco{border-style:solid;box-shadow:0 0 0 1px var(--green) inset;}
+.addon .a-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800;}
+.addon h3{margin:.2rem 0 .3rem;font-size:1.25rem;}
+.addon .a-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.9rem;}
+.addon .a-down{color:var(--muted);font-size:.88rem;}
+/* Orange-gold flashing CTA (Social Avatar add-on) */
+.btn-social{background:var(--grad-amber);color:#231603;font-weight:800;animation:socialflash 1.5s ease-in-out infinite;}
+.btn-social:hover{transform:translateY(-1px);}
+@keyframes socialflash{0%,100%{box-shadow:0 0 0 0 rgba(242,169,59,0),0 10px 30px rgba(201,130,31,.35);}50%{box-shadow:0 0 0 8px rgba(242,169,59,.22),0 0 28px rgba(248,206,126,.9);}}
+@media(prefers-reduced-motion:reduce){.btn-social{animation:none;}}
+/* Social Avatar upgrade block (reco page — no price) */
+.social-up{margin-top:22px;border-radius:var(--radius-lg);border:1px solid color-mix(in srgb,var(--amber) 55%,transparent);background:linear-gradient(180deg,rgba(242,169,59,.10),rgba(255,255,255,.02));padding:22px;}
+.social-up .su-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:800;}
+.social-up h3{margin:.25rem 0 .35rem;font-size:1.35rem;font-family:"Cormorant Garamond",serif;}
+.social-up p{color:var(--muted);margin:0 0 14px;max-width:66ch;}
+.social-up.added{box-shadow:0 0 0 1px var(--amber) inset;}
+.social-up .added-note{color:var(--amber);font-weight:700;font-size:.9rem;margin-top:10px;display:none;}
+.social-up.added .added-note{display:block;}
+/* Social add-on on pricing page (3 selectable levels) */
+.addon.gold{border-color:color-mix(in srgb,var(--amber) 55%,transparent);background:linear-gradient(180deg,rgba(242,169,59,.08),rgba(255,255,255,.015));}
+.addon.gold.reco{border-style:solid;box-shadow:0 0 0 1px var(--amber) inset;}
+.addon .a-ey.gold{color:var(--amber);}
+.lvls{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);margin-top:14px;}
+@media(max-width:720px){.lvls{grid-template-columns:1fr;}}
+.lvl{cursor:pointer;text-align:left;border-radius:var(--radius-md);border:1px solid var(--hairline);background:var(--surface-2);padding:14px;color:var(--cream);transition:.16s ease;}
+.lvl:hover{border-color:var(--amber);}
+.lvl.sel{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 16%,var(--surface-2));box-shadow:0 0 0 1px var(--amber) inset;}
+.lvl .l-name{font-weight:700;font-size:.98rem;}
+.lvl .l-posts{color:var(--muted);font-size:.82rem;margin:2px 0 6px;}
+.lvl .l-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.3rem;}
+.lvl .l-price small{font-family:Outfit;font-size:.7rem;color:var(--muted);}
+.btn-ghost{background:var(--surface-2);color:var(--cream);border:1px solid var(--hairline);}
+.btn-ghost:hover{background:var(--surface-3);}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;}
+.hint{color:var(--muted-2);font-size:.82rem;margin-top:10px;}
+
+/* Lanes */
+.total-banner{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(242,150,40,.10),rgba(255,255,255,.02));padding:18px 22px;margin-bottom:22px;}
+.total-banner .lab{color:var(--muted);font-size:.86rem;letter-spacing:.04em;}
+.total-banner .num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(2rem,5vw,3rem);background:var(--grad-amber);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.total-banner .sub{color:var(--muted-2);font-size:.8rem;width:100%;}
+
+.lanes{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.lane{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:22px;border-top:3px solid var(--lane);}
+.lane h3{margin:.1rem 0 .1rem;font-size:1.12rem;}
+.lane .lane-icp{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lane);font-weight:700;}
+.lane .lane-num{font-family:"Cormorant Garamond",serif;font-weight:700;line-height:1;font-size:clamp(2.1rem,6vw,3rem);color:var(--lane);margin:12px 0 4px;}
+.lane .lane-break{color:var(--muted);font-size:.86rem;min-height:2.6em;}
+.row{margin:16px 0;}
+.row .rl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}
+.row .rl .name{font-size:.86rem;color:var(--cream);font-weight:600;}
+.row .rl .val{font-size:.86rem;color:var(--lane);font-weight:700;font-variant-numeric:tabular-nums;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:999px;background:rgba(255,255,255,.14);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:999px;background:var(--lane);cursor:pointer;border:3px solid #14110b;box-shadow:0 2px 10px rgba(0,0,0,.5);}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;background:var(--lane);cursor:pointer;border:3px solid #14110b;}
+.metrics{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.metrics .m{flex:1 1 130px;background:var(--surface-2);border:1px solid var(--hairline-soft);border-radius:var(--radius-md);padding:10px 12px;}
+.metrics .m .ml{color:var(--muted-2);font-size:.72rem;}
+.metrics .m .mv{font-weight:700;font-size:.98rem;}
+
+/* Recommendation + pricing */
+.callout{border-left:3px solid var(--amber);background:var(--surface-2);border-radius:12px;padding:16px 18px;margin:18px 0;color:var(--muted);}
+.callout b{color:var(--cream);}
+.stack-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:8px;}
+.stack{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:22px;border-top:3px solid var(--lane);}
+.stack .band{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lane);font-weight:700;}
+.stack h3{margin:.2rem 0 .5rem;}
+.stack ul{margin:.4rem 0 0;padding-left:0;list-style:none;}
+.stack li{padding:7px 0 7px 26px;position:relative;color:var(--cream);font-size:.92rem;border-top:1px solid var(--hairline-soft);}
+.stack li:first-child{border-top:none;}
+.stack li::before{content:"";position:absolute;left:4px;top:13px;width:9px;height:9px;border-radius:999px;background:var(--lane);}
+.stack li .tag{display:block;color:var(--muted-2);font-size:.76rem;}
+
+.price-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:8px;}
+.tier{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:24px;display:flex;flex-direction:column;}
+.tier.reco{border-color:var(--amber);box-shadow:var(--glow-amber);}
+.tier .pin{align-self:flex-start;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#231603;background:var(--grad-amber);padding:4px 10px;border-radius:999px;font-weight:800;margin-bottom:10px;}
+.tier h3{margin:.1rem 0 .2rem;font-size:1.2rem;}
+.tier .p-sub{color:var(--muted);font-size:.86rem;min-height:2.6em;}
+.tier .p-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:2.1rem;margin:10px 0 2px;}
+.tier .p-price small{font-family:"Outfit";font-size:.9rem;color:var(--muted);font-weight:500;}
+.tier .p-setup{color:var(--muted-2);font-size:.82rem;}
+.tier ul{list-style:none;margin:14px 0 18px;padding:0;}
+.tier li{padding:6px 0 6px 22px;position:relative;font-size:.9rem;color:var(--cream);}
+.tier li::before{content:"\2713";position:absolute;left:0;color:var(--green);font-weight:700;}
+.tier .btn{margin-top:auto;}
+.price-note{color:var(--muted-2);font-size:.8rem;margin-top:14px;}
+/* Pricing total summary */
+.ptotal{margin-top:22px;border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(242,150,40,.10),rgba(255,255,255,.02));padding:22px 24px;}
+.ptotal .pt-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 0;border-top:1px solid var(--hairline-soft);}
+.ptotal .pt-row:first-of-type{border-top:none;}
+.ptotal .pt-lab{color:var(--muted);font-size:.92rem;}
+.ptotal .pt-val{font-weight:700;font-variant-numeric:tabular-nums;}
+.ptotal .pt-deposit{border-top:1px solid var(--hairline);margin-top:6px;padding-top:14px;}
+.ptotal .pt-deposit .pt-lab{color:var(--cream);font-weight:700;}
+.ptotal .pt-deposit .pt-val{font-family:"Cormorant Garamond",serif;font-size:2rem;background:var(--grad-amber);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.ptotal .pt-monthly .pt-val{color:var(--amber-hi);}
+.ptotal .pt-fine{color:var(--muted-2);font-size:.76rem;line-height:1.5;margin-top:14px;border-top:1px solid var(--hairline-soft);padding-top:12px;}
+
+/* Audit */
+.audit-card{border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(95,208,138,.08),rgba(255,255,255,.02));padding:26px;}
+.audit-card h3{margin:.1rem 0 .4rem;font-size:1.3rem;}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(4,5,8,.74);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50;}
+.overlay.open{display:flex;}
+.modal{width:min(520px,100%);max-height:92vh;overflow:auto;border-radius:var(--radius-xl);border:1px solid var(--hairline);background:linear-gradient(180deg,#15120c,#0a0b0f);box-shadow:var(--shadow);}
+.modal .m-head{padding:24px 26px 6px;}
+.modal .m-body{padding:8px 26px 26px;}
+.modal h3{margin:.2rem 0 .3rem;font-size:1.5rem;font-family:"Cormorant Garamond",serif;}
+.modal .m-sub{color:var(--muted);font-size:.9rem;}
+.inp{width:100%;padding:13px 15px;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);margin-top:12px;}
+.inp:focus{outline:none;box-shadow:var(--focus);border-color:var(--amber);}
+.optin{display:flex;gap:10px;align-items:flex-start;margin-top:14px;color:var(--muted);font-size:.84rem;cursor:pointer;}
+.optin input{margin-top:3px;width:16px;height:16px;accent-color:var(--amber);}
+.form-msg{color:var(--green);font-size:.86rem;margin-top:12px;min-height:1.2em;}
+.x-close{position:absolute;}
+.modal .m-x{float:right;background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);width:34px;height:34px;border-radius:999px;cursor:pointer;}
+
+.screen{display:none;}
+.screen.active{display:block;animation:fade .35s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.foot{margin-top:22px;color:var(--muted-2);font-size:.78rem;text-align:center;}
+@media(prefers-reduced-motion:reduce){.screen.active{animation:none;}*{scroll-behavior:auto;}}
 </style>
 </head>
 <body>
-<main class="wrap" id="rsd-calc-root-wrap" style="display:none"><div id="rsd-calc-root"></div></main>
-<div id="rsd-qualify-greeting"></div>
-<div id="rsd-hub">
-  <div class="mk">Real Space Digital</div>
-  <h1>What is it quietly costing you?</h1>
-  <p class="intro">Pick the calculator that matches your business. Run your own numbers, then build your Phase 1 — at your pace.</p>
-  <div class="cards">
-    <a class="card" href="?calc=venues"><span class="tag">Event Venues</span><h2>Booking Leak</h2><p>What slow, after-hours replies cost a venue in missed bookings, every year.</p><span class="go">Open calculator &rarr;</span></a>
-    <a class="card" href="?calc=designbuild"><span class="tag">Design-Build Firms</span><h2>Idle Revenue</h2><p>The revenue waiting in your past-client base, and the cost of dead-end bids.</p><span class="go">Open calculator &rarr;</span></a>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand-mark" href="https://realspacedigital.net">Real Space Digital</a>
+    <div class="stepper" id="stepper">
+      <b class="s1 on">1 · Identify</b><span class="sep">/</span>
+      <b class="s2">2 · Calculate</b><span class="sep">/</span>
+      <b class="s3">3 · Your details</b><span class="sep">/</span>
+      <b class="s4">4 · Your plan</b>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1: IDENTIFY ============ -->
+  <section id="screen-intro" class="screen active">
+    <div class="shell hero-bg pad">
+      <div class="eyebrow">Always-On Revenue Calculator</div>
+      <h1 class="display">See what's quietly costing you.<br>Then see how to win it back.</h1>
+      <p class="lede">Pick what fits your business and switch on what's hurting. We'll open a calculator for each one, using your own numbers — no pricing until you ask for it.</p>
+
+      <label class="field-label" for="icp">What kind of business are you?</label>
+      <select id="icp" class="sel" aria-label="Business type">
+        <option value="">Select your business type…</option>
+      </select>
+
+      <label class="field-label">What would you most like to fix? <span style="color:var(--muted-2);font-weight:400;">(switch on any that apply)</span></label>
+      <div class="toggle-grid" id="toggles"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber" id="openCalc" disabled>Open my calculators →</button>
+      </div>
+      <p class="hint" id="introHint">Switch on at least one focus above to continue.</p>
+    </div>
+    <p class="foot">Digitizing Reality, Elevating Sales™ · Prototype clone — not connected to the live site flow.</p>
+  </section>
+
+  <!-- ============ SCREEN 2: CALCULATE ============ -->
+  <section id="screen-calc" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Run your numbers</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Your numbers, your leak.</h1>
+      <p class="lede">Drag each slider to match your business. The figures update live. When it looks right, see your report.</p>
+
+      <div class="total-banner" id="totalBanner" style="display:none;">
+        <span class="lab">Total estimated annual leak</span>
+        <span class="num" id="totalNum">$0</span>
+        <span class="sub" id="totalSub">Based on your own numbers across the focuses you switched on.</span>
+      </div>
+
+      <div class="lanes" id="lanes"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="backToIntro">← Change focus</button>
+        <button class="btn btn-amber" id="toReport">See my report →</button>
+      </div>
+    </div>
+    <p class="foot">Estimates are conservative and based on the inputs you provide.</p>
+  </section>
+
+  <!-- ============ SCREEN 3: RECOMMENDATION ============ -->
+  <section id="screen-reco" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Your recommended path</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Based on your numbers, here's the fix.</h1>
+      <p class="lede" id="recoLede">Here's the Real Space Digital path that targets your biggest leak first. No pricing yet — see it when you're ready, or have us audit your business for free.</p>
+
+      <div class="reco-overview" id="recoOverview">
+        <b>What this is.</b> You just saw what's quietly slipping away. This isn't about adding cost — it's about turning that loss into a system that <b>answers, qualifies, and books on its own</b>, so you regain your evenings, lose the chasing, and expand your ROI online. Below is the focused starting point for your biggest leak. You're welcome to look — no call needed.
+      </div>
+
+      <div class="stack-grid" id="stacks"></div>
+
+      <!-- Storefront-only: Online Store + Product Photo Shoot recommendations (no price) -->
+      <div id="storefrontReco"></div>
+
+      <!-- Social Avatar Presence Program — tap to add (orange-gold), levels chosen on pricing -->
+      <div class="social-up" id="socialUp">
+        <div class="su-ey">Optional add-on · Always-on presence</div>
+        <h3>Add the Social Avatar Presence Program</h3>
+        <p>Your company's mascot — on 24/7, like a real person, without the video shoots, makeup, or hours out of your week. Plug in your existing footage and we turn it into polished, planned content for launches, events, and special campaigns.</p>
+        <button class="btn btn-social" id="socialToggle">＋ Add Social Avatar — pick your level next</button>
+        <div class="added-note">✓ Added — choose your post level on the pricing page.</div>
+      </div>
+
+      <!-- True Digital Twin upgrade — flashing green, NO price shown here -->
+      <div class="twin-up" id="twinUp">
+        <div class="tu-ey">Optional upgrade · Infinite scale</div>
+        <h3>Add a True Digital Twin Avatar Clone</h3>
+        <p>A <b>true-voice, true-likeness</b> digital clone of you, your spokesperson, or a company rep — so your best closer is everywhere at once. It records, presents, follows up, and tells your story on infinite repeat without burning your time. The same presence, a fraction of the effort.</p>
+        <button class="btn btn-twin" id="twinToggle">⚡ Add the True Digital Twin →</button>
+        <div class="twin-added-note">✓ Added to your plan — you'll see it on the pricing page.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber" id="toPricing">See pricing that fits this →</button>
+        <button class="btn btn-ghost" id="toAudit">Not ready? Get a free business audit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4: PRICING ============ -->
+  <section id="screen-pricing" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Pricing that fits your plan</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Built for what you actually need.</h1>
+      <p class="lede">Your recommended package is highlighted. Every package is built to recover more than it costs against the leak you just measured.</p>
+      <div class="price-grid" id="tiers"></div>
+      <div id="addonHost"></div>
+      <div id="pricingTotal"></div>
+      <p class="price-note" id="priceNote">One-time package pricing shown, mirrored from the RSD funnel. Founder Lock pricing (5–15% off) and ongoing AlwaysOn plans are confirmed on your call.</p>
+      <div class="btn-row">
+        <a class="btn btn-amber" id="bookCall" href="#" target="_blank" rel="noopener">Book a 15-minute walkthrough →</a>
+        <button class="btn btn-ghost" id="toAudit2">Prefer a free audit first?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 5: AUDIT ============ -->
+  <section id="screen-audit" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">No pressure — start with a look</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Get a free business audit.</h1>
+      <div class="audit-card">
+        <h3>We'll find the leaks for you.</h3>
+        <p class="lede" style="margin-bottom:6px;">Not ready to look at pricing? We'll audit your business and show you exactly where revenue is slipping — <b>in person across Virginia, online anywhere else.</b> No cost, no obligation.</p>
+        <div class="btn-row" style="margin-top:18px;">
+          <a class="btn btn-amber" id="bookAudit" href="#" target="_blank" rel="noopener">Schedule my free audit →</a>
+          <button class="btn btn-ghost" id="auditBackPricing">See pricing instead</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ MODAL: LEAD CAPTURE ============ -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="m-head">
+      <button class="m-x" id="modalX" aria-label="Close">✕</button>
+      <div class="eyebrow">Almost there</div>
+      <h3 id="modalTitle">Where should we send your report?</h3>
+      <p class="m-sub">We'll email your estimate and your recommended path. No pricing until you ask.</p>
+    </div>
+    <div class="m-body">
+      <form id="leadForm" novalidate>
+        <input class="inp" id="f-name" type="text" placeholder="Full name" autocomplete="name" required>
+        <input class="inp" id="f-company" type="text" placeholder="Business name" autocomplete="organization">
+        <input class="inp" id="f-email" type="email" placeholder="Email address" autocomplete="email" required>
+        <input class="inp" id="f-phone" type="tel" placeholder="Mobile phone" autocomplete="tel">
+        <label class="optin"><input type="checkbox" id="f-sms"> Text me my report and occasional updates. Message &amp; data rates may apply; reply STOP to opt out.</label>
+        <label class="optin"><input type="checkbox" id="f-email-optin" checked> Email me my report and occasional insights.</label>
+        <div class="btn-row" style="margin-top:18px;">
+          <button class="btn btn-amber" type="submit" id="leadSubmit" style="width:100%;">See my recommended plan →</button>
+        </div>
+        <p class="form-msg" id="formMsg"></p>
+      </form>
+    </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-/******************************************************************
- * RSD CALCULATOR STACK — SHARED CONFIG
- * Set these values once and every calculator uses them.
- ******************************************************************/
-window.RSD_CONFIG = {
-  // Paste the REAL SPACE DIGITAL sub-account INBOUND WEBHOOK url here.
-  // (GHL → Automations → New Workflow → Trigger "Inbound Webhook" → copy URL.)
-  // Each lead arrives flat + tagged with its `profile` and the
-  // `recommended_phase` computed from their estimate.
+/* ====================== SHARED CONFIG (cloned from live) ====================== */
+var RSD_CONFIG = {
   LEAD_WEBHOOK_URL: "https://services.leadconnectorhq.com/hooks/LjdaKqrcYOPlIye3j9O6/webhook-trigger/e48376b4-3b34-4c61-824e-6426e39ba2fc",
-
-  // Booking link for the walkthrough button + emails.
   CTA_URL: "https://calendly.com/realspacedigital/30min",
-
-  // Solution-stack pricing / qualification flow (the stylized button + modal).
-  QUALIFY_URL: "https://calculate.rsddirect.com",   // calculator -> chooser front door
-
-  // EmailJS — fires a branded email to the prospect AND a copy to RSD
-  // on every estimate request, carrying the recommended path.
-  EMAILJS: {
-    PUBLIC_KEY:  "6OzKpW_yrm-g1htg4",
-    SERVICE_ID:  "service_bgsc5fk",
-    TEMPLATE_ID: "template_3uf5wsr",
-    RSD_EMAIL:   "info@realspacedigital.net"
-  }
+  AUDIT_URL: "https://calendly.com/realspacedigital/business-audit-discovery",
+  EMAILJS: { PUBLIC_KEY:"6OzKpW_yrm-g1htg4", SERVICE_ID:"service_bgsc5fk", TEMPLATE_ID:"template_3uf5wsr", RSD_EMAIL:"info@realspacedigital.net" }
 };
 
-/* Display names for the Phase 1 pieces (used in the lead payload + emails). */
-window.RSD_PHASE1_NAMES = {
-  "tour2booking":  "Tour2Booking™",
-  "authority":     "AlwaysOn Authority Page",
-  "flywheel":      "Reputation Flywheel Video Package",
-  "avatar-social": "Avatar Mascot Social Planner"
+var PHASE1_NAMES = {
+  "virtualtour":"Matterport Virtual Tour",
+  "tour2booking":"Tour2Booking™ — 24/7 capture & booking",
+  "authority":"AlwaysOn Authority Page",
+  "flywheel":"Reputation Flywheel Video Package",
+  "avatar-social":"Social Avatar Presence Program"
 };
 
-/* Range-driven recommendation, keyed by calculator profile.
-   The highest `min` the estimate clears wins. `consider` is the primary
-   recommended starting piece; `also` are the rest of the suggested set.
-   Keep this in sync with the qualify handoff's CFG.profiles ranges. */
-window.RSD_RECOMMEND = {
-  venues: [
-    { min: 0,      band: "Focused start", consider: "authority",    also: [] },
-    { min: 80000,  band: "Booking-first", consider: "tour2booking", also: ["authority"] },
-    { min: 250000, band: "Momentum",      consider: "flywheel",     also: ["tour2booking", "authority"] }
+/* ===== Single source of pricing truth — mirrors qualify.rsddirect.com /public/pricing.js ===== */
+var PRICING = {
+  note:"Pricing mirrors the canonical RSD funnel table. One-time package prices shown.",
+  tiers:[
+    { key:"pkg_t2b", name:"Tour2Booking", sub:"Turn your virtual tour into a 24/7 booking machine.",
+      price:5549, includes:["Tour2Booking™ — book inside the tour","AlwaysOn Authority Page","Instant lead capture & alerts","Review & reputation basics"] },
+    { key:"pkg_ao", name:"AlwaysOn Tour2Booking", sub:"Answer, qualify and book on its own — day or night.",
+      price:6549, includes:["Everything in Tour2Booking","AlwaysOn answering & qualifying","Reputation Flywheel video","Automated follow-up"] },
+    { key:"pkg_os", name:"AlwaysOn Digital Twin Conversion OS", sub:"The full stack — capture, convert, retain, on autopilot.",
+      price:9549, includes:["Everything in AlwaysOn Tour2Booking","Social Avatar Presence Program","Reactivation & nurture engine","Priority build + quarterly strategy"] }
   ],
-  designbuild: [
-    { min: 0,      band: "Trust-first", consider: "authority",     also: ["flywheel"] },
-    { min: 200000, band: "Reputation",  consider: "flywheel",      also: ["authority"] },
-    { min: 500000, band: "Leverage",    consider: "avatar-social", also: ["authority", "flywheel"] }
+  /* Premium add-on — flashing-green upgrade. Price hidden until the pricing page. */
+  twin:{ key:"dt_avatar", name:"True Digital Twin Avatar Clone", price:9000, downPct:25,
+    sub:"A true-voice, true-likeness digital clone of you, your spokesperson, or a company rep — for infinite scale." },
+  /* Social Avatar Presence Program — 3 levels, priced from the funnel social rates (soc1/2/3).
+     Post counts are sensible defaults — confirm against the funnel's social page. */
+  social:{ key:"social", name:"Social Avatar Presence Program",
+    sub:"Your company's mascot — on 24/7, like a real person, without the video shoots, makeup, or hours out of your week. Send us your existing footage; we turn it into polished, planned content for launches, events, and special campaigns.",
+    levels:[
+      { key:"soc1", name:"Essentials", posts:"2 posts / week (~8 / mo)",  monthly:750 },
+      { key:"soc2", name:"Growth",     posts:"4 posts / week (~16 / mo)", monthly:1500 },
+      { key:"soc3", name:"Dominate",   posts:"6 posts / week (~26 / mo)", monthly:2250 }
+    ] },
+  /* Founder Lock tiers (from canonical table) */
+  founder:{ gf1:0.05, gf2:0.10, gf3:0.15, priorityFee:497 },
+
+  /* Seasonal Campaign Boosters — optional one-time upgrades (funnel seas_* rates) */
+  seasonal:{ name:"Seasonal Campaign Boosters",
+    sub:"Optional, on-trend campaign shoots that keep your brand fresh through the year — capture the moment, post all season.",
+    items:[
+      { key:"seas_spring",  name:"Spring Campaign",        price:1850 },
+      { key:"seas_summer",  name:"Summer Campaign",        price:1850 },
+      { key:"seas_harvest", name:"Harvest / Fall Campaign", price:2150 },
+      { key:"seas_winter",  name:"Winter Campaign",        price:1650 },
+      { key:"seas_annual",  name:"All-Season Annual (all four, save)", price:6800 }
+    ] },
+
+  /* ===== Storefront-only add-ons (show only when the Storefront path is selected) ===== */
+  store:{
+    online:{ key:"store_first", name:"Online Store — First Phase", price:4450,
+      benefits:"In-store pickup with pickup-store selected at checkout — convenient online ordering first, more foot traffic into the store, and built to scale into shipping later.",
+      sub:"Phase one of your digital storefront — one-time build." },
+    support:{ name:"Online Store Support & Management",
+      sub:"Storefront upkeep, SKU updates, and order-flow refinement — handled for you.",
+      base:747, /* +33% per doubling of volume */
+      levels:[
+        { key:"store_20", name:"Up to 20 SKUs / 10 services" },
+        { key:"store_40", name:"Up to 40 SKUs / 20 services" },
+        { key:"store_80", name:"Up to 80 SKUs / 40 services" }
+      ] }
+  },
+  photo:{ name:"Product Photo Shoot",
+    sub:"Scroll-stopping product imagery — your catalog shot, styled, and retouched to sell, so every SKU looks worth its price online.",
+    benefits:"Professional, conversion-ready product photography that makes your storefront look the part and lifts every listing.",
+    levels:[
+      { key:"photo_1_3",  name:"1–3 products",        price:350 },
+      { key:"photo_6_9",  name:"6–9 products",        price:850 },
+      { key:"photo_9_12", name:"9–12 products",       price:1300 },
+      { key:"photo_vol",  name:"20+ products (volume)", price:2200 }
+    ] }
+};
+/* Derive store-support monthly prices: base, then +33% per doubling. */
+(function(){
+  var b=PRICING.store.support.base, lv=PRICING.store.support.levels;
+  lv[0].monthly=b;
+  lv[1].monthly=Math.round(b*1.33);
+  lv[2].monthly=Math.round(lv[1].monthly*1.33);
+})();
+/* Plain-language context for each recommended service (shown on the pre-pricing page). */
+var SERVICE_DESC = {
+  "virtualtour":"An immersive 3D Matterport walkthrough of your space — the foundation that lets prospects explore and book 24/7, even after hours.",
+  "tour2booking":"Your virtual tour becomes a booking tool — visitors book right inside it, 24/7, even after hours and on weekends.",
+  "authority":"An always-on page that answers, qualifies, and captures every inquiry automatically, so nothing slips when you're not there.",
+  "flywheel":"A reputation video package that turns your happy clients into a steady stream of trust, proof, and referrals.",
+  "avatar-social":"Your social presence on autopilot — a branded avatar tells your story consistently without you posting every day."
+};
+/* band -> package key (higher rank wins across lanes) */
+var BAND_TIER = {
+  "Focused start":"pkg_t2b","Booking-first":"pkg_ao","Momentum":"pkg_os",
+  "Trust-first":"pkg_t2b","Reputation":"pkg_ao","Leverage":"pkg_os",
+  "Streamline start":"pkg_t2b","Automate":"pkg_ao","Always-On Ops":"pkg_os"
+};
+var TIER_RANK = { pkg_t2b:1, pkg_ao:2, pkg_os:3 };
+
+/* Range-driven recommendation per profile (cloned + storefront added). */
+var RECOMMEND = {
+  designbuild:[
+    { min:0,      band:"Trust-first", consider:"authority",     also:["flywheel"] },
+    { min:200000, band:"Reputation",  consider:"flywheel",      also:["authority"] },
+    { min:500000, band:"Leverage",    consider:"avatar-social", also:["authority","flywheel"] }
+  ],
+  venues:[
+    { min:0,      band:"Focused start", consider:"authority",    also:["virtualtour"] },
+    { min:80000,  band:"Booking-first", consider:"tour2booking", also:["virtualtour","authority"] },
+    { min:250000, band:"Momentum",      consider:"flywheel",     also:["tour2booking","virtualtour","authority"] }
+  ],
+  storefront:[
+    { min:0,      band:"Streamline start", consider:"authority",     also:[] },
+    { min:60000,  band:"Automate",         consider:"tour2booking",  also:["authority"] },
+    { min:150000, band:"Always-On Ops",    consider:"avatar-social", also:["tour2booking","authority"] }
   ]
 };
 
-/* Funnel bridge — the email's primary button + GHL payload deep-link to the
-   qualify funnel's packages page with the recommended package pre-passed. */
-window.RSD_FUNNEL = {
-  BASE:          "https://qualify.rsddirect.com",
-  PACKAGES_PAGE: "/rsd-funnel-page-08-packages.html",
-  PKG_MAP:       { "tour2booking": "pkg_t2b", "authority": "pkg_ao", "flywheel": "pkg_ao", "avatar-social": "pkg_os" },
-  DEFAULT_PKG:   "pkg_ao"
-};
-
-</script>
-<script>
-/* RSD Calculator Profile â Event Venues (missed booking leak) */
-(window.RSD_PROFILES=window.RSD_PROFILES||{}).venues = {
-  id: "venues",
-  meta: {
-    tag: "Venue Revenue Estimate",
-    eyebrow: "Missed Booking Calculator",
-    title: "What slow replies cost your venue",
-    heroIntro: "Use your own numbers to estimate how much venue revenue would slip away when evening and weekend inquiries wait too long for a real response.",
-    heroLabel: "Conservative annual estimate",
-    sectionTitle: "Run the numbers.",
-    orgPlaceholder: "Venue name",
-    footerNote: "Venue Booking Leak Calculator",
-    stackKicker: "Ready for your next phase of growth?",
-    stackCopy: "When the timing feels right, see the next phase that helps your venue answer, qualify, and book on its own — so you regain your evenings, lose the chasing, and expand your ROI online. You’re welcome to look, no call needed."
-  },
-  inputs: [
-    { key: "monthlyInquiries", label: "Monthly inquiries", tooltip: "Event, wedding, tasting room, or private reception inquiries in a typical month.", min: 0, max: 500, step: 1, default: 50, format: "number" },
-    { key: "afterHoursPct", label: "After-hours share", tooltip: "Share of inquiries arriving evenings or weekends, outside a fast-reply window.", min: 0, max: 100, step: 1, default: 65, format: "percent" },
-    { key: "slowResponseLossPct", label: "Lost to late replies", tooltip: "Share of after-hours inquiries that would choose another venue before a timely follow-up.", min: 0, max: 100, step: 1, default: 20, format: "percent" },
-    { key: "tourToBookingPct", label: "Tour-to-booking rate", tooltip: "Percentage of serious inquiries or tours that normally become booked events.", min: 0, max: 100, step: 1, default: 25, format: "percent" },
-    { key: "avgBookingValue", label: "Average booking value", tooltip: "Average gross value of a wedding, reception, or private event.", min: 0, max: 100000, step: 500, default: 10000, format: "currency" }
-  ],
-  callout: {
-    strong: "Prime dates are perishable.",
-    text: "A venue has about 52 prime Saturdays a year. When one is lost to a slower reply, that revenue does not return."
-  },
-  leadBox: {
-    title: "Recovering a single booking would cover this many times over.",
-    copy: "Are you open to a 15-minute walkthrough of how Real Space Digital helps venues answer, qualify, and book faster?",
-    cta: "Are you open to a 15-minute walkthrough?"
-  },
-  compute: function (s, h) {
-    var afterHours = s.monthlyInquiries * (s.afterHoursPct / 100);
-    var lost = afterHours * (s.slowResponseLossPct / 100);
-    var lostBookings = lost * (s.tourToBookingPct / 100);
-    var annual = lostBookings * s.avgBookingValue * 12;
-    return {
-      hero: annual,
-      breakdown: "\u2248 " + lostBookings.toFixed(1) + " bookings a month slip away \u2192 " + h.formatMoney(annual) + " a year.",
-      metrics: [
-        { label: "Bookings slipping away monthly", value: lostBookings.toFixed(1) },
-        { label: "Recovery perspective", value: "1 booking" }
-      ]
-    };
-  }
-};
-
-</script>
-<script>
-/* RSD Calculator Profile â Design-Build Firms
-   Hero: Idle Revenue (reactivation of the past-client base).
-   Supporting: Time Leak (owner hours poured into bids that never close). */
-(window.RSD_PROFILES=window.RSD_PROFILES||{}).designbuild = {
-  id: "designbuild",
-  meta: {
-    tag: "Design-Build Revenue Estimate",
-    eyebrow: "Revenue Leak & Reactivation Calculator",
-    title: "Revenue sitting in your past-client list",
-    heroIntro: "Your past clients already trust your work. Use your own numbers to estimate the revenue waiting in that relationship base this year \u2014 alongside the cost of the time spent bidding work that never closes.",
-    heroLabel: "Idle revenue this year (conservative)",
-    sectionTitle: "Run the numbers.",
-    sectionCopy: "Adjust each input to match your firm. The result updates instantly.",
-    orgPlaceholder: "Company name",
-    footerNote: "Design-Build Revenue Calculator",
-    stackKicker: "Ready for your next phase of growth?",
-    stackCopy: "When the timing feels right, see the next phase that reactivates your past clients and filters out the time-wasting bids — so you win back your hours, ease the hassle, and expand your ROI online. You’re welcome to look, no call needed."
-  },
-  inputs: [
-    { key: "pastClients", label: "Past clients in your database", tooltip: "Homeowners you have completed work for and could reach again.", min: 0, max: 2000, step: 5, default: 120, format: "number" },
-    { key: "reactivationRate", label: "Realistic annual reactivation", tooltip: "Share of past clients who would start another project or refer one in a year, with steady follow-up.", min: 0, max: 50, step: 1, default: 6, format: "percent" },
-    { key: "avgProjectValue", label: "Average project value", tooltip: "Average signed project value for your firm.", min: 0, max: 1000000, step: 5000, default: 85000, format: "currency" },
-    { key: "estimatesPerMonth", label: "Estimates / site visits per month", tooltip: "Bids and consultations you take on in a typical month.", min: 0, max: 60, step: 1, default: 8, format: "number" },
-    { key: "deadEstimatePct", label: "Estimates that never close", tooltip: "Share of those bids that do not turn into a signed project.", min: 0, max: 100, step: 1, default: 70, format: "percent" },
-    { key: "hoursPerEstimate", label: "Hours per estimate", tooltip: "Time per bid including travel, measuring, and pricing it up.", min: 0, max: 20, step: 0.5, default: 4, format: "number" },
-    { key: "ownerHourValue", label: "Your hour is worth", tooltip: "What an hour of your time is worth to the business.", min: 0, max: 1000, step: 25, default: 200, format: "currency" }
-  ],
-  callout: {
-    strong: "One signed agreement shouldn't carry the business for months.",
-    text: "A steady reactivation pipeline turns lumpy, feast-or-famine revenue into a predictable flow from people who already trust your work."
-  },
-  leadBox: {
-    title: "The cheapest project you will ever win is the client you already earned.",
-    copy: "Are you open to a 15-minute look at how Real Space Digital reactivates a past-client base and filters out the time-wasting bids?",
-    cta: "Are you open to a 15-minute look?"
-  },
-  compute: function (s, h) {
-    var reactivatedProjects = s.pastClients * (s.reactivationRate / 100);
-    var idleRevenue = reactivatedProjects * s.avgProjectValue;
-    var deadEstimates = s.estimatesPerMonth * (s.deadEstimatePct / 100);
-    var wastedHoursYr = deadEstimates * s.hoursPerEstimate * 12;
-    var timeLeakYr = wastedHoursYr * s.ownerHourValue;
-    return {
-      hero: idleRevenue,
-      breakdown: "\u2248 " + reactivatedProjects.toFixed(1) + " past clients would build again \u2192 " + h.formatMoney(idleRevenue) + " waiting in your list.",
-      metrics: [
-        { label: "Hours a year bidding work you won't win", value: Math.round(wastedHoursYr).toLocaleString() },
-        { label: "Value of that lost time", value: h.formatMoney(timeLeakYr) }
-      ]
-    };
-  }
-};
-
-</script>
-<script>
-/******************************************************************
- * RSD Calculator Engine
- * One engine, many ICP profiles. A page defines window.RSD_PROFILE
- * (see /assets/profile-*.js) and window.RSD_CONFIG (/assets/config.js),
- * then loads this file. The engine renders the whole tool from them.
- ******************************************************************/
-window.RSD_runCalculator = function (profile) {
-  "use strict";
-  var cfg = window.RSD_CONFIG || {};
-  var LEAD_WEBHOOK_URL = cfg.LEAD_WEBHOOK_URL || "";
-  var CTA_URL = cfg.CTA_URL || "#";
-  var QUALIFY_URL = cfg.QUALIFY_URL || "#";
-
-  // ---- EmailJS (client + RSD copy) ----
-  var EJ = cfg.EMAILJS || {};
-  if (window.emailjs && EJ.PUBLIC_KEY) {
-    try { emailjs.init({ publicKey: EJ.PUBLIC_KEY }); }
-    catch (e) { try { emailjs.init(EJ.PUBLIC_KEY); } catch (e2) {} }
-  }
-  var PROFILE_LABELS = { venues: "Event Venue", designbuild: "Design-Build Firm" };
-
-  function sendEmails(tp) {
-    if (!window.emailjs) { console.warn("RSD: EmailJS SDK not loaded \u2014 email skipped."); return; }
-    if (!(EJ.SERVICE_ID && EJ.TEMPLATE_ID)) { console.warn("RSD: EmailJS service/template not set in config \u2014 email skipped."); return; }
-    function go(label, extra) {
-      return emailjs.send(EJ.SERVICE_ID, EJ.TEMPLATE_ID, Object.assign({}, tp, extra))
-        .then(function () { console.log("RSD: EmailJS sent (" + label + ") to " + extra.to_email); })
-        .catch(function (err) { console.error("RSD: EmailJS failed (" + label + ")", err); });
+/* ====================== THREE ICP PROFILES ====================== */
+/* toggle key -> profile id. Each lane has its own lane color. */
+var PROFILES = {
+  /* TOGGLE: revenue (Lost Revenue Prevention) */
+  designbuild:{
+    id:"designbuild", toggle:"revenue", lane:"var(--green)", color:"#5FD08A",
+    label:"Design-Build", icp:"Lost revenue",
+    title:"Revenue sitting in your past-client list & lost leads",
+    inputs:[
+      { key:"pastClients", label:"Past clients in your database", min:0, max:2000, step:5, default:120, format:"number" },
+      { key:"reactivationRate", label:"Realistic annual reactivation", min:0, max:50, step:1, default:6, format:"percent" },
+      { key:"avgProjectValue", label:"Average project value", min:0, max:1000000, step:5000, default:85000, format:"currency" },
+      { key:"estimatesPerMonth", label:"Estimates / site visits per month", min:0, max:60, step:1, default:8, format:"number" },
+      { key:"deadEstimatePct", label:"Estimates that never close", min:0, max:100, step:1, default:70, format:"percent" },
+      { key:"hoursPerEstimate", label:"Hours per estimate", min:0, max:20, step:0.5, default:4, format:"number" },
+      { key:"ownerHourValue", label:"Your hour is worth", min:0, max:1000, step:25, default:200, format:"currency" }
+    ],
+    compute:function(s){
+      var reactivated=s.pastClients*(s.reactivationRate/100);
+      var idleRevenue=reactivated*s.avgProjectValue;
+      var deadEst=s.estimatesPerMonth*(s.deadEstimatePct/100);
+      var wastedHrs=deadEst*s.hoursPerEstimate*12;
+      var timeLeak=wastedHrs*s.ownerHourValue;
+      return { hero:idleRevenue+timeLeak,
+        breakdown:"≈ "+reactivated.toFixed(1)+" past clients would build again — plus the cost of time lost to bids that never close.",
+        metrics:[ {label:"Revenue waiting in your list",value:fmt(idleRevenue)},
+                  {label:"Value of time lost bidding",value:fmt(timeLeak)} ] };
     }
-    go("prospect", { to_name: tp.client_first, to_email: tp.client_email });
-    go("rsd-copy", { to_name: "Real Space Digital", to_email: EJ.RSD_EMAIL || tp.rsd_email });
+  },
+  /* TOGGLE: time (Save Time & Win Bookings) */
+  venues:{
+    id:"venues", toggle:"time", lane:"var(--amber)", color:"#F2A93B",
+    label:"Event Venue", icp:"Time & bookings",
+    title:"What slow replies cost your venue",
+    inputs:[
+      { key:"monthlyInquiries", label:"Monthly inquiries", min:0, max:500, step:1, default:50, format:"number" },
+      { key:"afterHoursPct", label:"After-hours share", min:0, max:100, step:1, default:65, format:"percent" },
+      { key:"slowResponseLossPct", label:"Lost to late replies", min:0, max:100, step:1, default:20, format:"percent" },
+      { key:"tourToBookingPct", label:"Tour-to-booking rate", min:0, max:100, step:1, default:25, format:"percent" },
+      { key:"avgBookingValue", label:"Average booking value", min:0, max:100000, step:500, default:10000, format:"currency" }
+    ],
+    compute:function(s){
+      var afterHours=s.monthlyInquiries*(s.afterHoursPct/100);
+      var lost=afterHours*(s.slowResponseLossPct/100);
+      var lostBookings=lost*(s.tourToBookingPct/100);
+      var annual=lostBookings*s.avgBookingValue*12;
+      return { hero:annual,
+        breakdown:"≈ "+lostBookings.toFixed(1)+" bookings a month slip away → "+fmt(annual)+" a year.",
+        metrics:[ {label:"Bookings slipping away monthly",value:lostBookings.toFixed(1)},
+                  {label:"Prime dates are invaluable",value:"~52 / yr"} ] };
+    }
+  },
+  /* TOGGLE: hassle (Reduce Hassle, Manual Workflows & Stress) */
+  storefront:{
+    id:"storefront", toggle:"hassle", lane:"var(--violet)", color:"#B79CFF",
+    label:"Storefront / Service", icp:"Hassle & stress",
+    title:"The cost of manual work and missed walk-in demand",
+    inputs:[
+      { key:"weeklyManualHours", label:"Hours a week on manual admin & repeat tasks", min:0, max:80, step:1, default:15, format:"number" },
+      { key:"teamHourValue", label:"What an hour of that time is worth", min:0, max:500, step:5, default:75, format:"currency" },
+      { key:"monthlyInquiries", label:"Calls, messages & online inquiries a month", min:0, max:1000, step:5, default:80, format:"number" },
+      { key:"missedResponsePct", label:"Share missed or answered too late", min:0, max:100, step:1, default:30, format:"percent" },
+      { key:"inquiryToSalePct", label:"Share of answered inquiries that buy", min:0, max:100, step:1, default:35, format:"percent" },
+      { key:"avgTicket", label:"Average sale value", min:0, max:50000, step:100, default:1200, format:"currency" }
+    ],
+    compute:function(s){
+      var wastedHrs=s.weeklyManualHours*52;
+      var timeCost=wastedHrs*s.teamHourValue;
+      var missed=s.monthlyInquiries*(s.missedResponsePct/100);
+      var lostSalesMo=missed*(s.inquiryToSalePct/100);
+      var lostSalesYr=lostSalesMo*s.avgTicket*12;
+      return { hero:timeCost+lostSalesYr,
+        breakdown:"≈ "+Math.round(wastedHrs).toLocaleString()+" hours a year on manual work, plus "+fmt(lostSalesYr)+" in missed sales.",
+        metrics:[ {label:"Hours a year you could reclaim",value:Math.round(wastedHrs).toLocaleString()},
+                  {label:"Missed sales a year",value:fmt(lostSalesYr)} ] };
+    }
   }
+};
 
-  function showNextStepModal(qualifyUrl, calendlyUrl) {
-    if (document.getElementById("rsdNextModal")) return;
-    var ov = document.createElement("div");
-    ov.id = "rsdNextModal";
-    ov.className = "rsd-modal-overlay";
-    ov.innerHTML =
-      '<div class="rsd-modal" role="dialog" aria-modal="true" aria-label="Your next step">' +
-        '<button class="rsd-modal-close" type="button" aria-label="Close">\u00d7</button>' +
-        '<p class="rsd-modal-eyebrow">Your estimate is on its way</p>' +
-        '<h3 class="rsd-modal-title">Want to shape your build now?</h3>' +
-        '<p class="rsd-modal-copy">We just emailed your estimate and a recommended starting point. Take the quick guided path \u2014 built from your own numbers \u2014 to map the pieces that win back your time, ease the day-to-day hassle, and grow your revenue, at your pace.</p>' +
-        '<a class="rsd-modal-cta" href="' + qualifyUrl + '">Build my guided path \u2192</a>' +
-        '<a class="rsd-modal-secondary" href="' + (calendlyUrl || "#") + '" target="_blank" rel="noreferrer">Or book a 15-minute walkthrough</a>' +
+/* Toggle definitions in display order */
+var TOGGLES = [
+  { key:"revenue", profile:"designbuild", title:"Lost revenue prevention", sub:"Leads & jobs slipping away that you never recover.", icp:"Design-Build" },
+  { key:"time",    profile:"venues",      title:"Save time & win bookings", sub:"Slow replies and after-hours inquiries that book elsewhere.", icp:"Event Venue" },
+  { key:"hassle",  profile:"storefront",  title:"Reduce hassle & stress",  sub:"Manual workflows and missed demand draining your team.", icp:"Storefront / Service" }
+];
+
+/* ICP dropdown — every business RSD fits, each pre-selecting its primary focus */
+var ICP_OPTIONS = [
+  { label:"Event venue / event space", on:["time"] },
+  { label:"Vineyard / winery", on:["time"] },
+  { label:"Wedding venue", on:["time"] },
+  { label:"Hotel / resort / retreat", on:["time"] },
+  { label:"Museum / attraction / tour", on:["time"] },
+  { label:"Design-build firm", on:["revenue"] },
+  { label:"Custom home builder", on:["revenue"] },
+  { label:"Remodeler / renovation", on:["revenue"] },
+  { label:"Deck, fence & outdoor living", on:["revenue"] },
+  { label:"Landscape / hardscape", on:["revenue"] },
+  { label:"Pool & spa builder", on:["revenue"] },
+  { label:"Dive shop / scuba center", on:["hassle"] },
+  { label:"Stone & countertop showroom", on:["hassle"] },
+  { label:"Specialty / luxury retail", on:["hassle"] },
+  { label:"Auto / marine / powersports", on:["hassle"] },
+  { label:"Med spa / aesthetics clinic", on:["hassle"] },
+  { label:"Other high-ticket local business", on:["revenue","time","hassle"] }
+];
+
+/* ====================== STATE ====================== */
+var state = {
+  icp:"",
+  toggles:{ revenue:false, time:false, hassle:false },
+  upgradeTwin:false,
+  social:{ added:false, level:"soc2" },
+  seasonal:{},              // key -> true (multi-select boosters)
+  store:{ online:false, supportLevel:null },  // storefront online store + support tier
+  photo:{ level:null },     // product photo shoot tier
+  selectedPkg:null,
+  values:{}, // profileId -> {key:val}
+  results:{} // profileId -> compute result
+};
+// seed input defaults
+Object.keys(PROFILES).forEach(function(pid){
+  state.values[pid]={};
+  PROFILES[pid].inputs.forEach(function(i){ state.values[pid][i.key]=i.default; });
+});
+
+/* ====================== HELPERS ====================== */
+function fmt(n){ n=Math.round(n||0); return "$"+n.toLocaleString("en-US"); }
+function fmtInput(v,format){
+  if(format==="currency") return "$"+Number(v).toLocaleString("en-US");
+  if(format==="percent") return v+"%";
+  return Number(v).toLocaleString("en-US");
+}
+function activeProfiles(){
+  return TOGGLES.filter(function(t){return state.toggles[t.key];}).map(function(t){return t.profile;});
+}
+function recommend(profileId, hero){
+  var bands=RECOMMEND[profileId]; var pick=bands[0];
+  for(var i=0;i<bands.length;i++){ if(hero>=bands[i].min) pick=bands[i]; }
+  return pick;
+}
+function $(id){ return document.getElementById(id); }
+
+/* ====================== SCREEN NAV ====================== */
+function showScreen(id, step){
+  ["screen-intro","screen-calc","screen-reco","screen-pricing","screen-audit"].forEach(function(s){
+    $(s).classList.toggle("active", s===id);
+  });
+  // stepper
+  [1,2,3,4].forEach(function(n){ var el=document.querySelector(".stepper .s"+n); if(el) el.classList.toggle("on", n<=step); });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ====================== SCREEN 1: build toggles + dropdown ====================== */
+function buildIntro(){
+  var sel=$("icp");
+  ICP_OPTIONS.forEach(function(o,idx){
+    var opt=document.createElement("option"); opt.value=idx; opt.textContent=o.label; sel.appendChild(opt);
+  });
+  sel.addEventListener("change", function(){
+    var o=ICP_OPTIONS[this.value];
+    state.toggles={revenue:false,time:false,hassle:false};
+    if(o){ o.on.forEach(function(k){ state.toggles[k]=true; }); }
+    state.icp = o ? o.label : "";
+    renderToggles(); refreshIntroCTA();
+  });
+
+  var grid=$("toggles");
+  TOGGLES.forEach(function(t){
+    var p=PROFILES[t.profile];
+    var b=document.createElement("button");
+    b.className="tog"; b.type="button"; b.setAttribute("aria-pressed","false");
+    b.style.setProperty("--lane",p.color);
+    b.dataset.key=t.key;
+    b.innerHTML =
+      '<span class="check">✓</span>'+
+      '<span class="t-top"><span class="dot"></span><span class="t-icp">'+t.icp+'</span></span>'+
+      '<span class="t-title">'+t.title+'</span>'+
+      '<span class="t-sub">'+t.sub+'</span>';
+    b.addEventListener("click", function(){
+      state.toggles[t.key]=!state.toggles[t.key];
+      renderToggles(); refreshIntroCTA();
+    });
+    grid.appendChild(b);
+  });
+  renderToggles(); refreshIntroCTA();
+}
+function renderToggles(){
+  Array.prototype.forEach.call(document.querySelectorAll(".tog"),function(b){
+    b.setAttribute("aria-pressed", state.toggles[b.dataset.key] ? "true":"false");
+  });
+}
+function refreshIntroCTA(){
+  var any=activeProfiles().length>0;
+  $("openCalc").disabled=!any;
+  $("introHint").textContent = any ? "We'll open "+activeProfiles().length+" calculator"+(activeProfiles().length>1?"s":"")+" for you." : "Switch on at least one focus above to continue.";
+}
+
+/* ====================== SCREEN 2: lanes ====================== */
+function buildLanes(){
+  var host=$("lanes"); host.innerHTML="";
+  activeProfiles().forEach(function(pid){
+    var p=PROFILES[pid];
+    var lane=document.createElement("div");
+    lane.className="lane"; lane.style.setProperty("--lane",p.color);
+    var rows="";
+    p.inputs.forEach(function(inp){
+      var v=state.values[pid][inp.key];
+      rows+='<div class="row">'+
+        '<div class="rl"><span class="name">'+inp.label+'</span><span class="val" id="v-'+pid+'-'+inp.key+'">'+fmtInput(v,inp.format)+'</span></div>'+
+        '<input type="range" min="'+inp.min+'" max="'+inp.max+'" step="'+inp.step+'" value="'+v+'" '+
+        'data-pid="'+pid+'" data-key="'+inp.key+'" data-format="'+inp.format+'"></div>';
+    });
+    lane.innerHTML =
+      '<div class="lane-icp">'+p.icp+'</div>'+
+      '<h3>'+p.label+' calculator</h3>'+
+      '<div class="lane-num" id="num-'+pid+'">$0</div>'+
+      '<div class="lane-break" id="break-'+pid+'"></div>'+
+      rows+
+      '<div class="metrics" id="metrics-'+pid+'"></div>';
+    host.appendChild(lane);
+  });
+  Array.prototype.forEach.call(host.querySelectorAll('input[type=range]'),function(r){
+    r.addEventListener("input", function(){
+      var pid=this.dataset.pid, key=this.dataset.key;
+      state.values[pid][key]=parseFloat(this.value);
+      $("v-"+pid+"-"+key).textContent=fmtInput(this.value,this.dataset.format);
+      computeLane(pid); updateTotal();
+    });
+  });
+  activeProfiles().forEach(computeLane);
+  updateTotal();
+}
+function computeLane(pid){
+  var p=PROFILES[pid];
+  var r=p.compute(state.values[pid]);
+  state.results[pid]=r;
+  $("num-"+pid).textContent=fmt(r.hero);
+  $("break-"+pid).textContent=r.breakdown;
+  var m=$("metrics-"+pid); m.innerHTML="";
+  r.metrics.forEach(function(x){
+    var d=document.createElement("div"); d.className="m";
+    d.innerHTML='<div class="ml">'+x.label+'</div><div class="mv">'+x.value+'</div>';
+    m.appendChild(d);
+  });
+}
+function totalLeak(){
+  return activeProfiles().reduce(function(sum,pid){ return sum + (state.results[pid]?state.results[pid].hero:0); },0);
+}
+function updateTotal(){
+  var banner=$("totalBanner");
+  if(activeProfiles().length>1){ banner.style.display="flex"; $("totalNum").textContent=fmt(totalLeak()); }
+  else { banner.style.display="none"; }
+}
+
+/* ====================== SCREEN 3: recommendation ====================== */
+function buildReco(){
+  var host=$("stacks"); host.innerHTML="";
+  activeProfiles().forEach(function(pid){
+    var p=PROFILES[pid]; var r=state.results[pid]||p.compute(state.values[pid]);
+    var rec=recommend(pid, r.hero);
+    var items=[rec.consider].concat(rec.also);
+    var lis=items.map(function(k){
+      return '<li>'+PHASE1_NAMES[k]+'<span class="desc">'+(SERVICE_DESC[k]||"")+'</span></li>';
+    }).join("");
+    var card=document.createElement("div");
+    card.className="stack"; card.style.setProperty("--lane",p.color);
+    card.innerHTML=
+      '<div class="band">'+p.icp+' · '+rec.band+'</div>'+
+      '<h3>'+p.label+' — '+fmt(r.hero)+' at stake</h3>'+
+      '<ul>'+lis+'</ul>';
+    host.appendChild(card);
+  });
+  // reflect twin upgrade state (no price here)
+  var tu=$("twinUp"), btn=$("twinToggle");
+  tu.classList.toggle("added", state.upgradeTwin);
+  btn.textContent = state.upgradeTwin ? "✓ True Digital Twin added — tap to remove" : "⚡ Add the True Digital Twin →";
+  // storefront-only recommendations (no price) — Online Store + Product Photo Shoot
+  var sfHost=$("storefrontReco"); sfHost.innerHTML="";
+  if(state.toggles.hassle){
+    sfHost.innerHTML=
+      '<div class="callout" style="border-left-color:var(--violet);">'+
+        '<b>Recommended for your storefront.</b> Two more pieces fit the hassle &amp; manual-work leak you measured — you\u2019ll see options and pricing on the next page:'+
+        '<ul style="margin:10px 0 0;padding-left:18px;">'+
+          '<li style="margin-bottom:6px;"><b>'+PRICING.store.online.name+'</b> — '+PRICING.store.online.benefits+'</li>'+
+          '<li><b>'+PRICING.photo.name+'</b> — '+PRICING.photo.benefits+'</li>'+
+        '</ul>'+
       '</div>';
-    document.body.appendChild(ov);
-    requestAnimationFrame(function () { ov.classList.add("is-open"); });
-    function close() { ov.classList.remove("is-open"); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 300); }
-    ov.querySelector(".rsd-modal-close").addEventListener("click", close);
-    ov.addEventListener("click", function (e) { if (e.target === ov) close(); });
-    document.addEventListener("keydown", function esc(ev) { if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); } });
   }
+  // reflect social add-on state (no price here)
+  var su=$("socialUp"), sbtn=$("socialToggle");
+  su.classList.toggle("added", state.social.added);
+  sbtn.textContent = state.social.added ? "✓ Social Avatar added — tap to remove" : "＋ Add Social Avatar — pick your level next";
+}
 
-  if (!profile) {
-    console.error("RSD_PROFILE is not defined. Load a /assets/profile-*.js before calculator.js.");
-    return;
-  }
+/* ====================== SCREEN 4: pricing ====================== */
+function topTierKey(){
+  var rank=0, key="pkg_t2b";
+  activeProfiles().forEach(function(pid){
+    var r=state.results[pid]||PROFILES[pid].compute(state.values[pid]);
+    var rec=recommend(pid,r.hero); var tk=BAND_TIER[rec.band]||"pkg_t2b";
+    if(TIER_RANK[tk]>rank){ rank=TIER_RANK[tk]; key=tk; }
+  });
+  return key;
+}
+function buildPricing(){
+  var host=$("tiers"); host.innerHTML=""; var reco=topTierKey();
+  if(!state.selectedPkg) state.selectedPkg=reco;     // default selection = recommended
+  PRICING.tiers.forEach(function(t){
+    var isSel=(t.key===state.selectedPkg), isReco=(t.key===reco);
+    var div=document.createElement("div");
+    div.className="tier"+(isSel?" reco":"");
+    var lis=t.includes.map(function(x){return '<li>'+x+'</li>';}).join("");
+    div.innerHTML=
+      (isReco?'<span class="pin">Recommended for you</span>':'')+
+      '<h3>'+t.name+'</h3>'+
+      '<p class="p-sub">'+t.sub+'</p>'+
+      '<div class="p-price">'+fmt(t.price)+'<small> one-time</small></div>'+
+      '<div class="p-setup">Founder Lock pricing available</div>'+
+      '<ul>'+lis+'</ul>'+
+      '<button class="btn '+(isSel?"btn-amber":"btn-ghost")+'" data-pkg="'+t.key+'">'+(isSel?"✓ Selected":"Select "+t.name)+'</button>';
+    host.appendChild(div);
+  });
+  Array.prototype.forEach.call(host.querySelectorAll("button[data-pkg]"), function(b){
+    b.addEventListener("click", function(){ state.selectedPkg=this.dataset.pkg; buildPricing(); });
+  });
+  var ah=$("addonHost"); ah.innerHTML="";
 
-  var moneyFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-  function formatMoney(v) { return moneyFmt.format(Math.max(0, v)); }
+  // ---- Social Avatar Presence Program (3 levels) — ABOVE the True Twin ----
+  var soc=PRICING.social;
+  var lvlHtml=soc.levels.map(function(l){
+    var sel = state.social.added && state.social.level===l.key;
+    return '<div class="lvl'+(sel?" sel":"")+'" data-lvl="'+l.key+'">'+
+      '<div class="l-name">'+l.name+'</div>'+
+      '<div class="l-posts">'+l.posts+'</div>'+
+      '<div class="l-price">'+fmt(l.monthly)+'<small> /mo</small></div></div>';
+  }).join("");
+  var socEl=document.createElement("div");
+  socEl.className="addon gold"+(state.social.added?" reco":"");
+  socEl.innerHTML=
+    '<div class="a-ey gold">Add-on · Always-on presence'+(state.social.added?" · Added":"")+'</div>'+
+    '<h3>'+soc.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+soc.sub+'</p>'+
+    '<div class="lvls">'+lvlHtml+'</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.social.added?"btn-ghost":"btn-social")+'" id="socialPriceToggle">'+(state.social.added?"Remove Social Avatar":"＋ Add Social Avatar")+'</button>'+
+    '</div>';
+  ah.appendChild(socEl);
+  Array.prototype.forEach.call(socEl.querySelectorAll(".lvl"), function(el){
+    el.addEventListener("click", function(){ state.social.added=true; state.social.level=this.dataset.lvl; buildPricing(); });
+  });
+  var spt=$("socialPriceToggle");
+  if(spt) spt.addEventListener("click", function(){ state.social.added=!state.social.added; buildPricing(); });
 
-  function clamp(value, min, max) {
-    var n = Number(value);
-    if (isNaN(n)) return Number(min);
-    return Math.min(Math.max(n, Number(min)), Number(max));
-  }
+  // ---- Seasonal Campaign Boosters (optional, multi-select) — own section before True Twin ----
+  var sea=PRICING.seasonal;
+  var seaHtml=sea.items.map(function(it){
+    var on=!!state.seasonal[it.key];
+    return '<div class="lvl'+(on?" sel":"")+'" data-seas="'+it.key+'">'+
+      '<div class="l-name">'+it.name+'</div>'+
+      '<div class="l-price">'+fmt(it.price)+'<small> one-time</small></div></div>';
+  }).join("");
+  var seaEl=document.createElement("div");
+  seaEl.className="addon gold";
+  seaEl.innerHTML=
+    '<div class="a-ey gold">Optional upgrade · Seasonal campaign booster</div>'+
+    '<h3>'+sea.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+sea.sub+'</p>'+
+    '<div class="lvls" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">'+seaHtml+'</div>';
+  ah.appendChild(seaEl);
+  Array.prototype.forEach.call(seaEl.querySelectorAll(".lvl"), function(el){
+    el.addEventListener("click", function(){ var k=this.dataset.seas; if(state.seasonal[k]) delete state.seasonal[k]; else state.seasonal[k]=true; buildPricing(); });
+  });
 
-  function metaLabel(input, which) {
-    var v = which === "min" ? input.min : input.max;
-    if (input.format === "currency") {
-      return v >= 1000 ? "$" + (v / 1000) + "k" : "$" + v;
-    }
-    if (input.format === "percent") return v + "%";
-    return String(v);
-  }
+  // ---- Storefront-only add-ons (Online Store + Support + Product Photo Shoot) ----
+  if(state.toggles.hassle){
+    var st=PRICING.store;
+    // Online Store — First Phase (one-time)
+    var osEl=document.createElement("div");
+    osEl.className="addon"+(state.store.online?" reco":"");
+    osEl.innerHTML=
+      '<div class="a-ey" style="color:var(--violet);">Storefront · Digital store'+(state.store.online?" · Added":"")+'</div>'+
+      '<h3>'+st.online.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+st.online.benefits+'</p>'+
+      '<div class="a-price">'+fmt(st.online.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time</small></div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        '<button class="btn '+(state.store.online?"btn-ghost":"btn-social")+'" id="storeOnlineToggle">'+(state.store.online?"Remove Online Store":"＋ Add Online Store")+'</button>'+
+      '</div>';
+    ah.appendChild(osEl);
+    var sot=$("storeOnlineToggle");
+    if(sot) sot.addEventListener("click", function(){ state.store.online=!state.store.online; buildPricing(); });
 
-  // Build the qualify URL, carrying the live estimate + profile so the
-  // RSD Pricing Build Guide opens already aware of where the lead came from.
-  function buildQualifyUrl(result) {
-    if (!QUALIFY_URL || QUALIFY_URL === "#") return "#";
-    var est = Math.round(result.hero);
-    var rec = recommend(est);
-    var sep = QUALIFY_URL.indexOf("?") === -1 ? "?" : "&";
-    var params =
-      "profile=" + encodeURIComponent(profile.id) +
-      "&estimate=" + encodeURIComponent(est) +
-      (rec ? "&consider=" + encodeURIComponent(rec.primary) + "&paths=" + encodeURIComponent(rec.paths.join(",")) : "") +
-      "&source=" + encodeURIComponent("calculator");
-    return QUALIFY_URL + sep + params;
-  }
-
-  // Deep-link straight to the qualify funnel's packages page with the
-  // recommended package pre-passed via ?pkg= (no funnel logic changes).
-  function buildPackageUrl(estimate, rec) {
-    var F = window.RSD_FUNNEL;
-    if (!F || !F.BASE) return "";
-    var pkg = (rec && F.PKG_MAP && F.PKG_MAP[rec.primary]) ? F.PKG_MAP[rec.primary] : (F.DEFAULT_PKG || "pkg_ao");
-    var qs =
-      "pkg=" + encodeURIComponent(pkg) +
-      "&profile=" + encodeURIComponent(profile.id) +
-      "&estimate=" + encodeURIComponent(estimate) +
-      (rec ? "&paths=" + encodeURIComponent(rec.paths.join(",")) + "&consider=" + encodeURIComponent(rec.primary) : "") +
-      "&source=calculator";
-    return F.BASE + F.PACKAGES_PAGE + "?" + qs;
-  }
-
-  // Range-driven recommendation from the estimate (mirrors the qualify handoff).
-  function recommend(estimate) {
-    var ranges = (window.RSD_RECOMMEND || {})[profile.id];
-    if (!ranges || !ranges.length) return null;
-    var r = ranges[0];
-    ranges.forEach(function (x) { if (estimate >= x.min) r = x; });
-    var names = window.RSD_PHASE1_NAMES || {};
-    var paths = [r.consider].concat(r.also || []).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
-    return {
-      primary: r.consider,
-      primaryName: names[r.consider] || r.consider,
-      paths: paths,
-      pathsNames: paths.map(function (k) { return names[k] || k; }),
-      band: r.band || ""
-    };
-  }
-
-  var state = {};
-  profile.inputs.forEach(function (i) { state[i.key] = i.default; });
-
-  function inputCard(i) {
-    var isCur = i.format === "currency";
-    var isPct = i.format === "percent";
-    return (
-      '<div class="control-card">' +
-        '<div class="control-head">' +
-          '<label for="' + i.key + '">' + i.label +
-            '<span class="tooltip">' + i.tooltip + '</span>' +
-          '</label>' +
-          '<div class="number-wrap ' + (isCur ? "currency" : "") + '">' +
-            (isCur ? '<span class="prefix">$</span>' : "") +
-            '<input id="' + i.key + 'Number" type="number" inputmode="decimal" min="' + i.min + '" max="' + i.max + '" step="' + i.step + '" aria-label="' + i.label + ' value" />' +
-            (isPct ? '<span class="suffix">%</span>' : "") +
-          '</div>' +
-        '</div>' +
-        '<input id="' + i.key + '" type="range" min="' + i.min + '" max="' + i.max + '" step="' + i.step + '" />' +
-        '<div class="range-meta"><span>' + metaLabel(i, "min") + '</span><span>' + metaLabel(i, "max") + '</span></div>' +
-      '</div>'
-    );
-  }
-
-  var m = profile.meta;
-  var brand = m.brand || "Real Space Digital";
-  var tagline = m.tagline || "Digitizing Reality, Elevating Sales™";
-  var stackKicker = m.stackKicker || "Ready for your next phase of growth?";
-  var stackCopy = m.stackCopy || "When the timing feels right, see the next phase that would help you regain your time, ease the day-to-day hassle, and expand your ROI online — at your pace, no call needed to look.";
-
-  var html =
-    '<div class="topbar" aria-label="Brand">' +
-      '<a class="brand-mark" href="https://realspacedigital.net" target="_blank" rel="noreferrer">' + brand + '</a>' +
-      '<span class="eyebrow">' + (m.tag || "Revenue Estimate") + '</span>' +
-    '</div>' +
-    '<section class="calculator-shell">' +
-      '<div class="hero">' +
-        '<p class="eyebrow">' + m.eyebrow + '</p>' +
-        '<h1>' + m.title + '</h1>' +
-        '<p class="hero-copy">' + m.heroIntro + '</p>' +
-        '<div class="result-card" aria-live="polite">' +
-          '<p class="result-label">' + m.heroLabel + '</p>' +
-          '<span class="hero-number" id="heroNumber">$0</span>' +
-          '<p class="breakdown" id="breakdown"></p>' +
-          '<p class="disclaimer">This is an estimate, not a guarantee. The figure comes only from the inputs on this page.</p>' +
-        '</div>' +
-      '</div>' +
-      '<div class="main-grid">' +
-        '<section class="controls">' +
-          '<h2 class="section-title">' + (m.sectionTitle || "Run the numbers.") + '</h2>' +
-          '<p class="section-copy">' + (m.sectionCopy || "Adjust each input to match your business. The result updates instantly.") + '</p>' +
-          '<div class="input-stack">' + profile.inputs.map(inputCard).join("") + '</div>' +
-        '</section>' +
-        '<aside class="conversion-panel">' +
-          '<div class="callout"><strong>' + profile.callout.strong + '</strong><p>' + profile.callout.text + '</p></div>' +
-          '<div class="mini-metrics" id="metrics" aria-live="polite"></div>' +
-          '<div class="stack-cta">' +
-            '<p class="stack-kicker">' + stackKicker + '</p>' +
-            '<p class="stack-copy">' + stackCopy + '</p>' +
-            '<a class="btn-stack" id="qualifyLink" href="#" target="_blank" rel="noreferrer">' +
-              '<span class="btn-stack-main">See your next phase of growth</span>' +
-              '<span class="btn-stack-sub">RSD Pricing Build Guide →</span>' +
-            '</a>' +
-          '</div>' +
-          '<div class="lead-box">' +
-            '<h2>' + profile.leadBox.title + '</h2>' +
-            '<p>' + profile.leadBox.copy + '</p>' +
-            '<form class="lead-form" id="leadForm">' +
-              '<div class="field-grid">' +
-                '<input id="name" name="name" autocomplete="name" placeholder="Your name" required />' +
-                '<input id="company" name="company" autocomplete="organization" placeholder="' + (m.orgPlaceholder || "Company name") + '" required />' +
-                '<input id="email" name="email" type="email" autocomplete="email" placeholder="Email" required />' +
-                '<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone, optional" />' +
-              '</div>' +
-              '<div class="lead-actions">' +
-                '<button class="btn" type="submit">Send me this estimate</button>' +
-                '<a class="cta" id="ctaLink" href="#" target="_blank" rel="noreferrer">' + profile.leadBox.cta + '</a>' +
-              '</div>' +
-              '<p class="form-message" id="formMessage" role="status"></p>' +
-            '</form>' +
-          '</div>' +
-        '</aside>' +
-      '</div>' +
-    '</section>' +
-    '<footer><span><strong>' + brand + '</strong> · ' + (m.footerNote || "Revenue Calculator") + '</span><span>' + tagline + '</span></footer>';
-
-  var root = document.getElementById("rsd-calc-root");
-  if (!root) { console.error('Missing <div id="rsd-calc-root"></div>.'); return; }
-  root.innerHTML = html;
-
-  var heroEl = document.getElementById("heroNumber");
-  var prevHero = 0, raf = null;
-  function animateHero(to) {
-    var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    if (raf) cancelAnimationFrame(raf);
-    if (reduce) { heroEl.textContent = formatMoney(to); prevHero = to; return; }
-    var from = prevHero, start = performance.now(), dur = 520;
-    function tick(now) {
-      var p = Math.min((now - start) / dur, 1);
-      var e = 1 - Math.pow(1 - p, 3);
-      heroEl.textContent = formatMoney(from + (to - from) * e);
-      if (p < 1) { raf = requestAnimationFrame(tick); } else { prevHero = to; }
-    }
-    raf = requestAnimationFrame(tick);
-  }
-
-  function renderMetrics(metrics) {
-    document.getElementById("metrics").innerHTML = (metrics || []).map(function (x) {
-      return '<div class="mini-card"><span>' + x.label + '</span><b>' + x.value + '</b></div>';
+    // Online Store Support & Management (monthly tiers)
+    var supHtml=st.support.levels.map(function(l){
+      var on=state.store.supportLevel===l.key;
+      return '<div class="lvl'+(on?" sel":"")+'" data-sup="'+l.key+'">'+
+        '<div class="l-name">'+l.name+'</div>'+
+        '<div class="l-price">'+fmt(l.monthly)+'<small> /mo</small></div></div>';
     }).join("");
+    var supEl=document.createElement("div");
+    supEl.className="addon"+(state.store.supportLevel?" reco":"");
+    supEl.innerHTML=
+      '<div class="a-ey" style="color:var(--violet);">Storefront · Ongoing support'+(state.store.supportLevel?" · Added":"")+'</div>'+
+      '<h3>'+st.support.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+st.support.sub+' Volume doubles each tier; pricing rises 33% per step.</p>'+
+      '<div class="lvls">'+supHtml+'</div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        (state.store.supportLevel?'<button class="btn btn-ghost" id="supportClear">Remove Store Support</button>':'')+
+      '</div>';
+    ah.appendChild(supEl);
+    Array.prototype.forEach.call(supEl.querySelectorAll(".lvl"), function(el){
+      el.addEventListener("click", function(){ state.store.supportLevel=this.dataset.sup; buildPricing(); });
+    });
+    var sclr=$("supportClear");
+    if(sclr) sclr.addEventListener("click", function(){ state.store.supportLevel=null; buildPricing(); });
+
+    // Product Photo Shoot (tiers)
+    var ph=PRICING.photo;
+    var phHtml=ph.levels.map(function(l){
+      var on=state.photo.level===l.key;
+      return '<div class="lvl'+(on?" sel":"")+'" data-photo="'+l.key+'">'+
+        '<div class="l-name">'+l.name+'</div>'+
+        '<div class="l-price">'+fmt(l.price)+'<small> one-time</small></div></div>';
+    }).join("");
+    var phEl=document.createElement("div");
+    phEl.className="addon gold"+(state.photo.level?" reco":"");
+    phEl.innerHTML=
+      '<div class="a-ey gold">Storefront add-on · Product imagery'+(state.photo.level?" · Added":"")+'</div>'+
+      '<h3>'+ph.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+ph.sub+'</p>'+
+      '<div class="lvls">'+phHtml+'</div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        (state.photo.level?'<button class="btn btn-ghost" id="photoClear">Remove Product Photo Shoot</button>':'')+
+      '</div>';
+    ah.appendChild(phEl);
+    Array.prototype.forEach.call(phEl.querySelectorAll(".lvl"), function(el){
+      el.addEventListener("click", function(){ state.photo.level=this.dataset.photo; buildPricing(); });
+    });
+    var pclr=$("photoClear");
+    if(pclr) pclr.addEventListener("click", function(){ state.photo.level=null; buildPricing(); });
+  } else {
+    // not storefront — clear any stale storefront selections so they don't affect the total
+    state.store.online=false; state.store.supportLevel=null; state.photo.level=null;
   }
 
-  var qualifyEl = document.getElementById("qualifyLink");
+  // ---- True Digital Twin Avatar Clone — price + 25% down (BELOW social) ----
+  var tw=PRICING.twin, down=Math.round(tw.price*tw.downPct/100);
+  var twEl=document.createElement("div");
+  twEl.className="addon"+(state.upgradeTwin?" reco":"");
+  twEl.innerHTML=
+    '<div class="a-ey">Premium add-on · Infinite scale'+(state.upgradeTwin?" · Added":"")+'</div>'+
+    '<h3>'+tw.name+'</h3>'+
+    '<p class="p-sub" style="max-width:64ch;">'+tw.sub+'</p>'+
+    '<div class="a-price">'+fmt(tw.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time add-on</small></div>'+
+    '<div class="a-down">'+tw.downPct+'% down to add it on — '+fmt(down)+' to start.</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.upgradeTwin?"btn-twin":"btn-ghost")+'" id="twinPriceToggle">'+(state.upgradeTwin?"✓ Added to your plan":"⚡ Add the True Digital Twin")+'</button>'+
+    '</div>';
+  ah.appendChild(twEl);
+  var tpt=$("twinPriceToggle");
+  if(tpt) tpt.addEventListener("click", function(){ state.upgradeTwin=!state.upgradeTwin; buildPricing(); });
 
-  function render() {
-    var r = profile.compute(state, { formatMoney: formatMoney });
-    animateHero(r.hero);
-    document.getElementById("breakdown").textContent = r.breakdown;
-    renderMetrics(r.metrics);
-    qualifyEl.href = buildQualifyUrl(r);
-  }
+  // ---- Live total + 25% deposit + monthly note ----
+  var pkg=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0]||PRICING.tiers[0];
+  var rows='<div class="pt-row"><span class="pt-lab">'+pkg.name+' (one-time)</span><span class="pt-val">'+fmt(pkg.price)+'</span></div>';
+  var oneTime=pkg.price;
+  // True Twin (one-time)
+  if(state.upgradeTwin){ oneTime+=PRICING.twin.price; rows+='<div class="pt-row"><span class="pt-lab">True Digital Twin Avatar Clone (one-time)</span><span class="pt-val">'+fmt(PRICING.twin.price)+'</span></div>'; }
+  // Online Store (one-time, storefront)
+  if(state.toggles.hassle && state.store.online){ oneTime+=PRICING.store.online.price; rows+='<div class="pt-row"><span class="pt-lab">'+PRICING.store.online.name+' (one-time)</span><span class="pt-val">'+fmt(PRICING.store.online.price)+'</span></div>'; }
+  // Product Photo Shoot (one-time, storefront)
+  var phLvl=(state.toggles.hassle&&state.photo.level)?PRICING.photo.levels.filter(function(l){return l.key===state.photo.level;})[0]:null;
+  if(phLvl){ oneTime+=phLvl.price; rows+='<div class="pt-row"><span class="pt-lab">Product Photo Shoot — '+phLvl.name+' (one-time)</span><span class="pt-val">'+fmt(phLvl.price)+'</span></div>'; }
+  // Seasonal boosters (one-time, multi)
+  var seaSel=PRICING.seasonal.items.filter(function(it){return state.seasonal[it.key];});
+  seaSel.forEach(function(it){ oneTime+=it.price; rows+='<div class="pt-row"><span class="pt-lab">'+it.name+' (one-time)</span><span class="pt-val">'+fmt(it.price)+'</span></div>'; });
+  // One-time subtotal + deposit
+  rows+='<div class="pt-row"><span class="pt-lab"><b>One-time investment</b></span><span class="pt-val">'+fmt(oneTime)+'</span></div>';
+  var deposit=Math.round(oneTime*0.25);
+  // Monthly: social + store support
+  var monthly=0, monthlyLines="";
+  var socLvl=state.social.added?PRICING.social.levels.filter(function(l){return l.key===state.social.level;})[0]:null;
+  if(socLvl){ monthly+=socLvl.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">Social Avatar — '+socLvl.name+' (monthly)</span><span class="pt-val">'+fmt(socLvl.monthly)+' /mo</span></div>'; }
+  var supLvl=(state.toggles.hassle&&state.store.supportLevel)?PRICING.store.support.levels.filter(function(l){return l.key===state.store.supportLevel;})[0]:null;
+  if(supLvl){ monthly+=supLvl.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">Online Store Support — '+supLvl.name+' (monthly)</span><span class="pt-val">'+fmt(supLvl.monthly)+' /mo</span></div>'; }
+  rows+=monthlyLines;
+  if(monthly){ rows+='<div class="pt-row pt-monthly"><span class="pt-lab"><b>Monthly total</b></span><span class="pt-val">'+fmt(monthly)+' /mo</span></div>'; }
+  rows+='<div class="pt-row pt-deposit"><span class="pt-lab">Deposit to begin (25%)</span><span class="pt-val">'+fmt(deposit)+'</span></div>';
+  var fine="To begin, your 25% deposit reserves your build and sets the project in motion. We keep a card securely on file for any monthly service retainer, activated the moment your deposit clears — so your always-on systems launch on schedule and never go dark."+
+    (monthly?" Your monthly services bill at "+fmt(monthly)+"/mo from project start.":"");
+  $("pricingTotal").innerHTML=
+    '<div class="ptotal">'+
+      '<div style="font-weight:700;font-size:1.05rem;margin-bottom:6px;">Your selection</div>'+
+      rows+
+      '<div class="pt-fine">'+fine+'</div>'+
+    '</div>';
+}
 
-  profile.inputs.forEach(function (i) {
-    var range = document.getElementById(i.key);
-    var number = document.getElementById(i.key + "Number");
-    range.value = state[i.key];
-    number.value = state[i.key];
-    function sync(val) {
-      var c = clamp(val, i.min, i.max);
-      state[i.key] = c;
-      range.value = c;
-      number.value = c;
-      render();
-    }
-    range.addEventListener("input", function (e) { sync(e.target.value); });
-    number.addEventListener("input", function (e) { sync(e.target.value); });
-    number.addEventListener("blur", function () { sync(number.value); });
+/* ====================== MODAL: lead capture ====================== */
+function openModal(){ $("overlay").classList.add("open"); $("f-name").focus(); }
+function closeModal(){ $("overlay").classList.remove("open"); }
+
+function buildLeadPayload(){
+  var profs=activeProfiles();
+  var total=totalLeak();
+  var name=$("f-name").value.trim(); var sp=name.indexOf(" ");
+  var lanes=profs.map(function(pid){
+    var r=state.results[pid]; var rec=recommend(pid,r.hero);
+    return { profile:pid, label:PROFILES[pid].label, estimate:Math.round(r.hero),
+             band:rec.band, recommended:[rec.consider].concat(rec.also) };
   });
-
-  document.getElementById("ctaLink").href = CTA_URL;
-
-  document.getElementById("leadForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var form = e.currentTarget;
-    var msg = document.getElementById("formMessage");
-    var btn = form.querySelector("button[type='submit']");
-    var r = profile.compute(state, { formatMoney: formatMoney });
-    var estimate = Math.round(r.hero);
-    var rec = recommend(estimate);
-    var fullName = document.getElementById("name").value.trim();
-    var sp = fullName.indexOf(" ");
-    // Flat, GHL-friendly payload — maps straight onto contact fields.
-    var payload = {
-      source: "RSD Calculator",
-      profile: profile.id,
-      submitted_at: new Date().toISOString(),
-      name: fullName,
-      first_name: sp === -1 ? fullName : fullName.slice(0, sp),
-      last_name: sp === -1 ? "" : fullName.slice(sp + 1),
-      company: document.getElementById("company").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      estimate: estimate,
-      estimate_formatted: formatMoney(estimate),
-      breakdown: r.breakdown,
-      recommended_phase: rec ? rec.primary : "",
-      recommended_phase_name: rec ? rec.primaryName : "",
-      recommended_paths: rec ? rec.paths.join(",") : "",
-      recommended_paths_names: rec ? rec.pathsNames.join(", ") : "",
-      range_band: rec ? rec.band : "",
-      qualify_url: buildQualifyUrl(r),
-      package_url: buildPackageUrl(estimate, rec),
-      inputs_json: JSON.stringify(state)
-    };
-
-    // Branded emails to the prospect + a copy to RSD, carrying the recommendation.
-    var tp = {
-      to_name: payload.first_name, to_email: payload.email,
-      client_first: payload.first_name || payload.name, client_email: payload.email,
-      company: payload.company || "your business",
-      profile_label: PROFILE_LABELS[profile.id] || profile.id,
-      estimate_formatted: payload.estimate_formatted,
-      breakdown: payload.breakdown,
-      range_band: payload.range_band,
-      recommended_phase_name: payload.recommended_phase_name,
-      recommended_paths_names: payload.recommended_paths_names,
-      qualify_url: payload.qualify_url,
-      package_url: payload.package_url,
-      calendly_url: CTA_URL,
-      rsd_email: EJ.RSD_EMAIL || "info@realspacedigital.net"
-    };
-    sendEmails(tp);
-
-    // Guide them straight into the handoff chooser (before the pricing guide).
-    showNextStepModal(payload.qualify_url, CTA_URL);
-
-    // Push the lead into GHL in the background (best-effort).
-    if (LEAD_WEBHOOK_URL && LEAD_WEBHOOK_URL.indexOf("example.com") === -1) {
-      btn.disabled = true; btn.textContent = "Sending...";
-      // text/plain + no-cors = a "simple" request: no CORS preflight, so it
-      // actually reaches the GHL inbound webhook from the browser. GHL parses
-      // the raw JSON body regardless of content-type. Response is opaque, so
-      // we treat completion as success.
-      console.log("RSD: posting lead to GHL webhook", payload);
-      var body = JSON.stringify(payload);
-      var beaconed = false;
-      // sendBeacon is the most reliable cross-origin, no-preflight fire-and-forget.
-      try {
-        if (navigator && typeof navigator.sendBeacon === "function") {
-          beaconed = navigator.sendBeacon(LEAD_WEBHOOK_URL, new Blob([body], { type: "text/plain;charset=UTF-8" }));
-          console.log("RSD: lead sent via sendBeacon =", beaconed);
-        }
-      } catch (e) { console.error("RSD: sendBeacon error", e); }
-      if (!beaconed) {
-        fetch(LEAD_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: body,
-          mode: "no-cors",
-          keepalive: true
-        })
-          .then(function () { console.log("RSD: lead webhook posted via fetch"); })
-          .catch(function (err) { console.error("RSD: lead webhook fetch error", err); });
-      }
-      msg.textContent = "Sent \u2014 your estimate is on its way to your inbox.";
-      btn.disabled = false; btn.textContent = "Send me this estimate"; form.reset();
-    } else {
-      msg.textContent = "Your estimate email is on its way. (Add LEAD_WEBHOOK_URL in /assets/config.js to also push the lead into GHL.)";
-      form.reset();
-    }
-  });
-
-  render();
-};
-
-</script>
-<script>
-/******************************************************************
- * RSD QUALIFY — Calculator Handoff Chooser
- * A prospect arrives from a calculator. This page:
- *   1) shows a top band of LARGE SVG tiles for their calculator
- *      RANGE (the band their number lands in is pre-highlighted;
- *      they can nudge between their own ranges to explore),
- *   2) welcomes them with their own number,
- *   3) spotlights the path we'd recommend they CONSIDER for that
- *      range, pre-selecting a sensible Phase 1 set,
- *   4) lets them build Phase 1 — one piece, several, or a hybrid —
- *      plus the Digital Twin Avatar Clone prime add-on,
- *   5) routes their choice to one combined /start/ pricing-guide
- *      page (?paths=...), which continues to the qualifying page.
- *
- * Voice: warm and inviting, never pushy.
- *
- * Incoming contract (set by the calculator engine):
- *   ?profile=venues|designbuild & estimate=<int> & source=calculator
- ******************************************************************/
-(function () {
-  "use strict";
-
-  /* =========================================================
-   * CONFIG
-   * ========================================================= */
-  var CFG = {
-
-    profiles: {
-      venues: {
-        label: "venue",
-        leakPhrase: "slipping away to slow, after-hours replies",
-        ranges: [
-          { min: 0,      rep: 45000,  tile: { label: "Focused start",   sub: "under ~$80k / yr at stake" }, consider: "authority",    also: [] },
-          { min: 80000,  rep: 180000, tile: { label: "Booking-first",   sub: "~$80k–$250k / yr" },          consider: "tour2booking", also: ["authority"] },
-          { min: 250000, rep: 420000, tile: { label: "Momentum",        sub: "$250k+ / yr" },               consider: "flywheel",     also: ["tour2booking", "authority"] }
-        ]
-      },
-      designbuild: {
-        label: "firm",
-        leakPhrase: "sitting idle in your past-client base",
-        ranges: [
-          { min: 0,      rep: 90000,  tile: { label: "Trust-first",  sub: "under ~$200k / yr" },     consider: "authority",     also: ["flywheel"] },
-          { min: 200000, rep: 320000, tile: { label: "Reputation",   sub: "~$200k–$500k / yr" },     consider: "flywheel",      also: ["authority"] },
-          { min: 500000, rep: 700000, tile: { label: "Leverage",     sub: "$500k+ / yr" },           consider: "avatar-social", also: ["authority", "flywheel"] }
-        ]
-      }
-    },
-
-    /* Large SVG tiles for the range band, indexed by range order (escalating scale). */
-    bandIcons: [
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="3"/><path d="M12 1.8v2.4M12 19.8v2.4M22.2 12h-2.4M4.2 12H1.8"/></svg>',
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V14M10 20V9M16 20V12M22 20V5"/></svg>',
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 3v4.6H16"/><path d="M10.6 9l4.4 3-4.4 3z" fill="currentColor" stroke="none"/></svg>'
-    ],
-
-    /* PHASE 1 — modular. Pick one, several, or a hybrid. */
-    phase1: [
-      { key: "tour2booking", name: "Tour2Booking™", kicker: "Get booked on its own",
-        desc: "First click to confirmed booking — your space sells itself, day and night.",
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/><path d="M8.4 14.6l2.2 2.2 4.4-4.7"/></svg>' },
-      { key: "authority", name: "AlwaysOn Authority Page", kicker: "Own your who · what · where · why",
-        desc: "An owner-authority + testimonial conversion page that turns trust into booked work.",
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7 2.4v5.5c0 4.6-3 7.8-7 9.1-4-1.3-7-4.5-7-9.1V4.9z"/><path d="M9 11.6l2 2 4-4.3"/></svg>' },
-      { key: "flywheel", name: "Reputation Flywheel Video Package", kicker: "Start the flywheel",
-        desc: "A feature-video engine that compounds attention into steady inbound demand.",
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 3v4.5H16"/><path d="M10.4 9l4.4 3-4.4 3z" fill="currentColor" stroke="none"/></svg>' },
-      { key: "avatar-social", name: "Avatar Mascot Social Planner", kicker: "Less time, more leverage",
-        desc: "A hybrid avatar/mascot that takes over your social with infinite storytelling — more presence, a fraction of the time.",
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.6 19c.8-3.3 3-5.1 5.4-5.1s4.6 1.8 5.4 5.1"/><circle cx="18.4" cy="6" r="1.8"/><circle cx="19.4" cy="13.6" r="1.8"/><path d="M12.6 9.4l4.2-2.3M13.7 12.5l4.1 1"/></svg>' }
-    ],
-
-    primeAddon: {
-      key: "digital-twin",
-      name: "Your Digital Twin Avatar Clone",
-      kicker: "Prime add-on · represents you 24/7",
-      desc: "The true digital clone of you — your voice, your authority — representing your business around the clock, at scale.",
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><path d="M3.4 19c.7-3 2.7-4.8 5.1-4.8"/><circle cx="15.5" cy="9" r="3" stroke-dasharray="2.4 2.2"/><path d="M10.8 20c.5-2.5 2.3-4.1 4.7-4.1S19.7 17.5 20.2 20" stroke-dasharray="2.4 2.2"/></svg>'
-    },
-
-    /* ROUTING — ONE combined page that reads ?paths=. */
-    // --- Bridge into the qualify funnel (no funnel logic changes) ---
-    // Continue deep-links to the funnel packages page with the recommended
-    // package pre-passed via the funnel's existing ?pkg= param.
-    funnelBase:        "https://qualify.rsddirect.com",
-    funnelPackagesPage:"/rsd-funnel-page-08-packages.html",
-    pkgMap: { "tour2booking": "pkg_t2b", "authority": "pkg_ao", "flywheel": "pkg_ao", "avatar-social": "pkg_os" },
-    addonPkg:   "pkg_os",   // Digital Twin add-on -> AlwaysOn Digital Twin OS
-    defaultPkg: "pkg_ao",
-
-    formFields: {
-      estimate:   "calculator_estimate",
-      profile:    "calculator_profile",
-      paths:      "selected_paths",
-      considered: "recommended_consideration",
-      addon:      "prime_addon",
-      source:     "lead_source"
-    },
-
-    mountId: "rsd-qualify-greeting",
-    storageKey: "rsd_qualify_handoff"
+  var primary=lanes.slice().sort(function(a,b){return b.estimate-a.estimate;})[0]||{};
+  var allRec=[]; lanes.forEach(function(l){ l.recommended.forEach(function(k){ if(allRec.indexOf(k)===-1) allRec.push(k); }); });
+  return {
+    source:"RSD Always-On Calculator (clone)",
+    profile:profs.join("+"),
+    submitted_at:new Date().toISOString(),
+    name:name, first_name: sp===-1?name:name.slice(0,sp), last_name: sp===-1?"":name.slice(sp+1),
+    company:$("f-company").value.trim(), email:$("f-email").value.trim(), phone:$("f-phone").value.trim(),
+    sms_optin: $("f-sms").checked ? "yes":"no",
+    upgrade_true_twin: state.upgradeTwin ? "yes":"no",
+    upgrade_true_twin_price: state.upgradeTwin ? fmt(PRICING.twin.price) : "",
+    social_addon: state.social.added ? "yes":"no",
+    social_level: state.social.added ? state.social.level : "",
+    social_level_name: state.social.added ? (function(){var L=PRICING.social.levels.filter(function(x){return x.key===state.social.level;})[0];return L?L.name:"";})() : "",
+    social_monthly: state.social.added ? (function(){var L=PRICING.social.levels.filter(function(x){return x.key===state.social.level;})[0];return L?fmt(L.monthly)+"/mo":"";})() : "",
+    email_optin: $("f-email-optin").checked ? "yes":"no",
+    estimate: Math.round(total), estimate_formatted: fmt(total),
+    breakdown: lanes.map(function(l){return l.label+": "+fmt(l.estimate);}).join(" · "),
+    recommended_phase: primary.recommended?primary.recommended[0]:"",
+    recommended_phase_name: primary.recommended?PHASE1_NAMES[primary.recommended[0]]:"",
+    recommended_paths: allRec.join(","),
+    recommended_paths_names: allRec.map(function(k){return PHASE1_NAMES[k];}).join(", "),
+    range_band: primary.band||"",
+    icp: state.icp,
+    lanes_json: JSON.stringify(lanes),
+    inputs_json: JSON.stringify(state.values)
   };
-
-  /* =========================================================
-   * Helpers
-   * ========================================================= */
-  var moneyFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-  function money(v) { return moneyFmt.format(Math.max(0, v)); }
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
-  function nameOf(key) { for (var i = 0; i < CFG.phase1.length; i++) if (CFG.phase1[i].key === key) return CFG.phase1[i].name; return key; }
-
-  function getParams() {
-    var p = new URLSearchParams(window.location.search);
-    var valid = CFG.phase1.map(function (x) { return x.key; });
-    var paths = (p.get("paths") || "").split(",").map(function (s) { return s.trim(); }).filter(function (k) { return valid.indexOf(k) !== -1; });
-    var consider = (p.get("consider") || "").trim();
-    return {
-      profile: (p.get("profile") || "").toLowerCase().trim(),
-      estimate: parseInt(p.get("estimate"), 10),
-      source: (p.get("source") || "").toLowerCase().trim(),
-      paths: paths,
-      consider: valid.indexOf(consider) !== -1 ? consider : ""
+}
+function sendEmails(p){
+  try{
+    emailjs.init({ publicKey: RSD_CONFIG.EMAILJS.PUBLIC_KEY });
+    var tp={
+      to_name:p.first_name, to_email:p.email,
+      client_first:p.first_name||p.name, client_email:p.email,
+      company:p.company||"your business",
+      profile_label:p.profile, estimate_formatted:p.estimate_formatted,
+      breakdown:p.breakdown, range_band:p.range_band,
+      recommended_phase_name:p.recommended_phase_name,
+      recommended_paths_names:p.recommended_paths_names,
+      qualify_url:"https://calculate.rsddirect.com",
+      package_url:"https://calculate.rsddirect.com",
+      calendly_url:RSD_CONFIG.CTA_URL,
+      rsd_email:RSD_CONFIG.EMAILJS.RSD_EMAIL
     };
-  }
-  function persist(d) { try { sessionStorage.setItem(CFG.storageKey, JSON.stringify(d)); } catch (e) {} }
-  function recall() { try { return JSON.parse(sessionStorage.getItem(CFG.storageKey) || "null"); } catch (e) { return null; } }
-
-  function bandIndexFor(profileKey, estimate) {
-    var rs = CFG.profiles[profileKey].ranges, idx = 0;
-    rs.forEach(function (x, i) { if (!isNaN(estimate) && estimate >= x.min) idx = i; });
-    return idx;
-  }
-  function presetFor(profileKey, bandIdx) {
-    var r = CFG.profiles[profileKey].ranges[bandIdx];
-    return { primary: r.consider, preset: [r.consider].concat(r.also || []).filter(function (v, i, a) { return v && a.indexOf(v) === i; }) };
-  }
-
-  function buildRoute(state) {
-    var pr = presetFor(state.profile, state.bandIndex);
-    var pkg = state.addon ? CFG.addonPkg : (CFG.pkgMap[pr.primary] || CFG.defaultPkg);
-    var qs =
-      "pkg=" + encodeURIComponent(pkg) +
-      "&profile=" + encodeURIComponent(state.profile) +
-      "&estimate=" + encodeURIComponent(state.estimate) +
-      "&paths=" + encodeURIComponent(state.selected.join(",")) +
-      (pr.primary ? "&consider=" + encodeURIComponent(pr.primary) : "") +
-      (state.addon ? "&addon=" + encodeURIComponent(CFG.primeAddon.key) : "") +
-      "&source=calculator";
-    return CFG.funnelBase + CFG.funnelPackagesPage + "?" + qs;
-  }
-
-  function fillFormFields(state) {
-    var pr = presetFor(state.profile, state.bandIndex), f = CFG.formFields;
-    var map = { estimate: state.estimate, profile: state.profile, paths: state.selected.join(","), considered: pr.primary || "", addon: state.addon ? CFG.primeAddon.key : "", source: "calculator" };
-    Object.keys(map).forEach(function (k) {
-      var name = f[k]; if (!name) return;
-      var el = document.querySelector('[name="' + name + '"]');
-      if (el && "value" in el) el.value = map[k];
-    });
-  }
-
-  function clearExisting() {
-    var mount = document.getElementById(CFG.mountId);
-    if (mount) { mount.innerHTML = ""; return; }
-    var ex = document.querySelector(".rsd-greet"); if (ex && ex.parentNode) ex.parentNode.removeChild(ex);
-  }
-
-  /* =========================================================
-   * Render (called on load and whenever the range band changes)
-   * ========================================================= */
-  function render(state) {
-    var pc = CFG.profiles[state.profile];
-    if (!pc) return;
-
-    var pr = presetFor(state.profile, state.bandIndex);
-    var primary = state.primary || pr.primary;
-    if (!state.selected) state.selected = pr.preset.slice();
-    var selected = state.selected;
-    if (typeof state.addon !== "boolean") state.addon = false;
-
-    var hasEstimate = !isNaN(state.estimate) && state.estimate > 0;
-    var headline = hasEstimate
-      ? 'Welcome — your own numbers point to roughly <b>' + money(state.estimate) + ' a year</b> ' + esc(pc.leakPhrase) + '.'
-      : 'Welcome — thanks for running your ' + esc(pc.label) + ' numbers.';
-
-    /* --- top range band (large SVG tiles) --- */
-    var rangeTiles = pc.ranges.map(function (r, i) {
-      var on = i === state.bandIndex;
-      return (
-        '<button type="button" class="rsd-range-tile' + (on ? ' is-on' : '') + '" data-band="' + i + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
-          '<span class="rsd-range-icon" aria-hidden="true">' + (CFG.bandIcons[i] || CFG.bandIcons[0]) + '</span>' +
-          '<span class="rsd-range-label">' + esc(r.tile.label) + '</span>' +
-          '<span class="rsd-range-sub">' + esc(r.tile.sub) + '</span>' +
-        '</button>'
-      );
-    }).join("");
-
-    /* --- phase 1 prongs --- */
-    var prongCards = CFG.phase1.map(function (p) {
-      var on = selected.indexOf(p.key) !== -1, isP = p.key === primary;
-      var badge = isP ? '<span class="rsd-prong-badge is-primary">Recommended to consider</span>' : (on ? '<span class="rsd-prong-badge">Suggested for you</span>' : '');
-      return (
-        '<button type="button" class="rsd-prong' + (on ? ' is-on' : '') + (isP ? ' is-primary' : '') + '" data-key="' + p.key + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
-          badge +
-          '<span class="rsd-prong-check" aria-hidden="true"></span>' +
-          '<span class="rsd-prong-icon" aria-hidden="true">' + p.icon + '</span>' +
-          '<span class="rsd-prong-kicker">' + esc(p.kicker) + '</span>' +
-          '<span class="rsd-prong-name">' + esc(p.name) + '</span>' +
-          '<span class="rsd-prong-desc">' + esc(p.desc) + '</span>' +
-        '</button>'
-      );
-    }).join("");
-
-    var a = CFG.primeAddon;
-    var addonRow =
-      '<button type="button" class="rsd-addon' + (state.addon ? ' is-on' : '') + '" data-key="' + a.key + '" aria-pressed="' + (state.addon ? 'true' : 'false') + '">' +
-        '<span class="rsd-addon-icon" aria-hidden="true">' + a.icon + '</span>' +
-        '<span class="rsd-addon-text"><span class="rsd-addon-kicker">' + esc(a.kicker) + '</span><span class="rsd-addon-name">' + esc(a.name) + '</span><span class="rsd-addon-desc">' + esc(a.desc) + '</span></span>' +
-        '<span class="rsd-addon-toggle" aria-hidden="true"><span class="rsd-addon-knob"></span></span>' +
-      '</button>';
-
-    var host = document.createElement("section");
-    host.className = "rsd-greet";
-    host.setAttribute("role", "region");
-    host.setAttribute("aria-label", "Choose your Phase 1 starting path");
-    host.innerHTML =
-      '<button class="rsd-greet-close" type="button" aria-label="Dismiss">×</button>' +
-      '<p class="rsd-greet-kicker">From your calculator · choose your range</p>' +
-      '<p class="rsd-greet-headline">' + headline + '</p>' +
-      '<div class="rsd-range">' + rangeTiles + '</div>' +
-      '<p class="rsd-greet-sub">' +
-        (primary ? 'For this range we’d especially consider <b>' + esc(nameOf(primary)) + '</b> to begin — it’s marked below. ' : '') +
-        'Phase 1 is yours to shape: keep it, add to it, or build a hybrid. Each piece is built to give you back your time, add leverage, and expand your ROI online — at your pace.</p>' +
-      '<div class="rsd-prongs">' + prongCards + '</div>' +
-      '<p class="rsd-addon-lead">A prime add-on you’re welcome to consider on any path:</p>' +
-      addonRow +
-      '<div class="rsd-greet-foot"><span class="rsd-greet-count" aria-live="polite"></span><button class="rsd-greet-cta" type="button">Continue to my pricing guide &rarr;</button></div>';
-
-    clearExisting();
-    var mount = document.getElementById(CFG.mountId);
-    if (mount) mount.appendChild(host); else document.body.insertBefore(host, document.body.firstChild);
-    requestAnimationFrame(function () { host.classList.add("rsd-greet-in"); });
-
-    var countEl = host.querySelector(".rsd-greet-count");
-    var ctaEl = host.querySelector(".rsd-greet-cta");
-
-    function refresh() {
-      var n = selected.length;
-      countEl.textContent = n === 0 ? "Nothing selected yet — pick at least one to continue"
-        : (n === 1 ? "1 piece selected" : n + " pieces selected — a hybrid Phase 1") + (state.addon ? " + Digital Twin add-on" : "");
-      ctaEl.disabled = n === 0; ctaEl.classList.toggle("is-disabled", n === 0);
-      fillFormFields(state);
-      persist({ profile: state.profile, estimate: state.estimate, bandIndex: state.bandIndex, selected: selected.slice(), addon: state.addon });
+    return emailjs.send(RSD_CONFIG.EMAILJS.SERVICE_ID, RSD_CONFIG.EMAILJS.TEMPLATE_ID, tp);
+  }catch(e){ console.error("EmailJS error",e); return Promise.resolve(); }
+}
+function pushGHL(p){
+  var url=RSD_CONFIG.LEAD_WEBHOOK_URL;
+  if(!url || url.indexOf("example.com")!==-1) return;
+  var body=JSON.stringify(p);
+  try{
+    if(navigator && typeof navigator.sendBeacon==="function"){
+      if(navigator.sendBeacon(url, new Blob([body],{type:"text/plain;charset=UTF-8"}))) return;
     }
+  }catch(e){ console.error("sendBeacon",e); }
+  fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body,mode:"no-cors",keepalive:true})
+    .catch(function(err){ console.error("GHL fetch",err); });
+}
 
-    /* range band switching -> re-render with that band's recommendation */
-    host.querySelectorAll(".rsd-range-tile").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var i = parseInt(btn.getAttribute("data-band"), 10);
-        if (i === state.bandIndex) return;
-        render({ profile: state.profile, estimate: state.estimate, bandIndex: i, selected: null, addon: state.addon });
-      });
-    });
+/* ====================== WIRING ====================== */
+document.addEventListener("DOMContentLoaded", function(){
+  buildIntro();
+  $("bookCall").href=RSD_CONFIG.CTA_URL;
+  $("bookAudit").href=RSD_CONFIG.AUDIT_URL;
 
-    host.querySelectorAll(".rsd-prong").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var k = btn.getAttribute("data-key"), idx = selected.indexOf(k);
-        if (idx === -1) { selected.push(k); btn.classList.add("is-on"); btn.setAttribute("aria-pressed", "true"); }
-        else { selected.splice(idx, 1); btn.classList.remove("is-on"); btn.setAttribute("aria-pressed", "false"); }
-        refresh();
-      });
-    });
+  $("openCalc").addEventListener("click", function(){
+    if(!activeProfiles().length) return;
+    buildLanes(); showScreen("screen-calc",2);
+  });
+  $("backToIntro").addEventListener("click", function(){ showScreen("screen-intro",1); });
+  $("toReport").addEventListener("click", openModal);
+  $("twinToggle").addEventListener("click", function(){ state.upgradeTwin=!state.upgradeTwin; buildReco(); });
+  $("socialToggle").addEventListener("click", function(){ state.social.added=!state.social.added; buildReco(); });
+  $("modalX").addEventListener("click", closeModal);
+  $("overlay").addEventListener("click", function(e){ if(e.target===this) closeModal(); });
 
-    var addonBtn = host.querySelector(".rsd-addon");
-    addonBtn.addEventListener("click", function () {
-      state.addon = !state.addon;
-      addonBtn.classList.toggle("is-on", state.addon);
-      addonBtn.setAttribute("aria-pressed", state.addon ? "true" : "false");
-      refresh();
-    });
+  $("leadForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var name=$("f-name").value.trim(), email=$("f-email").value.trim();
+    if(!name || !email){ $("formMsg").style.color="var(--amber)"; $("formMsg").textContent="Please add your name and email."; return; }
+    var btn=$("leadSubmit"); btn.disabled=true; btn.textContent="Sending…";
+    var payload=buildLeadPayload();
+    sendEmails(payload);
+    pushGHL(payload);
+    $("formMsg").style.color="var(--green)";
+    $("formMsg").textContent="Sent — your report is on its way to your inbox.";
+    setTimeout(function(){
+      btn.disabled=false; btn.textContent="See my recommended plan →";
+      closeModal(); buildReco(); showScreen("screen-reco",4);
+    }, 650);
+  });
 
-    ctaEl.addEventListener("click", function () {
-      if (!selected.length) return;
-      var url = buildRoute(state);
-      if (typeof window.RSD_QUALIFY_ON_CONTINUE === "function") { window.RSD_QUALIFY_ON_CONTINUE(url, { selected: selected.slice(), primary: primary, addon: state.addon, bandIndex: state.bandIndex }); return; }
-      window.location.href = url;
-    });
+  $("toPricing").addEventListener("click", function(){ buildPricing(); showScreen("screen-pricing",4); });
+  $("toAudit").addEventListener("click", function(){ showScreen("screen-audit",4); });
+  $("toAudit2").addEventListener("click", function(){ showScreen("screen-audit",4); });
+  $("auditBackPricing").addEventListener("click", function(){ buildPricing(); showScreen("screen-pricing",4); });
 
-    host.querySelector(".rsd-greet-close").addEventListener("click", function () {
-      host.classList.remove("rsd-greet-in");
-      setTimeout(function () { if (host.parentNode) host.parentNode.removeChild(host); }, 320);
-    });
-
-    refresh();
-  }
-
-  /* =========================================================
-   * Boot
-   * ========================================================= */
-  function boot() {
-    var params = getParams();
-    var fromCalc = params.source === "calculator" && CFG.profiles[params.profile];
-    var base;
-    if (fromCalc) {
-      base = { profile: params.profile, estimate: isNaN(params.estimate) ? 0 : params.estimate };
-    } else {
-      var r = recall(); if (!r) return;
-      base = { profile: r.profile, estimate: r.estimate };
-    }
-    var seedSelected = (params.paths && params.paths.length) ? params.paths.slice() : null;
-    var seedPrimary = params.consider || null;
-    render({ profile: base.profile, estimate: base.estimate, bandIndex: bandIndexFor(base.profile, base.estimate), selected: seedSelected, primary: seedPrimary, addon: false });
-  }
-
-  window.RSD_runChooser = boot;
-
-  window.RSD_QUALIFY_GREETING = { boot: boot, config: CFG, buildRoute: buildRoute, bandIndexFor: bandIndexFor, presetFor: presetFor };
-})();
-
-</script>
-<script>
-/* Router: hub (root) -> calculator (?calc=) -> chooser (?source=calculator) */
-(function(){
-  var p=new URLSearchParams(location.search);
-  var source=(p.get("source")||"").toLowerCase();
-  var calc=(p.get("calc")||"").toLowerCase();
-  var profile=(p.get("profile")||"").toLowerCase();
-  var P=window.RSD_PROFILES||{};
-  function show(id){ ["rsd-calc-root-wrap","rsd-qualify-greeting","rsd-hub"].forEach(function(x){var e=document.getElementById(x); if(e) e.style.display=(x===id?"block":"none");}); }
-  if(source==="calculator" && P[profile]){ show("rsd-qualify-greeting"); window.RSD_runChooser(); }
-  else if(P[calc]){ show("rsd-calc-root-wrap"); window.RSD_runCalculator(P[calc]); }
-  else { show("rsd-hub"); }
-})();
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeModal(); });
+});
 </script>
 </body>
 </html>
