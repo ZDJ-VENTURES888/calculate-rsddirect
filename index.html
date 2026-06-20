@@ -245,6 +245,59 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
 
   <!-- ============ SCREEN 1: IDENTIFY ============ -->
   <section id="screen-intro" class="screen active">
+<!-- RSD HERO VIDEO (injected) -->
+<style>
+  #screen-intro .rsd-hero{margin:0 0 30px;}
+  .rsd-hero-eyebrow{display:flex;align-items:center;gap:8px;color:var(--amber,#F2A93B);font:700 12px/1.2 'Outfit',system-ui,sans-serif;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 12px;}
+  .rsd-hero-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--amber,#F2A93B);box-shadow:0 0 0 4px rgba(242,169,59,.18);}
+  .rsd-hero-frame{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--hairline,rgba(201,169,97,.28));border-radius:var(--radius-xl,28px);overflow:hidden;background:var(--ink-2,#0d0f14);box-shadow:var(--shadow,0 40px 120px rgba(0,0,0,.6));cursor:pointer;}
+  .rsd-hero-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease,filter .4s ease;}
+  .rsd-hero-frame:hover .rsd-hero-thumb{transform:scale(1.03);filter:brightness(1.05);}
+  .rsd-hero-veil{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 60%,rgba(8,9,12,.12),rgba(8,9,12,.62));}
+  .rsd-hero-ring{position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(248,206,126,.22) inset;pointer-events:none;}
+  .rsd-hero-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:84px;height:84px;border:0;border-radius:50%;background:var(--grad-amber,linear-gradient(135deg,#F8CE7E 0%,#F2A93B 42%,#C9821F 100%));box-shadow:0 14px 44px rgba(242,150,40,.45),0 0 0 1px rgba(248,206,126,.45) inset;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;}
+  .rsd-hero-frame:hover .rsd-hero-play{transform:translate(-50%,-50%) scale(1.07);box-shadow:0 18px 56px rgba(242,150,40,.6),0 0 0 1px rgba(248,206,126,.6) inset;}
+  .rsd-hero-play svg{width:30px;height:30px;margin-left:4px;fill:#1c1303;}
+  .rsd-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
+  .rsd-hero-cap{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap;}
+  .rsd-hero-cap .label{color:var(--muted,rgba(236,231,221,.66));font:600 13px/1.3 'Outfit',system-ui,sans-serif;letter-spacing:.3px;}
+  .rsd-hero-yt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--amber-hi,#F8CE7E);border:1px solid var(--hairline,rgba(201,169,97,.4));padding:8px 14px;border-radius:999px;font:700 13px/1 'Outfit',system-ui,sans-serif;transition:background .2s ease,border-color .2s ease;}
+  .rsd-hero-yt:hover{background:rgba(242,169,59,.1);border-color:var(--amber,#F2A93B);}
+  @media(max-width:520px){.rsd-hero-play{width:64px;height:64px}.rsd-hero-play svg{width:24px;height:24px}}
+</style>
+<div class="rsd-hero">
+  <div class="rsd-hero-eyebrow"><span class="dot"></span>Watch this first</div>
+  <div class="rsd-hero-frame" id="rsdHeroFrame" role="button" tabindex="0" aria-label="Play the Real Space Digital video">
+    <img class="rsd-hero-thumb" src="https://i.ytimg.com/vi/zStedThSgQA/maxresdefault.jpg" alt="Real Space Digital — watch the overview" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/zStedThSgQA/hqdefault.jpg';">
+    <div class="rsd-hero-veil"></div>
+    <div class="rsd-hero-ring"></div>
+    <button class="rsd-hero-play" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></button>
+  </div>
+  <div class="rsd-hero-cap">
+    <span class="label">Real Space Digital &mdash; Digitizing Reality, Elevating Sales&trade;</span>
+    <a class="rsd-hero-yt" href="https://youtu.be/zStedThSgQA" target="_blank" rel="noopener">Open in YouTube &#8599;</a>
+  </div>
+</div>
+<script>
+(function(){
+  var f=document.getElementById('rsdHeroFrame');
+  if(!f||f.dataset.wired)return; f.dataset.wired='1';
+  function play(){
+    if(f.dataset.playing)return; f.dataset.playing='1';
+    var i=document.createElement('iframe');
+    i.className='rsd-hero-iframe';
+    i.src='https://www.youtube-nocookie.com/embed/zStedThSgQA?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    i.title='Real Space Digital';
+    i.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    i.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(i); f.style.cursor='default';
+  }
+  f.addEventListener('click',play);
+  f.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();play();}});
+})();
+</script>
+<!-- /RSD HERO VIDEO -->
+
     <div class="shell hero-bg pad">
       <div class="eyebrow">Always-On Revenue Calculator</div>
       <h1 class="display">See what's quietly costing you.<br>Then see how to win it back.</h1>
