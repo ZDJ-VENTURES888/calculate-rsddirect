@@ -1066,7 +1066,7 @@ function sendEmails(p){
       calendly_url:RSD_CONFIG.CTA_URL,
       rsd_email:RSD_CONFIG.EMAILJS.RSD_EMAIL
     };
-    return emailjs.send(RSD_CONFIG.EMAILJS.SERVICE_ID, RSD_CONFIG.EMAILJS.TEMPLATE_ID, tp);
+    return emailjs.send(RSD_CONFIG.EMAILJS.SERVICE_ID, RSD_CONFIG.EMAILJS.TEMPLATE_ID, (function(o){var r={};for(var k in o){var v=o[k];r[k]=(v===undefined||v===null)?'':(typeof v==='object'?JSON.stringify(v):v);}return r;})(tp));
   }catch(e){ console.error("EmailJS error",e); return Promise.resolve(); }
 }
 function pushGHL(p){
