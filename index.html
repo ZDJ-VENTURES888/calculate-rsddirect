@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://calculate.rsddirect.com/">
   <meta property="og:title" content="3 Leaks Killing Your Revenue — Find Yours Free">
   <meta property="og:description" content="See what slow replies, missed jobs, and manual workflows quietly cost you — then see the path to win it back. Free, private, about 60 seconds.">
-  <meta property="og:image" content="https://i.ytimg.com/vi/kydN5OnSwqI/maxresdefault.jpg">
+  <meta property="og:image" content="https://raw.githubusercontent.com/ZDJ-VENTURES888/calculate-rsddirect/main/og-image.jpg">
   <meta property="og:image:secure_url" content="https://i.ytimg.com/vi/kydN5OnSwqI/maxresdefault.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1280">
@@ -187,7 +187,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
 /* Recommendation + pricing */
 .callout{border-left:3px solid var(--amber);background:var(--surface-2);border-radius:12px;padding:16px 18px;margin:18px 0;color:var(--muted);}
 .callout b{color:var(--cream);}
-.stack-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:8px;}
+.stack-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:20px;}
 .stack{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:22px;border-top:3px solid var(--lane);}
 .stack .band{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lane);font-weight:700;}
 .stack h3{margin:.2rem 0 .5rem;}
@@ -248,6 +248,57 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
 @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .foot{margin-top:22px;color:var(--muted-2);font-size:.78rem;text-align:center;}
 @media(prefers-reduced-motion:reduce){.screen.active{animation:none;}*{scroll-behavior:auto;}}
+/* Optimized recommendation cards */
+.stack-item{
+  border:1px solid rgba(201,169,97,0.15);
+  border-radius:12px;
+  padding:28px;
+  background:linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95));
+  display:flex;flex-direction:column;gap:16px;
+}
+.stack-item .icp-label{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#C9A961;font-weight:700;opacity:0.8;
+  margin:0;
+}
+.stack-item .at-stake{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:#C9A961;
+  line-height:1.1;
+  margin:0;
+}
+.stack-item .at-stake-label{
+  font-size:.9rem;color:var(--muted);opacity:0.7;
+}
+.stack-item .packages{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.stack-item .package-item{
+  font-size:.95rem;color:#F0EDE6;line-height:1.5;padding:0;
+}
+.stack-item .package-item strong{
+  color:#C9A961;font-weight:700;
+}
+.stack-item .demo-btn{
+  margin-top:12px;
+  background:#C9A961;
+  color:#0B2545;
+  border:none;
+  padding:12px 20px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-decoration:none;
+  display:inline-block;
+  text-align:center;
+}
+.stack-item .demo-btn:hover{
+  background:#D4B896;
+  transform:translateY(-2px);
+}
 </style>
   <style id="rsd-readability">
   /* RSD readability & rhythm layer — sizing/spacing only. Colors, logic, copy unchanged. Remove this block to fully revert. */
@@ -273,7 +324,58 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
   .rsd-hero-eyebrow{font-size:0.86rem;}
   .rsd-hero-cap .label{font-size:0.95rem;}
   .rsd-hero-yt{font-size:0.95rem;}
-  </style>
+  /* Optimized recommendation cards */
+.stack-item{
+  border:1px solid rgba(201,169,97,0.15);
+  border-radius:12px;
+  padding:28px;
+  background:linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95));
+  display:flex;flex-direction:column;gap:16px;
+}
+.stack-item .icp-label{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#C9A961;font-weight:700;opacity:0.8;
+  margin:0;
+}
+.stack-item .at-stake{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:#C9A961;
+  line-height:1.1;
+  margin:0;
+}
+.stack-item .at-stake-label{
+  font-size:.9rem;color:var(--muted);opacity:0.7;
+}
+.stack-item .packages{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.stack-item .package-item{
+  font-size:.95rem;color:#F0EDE6;line-height:1.5;padding:0;
+}
+.stack-item .package-item strong{
+  color:#C9A961;font-weight:700;
+}
+.stack-item .demo-btn{
+  margin-top:12px;
+  background:#C9A961;
+  color:#0B2545;
+  border:none;
+  padding:12px 20px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-decoration:none;
+  display:inline-block;
+  text-align:center;
+}
+.stack-item .demo-btn:hover{
+  background:#D4B896;
+  transform:translateY(-2px);
+}
+</style>
 
 </head>
 <body>
@@ -309,6 +411,57 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;b
   .rsd-hero-yt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--amber-hi,#F8CE7E);border:1px solid var(--hairline,rgba(201,169,97,.4));padding:8px 14px;border-radius:999px;font:700 13px/1 'Outfit',system-ui,sans-serif;transition:background .2s ease,border-color .2s ease;}
   .rsd-hero-yt:hover{background:rgba(242,169,59,.1);border-color:var(--amber,#F2A93B);}
   @media(max-width:520px){.rsd-hero-play{width:64px;height:64px}.rsd-hero-play svg{width:24px;height:24px}}
+/* Optimized recommendation cards */
+.stack-item{
+  border:1px solid rgba(201,169,97,0.15);
+  border-radius:12px;
+  padding:28px;
+  background:linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95));
+  display:flex;flex-direction:column;gap:16px;
+}
+.stack-item .icp-label{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#C9A961;font-weight:700;opacity:0.8;
+  margin:0;
+}
+.stack-item .at-stake{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:#C9A961;
+  line-height:1.1;
+  margin:0;
+}
+.stack-item .at-stake-label{
+  font-size:.9rem;color:var(--muted);opacity:0.7;
+}
+.stack-item .packages{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.stack-item .package-item{
+  font-size:.95rem;color:#F0EDE6;line-height:1.5;padding:0;
+}
+.stack-item .package-item strong{
+  color:#C9A961;font-weight:700;
+}
+.stack-item .demo-btn{
+  margin-top:12px;
+  background:#C9A961;
+  color:#0B2545;
+  border:none;
+  padding:12px 20px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-decoration:none;
+  display:inline-block;
+  text-align:center;
+}
+.stack-item .demo-btn:hover{
+  background:#D4B896;
+  transform:translateY(-2px);
+}
 </style>
 <div class="rsd-hero">
   <div class="rsd-hero-eyebrow"><span class="dot"></span>Watch this first</div>
@@ -1243,5 +1396,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 </body>
 </html>
+
+
 
 
