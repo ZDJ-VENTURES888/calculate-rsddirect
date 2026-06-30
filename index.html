@@ -1910,7 +1910,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }, 650);
   });
   $("toPricing").addEventListener("click", function(){ buildPricing(); go("screen-pricing",4); });
-  $("toCheckout").addEventListener("click", function(){ buildCheckout(); go("screen-checkout",5); });
+  $("toCheckout").addEventListener("click", function(){ buildCheckout(); go("screen-checkout",5); firePricingEmail(); });
   var _tap=$("toAuditPlan"); if(_tap) _tap.addEventListener("click", function(){ go("screen-audit",5); });
   var _btp=$("backToPlan"); if(_btp) _btp.addEventListener("click", function(){ buildPricing(); go("screen-pricing",4); });
   $("toAudit").addEventListener("click", function(){ go("screen-audit",4); });
