@@ -1450,7 +1450,8 @@ function buildPricing(){
       '<div class="p-price">'+fmt(t.price)+'<small> one-time</small></div>'+
       '<div class="p-setup">Founder Lock pricing available</div>'+
       '<ul>'+lis+'</ul>'+
-      '<button class="btn '+(isSel?"btn-amber":"btn-ghost")+'" data-pkg="'+t.key+'">'+(isSel?"✓ Selected":"Select "+t.name)+'</button>';
+      '<button class="btn '+(isSel?"btn-amber":"btn-ghost")+'" data-pkg="'+t.key+'">'+(isSel?"✓ Selected":"Select "+t.name)+'</button>'+
+      '<div class="demo-row" style="margin-top:10px;">'+demoBtn(t.key, "See this in the demo", true)+'</div>';
     host.appendChild(div);
   });
   Array.prototype.forEach.call(host.querySelectorAll("button[data-pkg]"), function(b){
