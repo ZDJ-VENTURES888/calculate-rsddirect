@@ -1,0 +1,2667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RSD Always-On Revenue Calculator | Real Space Digital</title>
+
+  <!-- Social / link preview (Open Graph + Twitter) — BYOB artwork (v2.4)
+       Image: /og-byob.jpg — 1200x675 JPG, ~227KB (WhatsApp-safe; keep under ~600KB).
+       Bust share caches after changes: share the link once as ?v=2, or use
+       developers.facebook.com/tools/debug to force a re-scrape (covers WhatsApp/IG/FB). -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Real Space Digital">
+  <meta property="og:url" content="https://calculate.rsddirect.com/">
+  <meta property="og:title" content="How far away is your dream business from the business you have today?">
+  <meta property="og:description" content="BYOB — Build Your Own Business. From business audit to clear next steps: measure the gap, see the roadmap, lift off. Free, private, about 60 seconds.">
+  <meta property="og:image" content="https://calculate.rsddirect.com/og-byob.jpg">
+  <meta property="og:image:secure_url" content="https://calculate.rsddirect.com/og-byob.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="BYOB — Build Your Own Business · Business Audit to Solution Calculator by Real Space Digital, Top 2% Agency Dev Team">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How far away is your dream business from the business you have today?">
+  <meta name="twitter:description" content="BYOB — Build Your Own Business. Measure the gap, see the roadmap, lift off — free, in about 60 seconds.">
+  <meta name="twitter:image" content="https://calculate.rsddirect.com/og-byob.jpg">
+  <meta name="twitter:image:alt" content="BYOB — Build Your Own Business · Business Audit to Solution Calculator by Real Space Digital">
+
+<meta name="description" content="See what slow replies, missed jobs, and manual workflows quietly cost you — then see the path to win it back." />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- EmailJS browser SDK (runs in the visitor's browser) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+/******************************************************************
+ * RSD Always-On Revenue Calculator — CLONE / PROTOTYPE
+ * Dark / Amber theme cloned from calculate.rsddirect.com.
+ * Standalone: does NOT replace the live app.
+ ******************************************************************/
+:root{
+  --ink:#08090c; --ink-2:#0d0f14;
+  --surface:rgba(255,255,255,.035); --surface-2:rgba(255,255,255,.055); --surface-3:rgba(255,255,255,.08);
+  --cream:#ECE7DD; --muted:rgba(236,231,221,.66); --muted-2:rgba(236,231,221,.46);
+  --gold:#C9A961; --amber:#F2A93B; --amber-hi:#F8CE7E; --green:#5FD08A; --violet:#B79CFF;
+  --hairline:rgba(201,169,97,.18); --hairline-soft:rgba(255,255,255,.08);
+  --grad-amber:linear-gradient(135deg,#F8CE7E 0%,#F2A93B 42%,#C9821F 100%);
+  --glow-amber:0 14px 44px rgba(242,150,40,.34),0 0 0 1px rgba(248,206,126,.45) inset;
+  --shadow:0 40px 120px rgba(0,0,0,.6);
+  --radius-xl:28px; --radius-lg:20px; --radius-md:14px;
+  --focus:0 0 0 4px rgba(242,169,59,.38);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; min-height:100vh; color:var(--cream);
+  font-family:"Outfit",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.45;
+  background:
+    radial-gradient(120% 80% at 88% -10%,rgba(242,150,40,.20),transparent 46%),
+    radial-gradient(90% 70% at 8% 4%,rgba(201,169,97,.12),transparent 42%),
+    linear-gradient(180deg,#0c0e13 0%,var(--ink) 60%,#060709 100%);
+  background-attachment:fixed;
+}
+button,input,select,a{font:inherit;}
+a{color:inherit;}
+.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:30px 0 64px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px;}
+.brand-mark{display:inline-flex;align-items:center;gap:10px;color:var(--cream);text-decoration:none;font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.74rem;}
+.brand-mark::before{content:"";width:11px;height:11px;border-radius:999px;background:var(--grad-amber);box-shadow:0 0 14px rgba(242,169,59,.8);}
+.eyebrow{color:var(--amber);font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:.7rem;}
+.serif{font-family:"Cormorant Garamond",Georgia,serif;}
+
+/* Stepper */
+.stepper{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.72rem;color:var(--muted-2);letter-spacing:.12em;text-transform:uppercase;}
+.stepper b{color:var(--cream);font-weight:700;}
+.stepper .on{color:var(--amber);}
+.stepper span.sep{opacity:.4;}
+
+/* Shell / cards */
+.shell{border-radius:var(--radius-xl);box-shadow:var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));border:1px solid var(--hairline-soft);overflow:hidden;}
+.pad{padding:clamp(24px,4.4vw,56px);}
+.hero-bg{background:radial-gradient(120% 90% at 92% 6%,rgba(242,150,40,.26),transparent 40%),linear-gradient(150deg,#14110b 0%,#0b0c10 52%,#060708 100%);}
+
+h1.display{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;line-height:1.02;letter-spacing:-.01em;font-size:clamp(2.3rem,5.6vw,4.1rem);margin:.3rem 0 .6rem;}
+.lede{color:var(--muted);font-size:clamp(1rem,1.6vw,1.18rem);max-width:62ch;margin:0 0 6px;}
+
+/* Identify screen */
+.field-label{display:block;font-weight:600;font-size:.92rem;margin:22px 0 8px;color:var(--cream);}
+.sel{width:100%;max-width:520px;padding:14px 16px;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--amber) 50%),linear-gradient(135deg,var(--amber) 50%,transparent 50%);background-position:calc(100% - 20px) center,calc(100% - 14px) center;background-size:6px 6px,6px 6px;background-repeat:no-repeat;}
+.sel:focus{outline:none;box-shadow:var(--focus);border-color:var(--amber);}
+
+.toggle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+@media(max-width:780px){.toggle-grid{grid-template-columns:1fr;}}
+.tog{position:relative;text-align:left;cursor:pointer;border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:18px 18px 16px;transition:.18s ease;display:flex;flex-direction:column;gap:6px;color:var(--cream);}
+.tog:hover{border-color:var(--hairline);background:var(--surface-2);}
+.tog[aria-pressed="true"]{border-color:color-mix(in srgb,var(--lane) 70%,transparent);background:color-mix(in srgb,var(--lane) 12%,var(--surface-2));box-shadow:0 0 0 1px color-mix(in srgb,var(--lane) 40%,transparent) inset;}
+.tog .dot{width:12px;height:12px;border-radius:999px;background:var(--lane);box-shadow:0 0 12px color-mix(in srgb,var(--lane) 80%,transparent);}
+.tog .t-top{display:flex;align-items:center;gap:10px;}
+.tog .t-title{font-weight:700;font-size:1.02rem;}
+.tog .t-sub{color:var(--muted);font-size:.86rem;}
+.tog .t-icp{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--lane);font-weight:700;opacity:.9; display:none; }
+.tog .check{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:999px;border:1.5px solid var(--hairline);display:grid;place-items:center;font-size:.8rem;color:var(--ink);background:transparent;}
+.tog[aria-pressed="true"] .check{background:var(--lane);border-color:var(--lane);}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:none;cursor:pointer;border-radius:999px;padding:15px 26px;font-weight:700;letter-spacing:.01em;transition:.18s ease;text-decoration:none;}
+.btn-amber{background:var(--grad-amber);color:#231603;box-shadow:var(--glow-amber);}
+.btn-amber:hover{transform:translateY(-1px);}
+/* Flashing green upgrade CTA */
+.btn-twin{background:linear-gradient(135deg,#7CF2A6 0%,#39C66E 55%,#1E8F4C 100%);color:#04230f;font-weight:800;animation:twinflash 1.5s ease-in-out infinite;}
+.btn-twin:hover{transform:translateY(-1px);}
+@keyframes twinflash{0%,100%{box-shadow:0 0 0 0 rgba(95,208,138,.0),0 10px 30px rgba(46,160,90,.35);}50%{box-shadow:0 0 0 8px rgba(95,208,138,.18),0 0 28px rgba(95,208,138,.85);}}
+@media(prefers-reduced-motion:reduce){.btn-twin{animation:none;}}
+/* Service context line under each recommended item */
+.stack li .desc{display:block;color:var(--muted);font-size:.82rem;margin-top:3px;line-height:1.4;}
+/* Reco overview note */
+.reco-overview{border-left:3px solid var(--amber);background:var(--surface);border-radius:12px;padding:16px 18px;margin:6px 0 20px;color:var(--muted);font-size:.95rem;}
+.reco-overview b{color:var(--cream);}
+/* True Twin upgrade block (reco page — no price) */
+.twin-up{margin-top:22px;border-radius:var(--radius-lg);border:1px solid color-mix(in srgb,var(--green) 50%,transparent);background:linear-gradient(180deg,rgba(95,208,138,.10),rgba(255,255,255,.02));padding:22px;}
+.twin-up .tu-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800;}
+.twin-up h3{margin:.25rem 0 .35rem;font-size:1.35rem;font-family:"Cormorant Garamond",serif;}
+.twin-up p{color:var(--muted);margin:0 0 14px;max-width:64ch;}
+.twin-up.added{box-shadow:0 0 0 1px var(--green) inset;}
+.twin-added-note{color:var(--green);font-weight:700;font-size:.9rem;margin-top:10px;display:none;}
+.twin-up.added .twin-added-note{display:block;}
+/* Pricing add-on card */
+.addon{margin-top:18px;border-radius:var(--radius-lg);border:1px dashed color-mix(in srgb,var(--green) 55%,transparent);background:linear-gradient(180deg,rgba(95,208,138,.08),rgba(255,255,255,.015));padding:22px;}
+.addon.reco{border-style:solid;box-shadow:0 0 0 1px var(--green) inset;}
+.addon .a-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800;}
+.addon h3{margin:.2rem 0 .3rem;font-size:1.25rem;}
+.addon .a-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.9rem;}
+.addon .a-down{color:var(--muted);font-size:.88rem;}
+/* Orange-gold flashing CTA (Social Avatar add-on) */
+.btn-social{background:var(--grad-amber);color:#231603;font-weight:800;animation:socialflash 1.5s ease-in-out infinite;}
+.btn-social:hover{transform:translateY(-1px);}
+@keyframes socialflash{0%,100%{box-shadow:0 0 0 0 rgba(242,169,59,0),0 10px 30px rgba(201,130,31,.35);}50%{box-shadow:0 0 0 8px rgba(242,169,59,.22),0 0 28px rgba(248,206,126,.9);}}
+@media(prefers-reduced-motion:reduce){.btn-social{animation:none;}}
+/* "See demo" button — cool navy/violet pill, mirrors the True Twin button shape but reads as "preview", not "buy" */
+.btn-demo{background:linear-gradient(135deg,#9DB9FF 0%,#6E8BFF 52%,#3E59CC 100%);color:#0a1024;font-weight:800;box-shadow:0 10px 30px rgba(62,89,204,.32),0 0 0 1px rgba(157,185,255,.45) inset;}
+.btn-demo:hover{transform:translateY(-1px);box-shadow:0 0 0 6px rgba(123,156,255,.16),0 0 24px rgba(123,156,255,.7);}
+.btn-demo.sm{padding:11px 18px;font-size:.9rem;}
+.demo-row{margin-top:12px;}
+/* AlwaysOn Rapid Response card (pricing) + toggle switch */
+.rr-card{margin-top:24px;border-radius:var(--radius-lg);border:1px solid color-mix(in srgb,var(--violet) 52%,transparent);background:linear-gradient(180deg,rgba(183,156,255,.10),rgba(255,255,255,.02));padding:24px;}
+.rr-card.added{box-shadow:0 0 0 1px var(--violet) inset;}
+.rr-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--violet);font-weight:800;}
+.rr-card h3{margin:.2rem 0 .35rem;font-size:1.35rem;font-family:"Cormorant Garamond",serif;}
+.rr-incl{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#04230f;background:var(--green);padding:4px 10px;border-radius:999px;margin:6px 0 2px;}
+.rr-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.9rem;}
+.rr-price small{font-family:Outfit;font-size:.5em;color:var(--muted);}
+.rr-switch{display:flex;align-items:flex-start;gap:14px;margin-top:18px;padding:16px 18px;border-radius:var(--radius-md);border:1px solid var(--hairline);background:var(--surface-2);}
+.rr-switch .sw{position:relative;flex:0 0 auto;width:52px;height:30px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid var(--hairline);cursor:pointer;transition:.2s ease;padding:0;margin-top:2px;}
+.rr-switch .sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:999px;background:var(--cream);transition:.2s ease;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+.rr-switch.on .sw{background:var(--grad-amber);border-color:transparent;}
+.rr-switch.on .sw::after{transform:translateX(22px);background:#231603;}
+.rr-switch .sw:focus-visible{outline:none;box-shadow:var(--focus);}
+.rr-switch .sw-label{font-size:.94rem;color:var(--cream);cursor:pointer;}
+.rr-switch .sw-label b{color:var(--amber-hi);}
+.rr-switch .sw-label .sw-sub{display:block;color:var(--muted);font-size:.84rem;margin-top:3px;line-height:1.5;}
+.rr-fine{color:var(--muted-2);font-size:.8rem;line-height:1.5;margin-top:14px;border-top:1px solid var(--hairline-soft);padding-top:12px;}
+/* Social Avatar upgrade block (reco page — no price) */
+.social-up{margin-top:22px;border-radius:var(--radius-lg);border:1px solid color-mix(in srgb,var(--amber) 55%,transparent);background:linear-gradient(180deg,rgba(242,169,59,.10),rgba(255,255,255,.02));padding:22px;}
+.social-up .su-ey{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:800;}
+.social-up h3{margin:.25rem 0 .35rem;font-size:1.35rem;font-family:"Cormorant Garamond",serif;}
+.social-up p{color:var(--muted);margin:0 0 14px;max-width:66ch;}
+.social-up.added{box-shadow:0 0 0 1px var(--amber) inset;}
+.social-up .added-note{color:var(--amber);font-weight:700;font-size:.9rem;margin-top:10px;display:none;}
+.social-up.added .added-note{display:block;}
+/* Social add-on on pricing page (3 selectable levels) */
+.addon.gold{border-color:color-mix(in srgb,var(--amber) 55%,transparent);background:linear-gradient(180deg,rgba(242,169,59,.08),rgba(255,255,255,.015));}
+.addon.gold.reco{border-style:solid;box-shadow:0 0 0 1px var(--amber) inset;}
+.addon .a-ey.gold{color:var(--amber);}
+.lvls{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);margin-top:14px;}
+@media(max-width:720px){.lvls{grid-template-columns:1fr;}}
+.lvl{cursor:pointer;text-align:left;border-radius:var(--radius-md);border:1px solid var(--hairline);background:var(--surface-2);padding:14px;color:var(--cream);transition:.16s ease;}
+.lvl:hover{border-color:var(--amber);}
+.lvl.sel{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 16%,var(--surface-2));box-shadow:0 0 0 1px var(--amber) inset;}
+.lvl .l-name{font-weight:700;font-size:.98rem;}
+.lvl .l-posts{color:var(--muted);font-size:.82rem;margin:2px 0 6px;}
+.lvl .l-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.3rem;}
+.lvl .l-price small{font-family:Outfit;font-size:.7rem;color:var(--muted);}
+.btn-ghost{background:var(--surface-2);color:var(--cream);border:1px solid var(--hairline);}
+.btn-ghost:hover{background:var(--surface-3);}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;}
+.hint{color:var(--muted-2);font-size:.82rem;margin-top:10px;}
+
+/* Lanes */
+.total-banner{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(242,150,40,.10),rgba(255,255,255,.02));padding:18px 22px;margin-bottom:22px;}
+.total-banner .lab{color:var(--muted);font-size:.86rem;letter-spacing:.04em;}
+.total-banner .num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(2rem,5vw,3rem);background:var(--grad-amber);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.total-banner .sub{color:var(--muted-2);font-size:.8rem;width:100%;}
+
+.lanes{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.lane{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:22px;border-top:3px solid var(--lane);}
+.lane h3{margin:.1rem 0 .1rem;font-size:1.12rem;}
+.lane .lane-icp{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lane);font-weight:700;}
+.lane .lane-num{font-family:"Cormorant Garamond",serif;font-weight:700;line-height:1;font-size:clamp(2.1rem,6vw,3rem);color:var(--lane);margin:12px 0 4px;}
+.lane .lane-break{color:var(--muted);font-size:.86rem;min-height:2.6em;}
+.row{margin:16px 0;}
+.row .rl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}
+.row .rl .name{font-size:.86rem;color:var(--cream);font-weight:600;}
+.row .rl .val{font-size:.86rem;color:var(--lane);font-weight:700;font-variant-numeric:tabular-nums;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:999px;background:rgba(255,255,255,.14);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:999px;background:var(--lane);cursor:pointer;border:3px solid #14110b;box-shadow:0 2px 10px rgba(0,0,0,.5);}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:999px;background:var(--lane);cursor:pointer;border:3px solid #14110b;}
+.metrics{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.metrics .m{flex:1 1 130px;background:var(--surface-2);border:1px solid var(--hairline-soft);border-radius:var(--radius-md);padding:10px 12px;}
+.metrics .m .ml{color:var(--muted-2);font-size:.72rem;}
+.metrics .m .mv{font-weight:700;font-size:.98rem;}
+
+/* Recommendation + pricing */
+.callout{border-left:3px solid var(--amber);background:var(--surface-2);border-radius:12px;padding:16px 18px;margin:18px 0;color:var(--muted);}
+.callout b{color:var(--cream);}
+.stack-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:20px;}
+.stack{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:22px;border-top:3px solid var(--lane);}
+.stack .band{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lane);font-weight:700;}
+.stack h3{margin:.2rem 0 .5rem;}
+.stack ul{margin:.4rem 0 0;padding-left:0;list-style:none;}
+.stack li{padding:7px 0 7px 26px;position:relative;color:var(--cream);font-size:.92rem;border-top:1px solid var(--hairline-soft);}
+.stack li:first-child{border-top:none;}
+.stack li::before{content:"";position:absolute;left:4px;top:13px;width:9px;height:9px;border-radius:999px;background:var(--lane);}
+.stack li .tag{display:block;color:var(--muted-2);font-size:.76rem;}
+
+.price-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:8px;}
+.tier{border-radius:var(--radius-lg);border:1px solid var(--hairline-soft);background:var(--surface);padding:24px;display:flex;flex-direction:column;}
+.tier.reco{border-color:var(--amber);box-shadow:var(--glow-amber);}
+.tier .pin{align-self:flex-start;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#231603;background:var(--grad-amber);padding:4px 10px;border-radius:999px;font-weight:800;margin-bottom:10px;}
+.tier h3{margin:.1rem 0 .2rem;font-size:1.2rem;}
+.tier .p-sub{color:var(--muted);font-size:.86rem;min-height:2.6em;}
+.tier .pin-chosen{background:linear-gradient(135deg,#8b7bf0,#a78bfa);color:#fff;}
+.tier .p-eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-bottom:4px;}
+.tier .p-who{color:var(--muted);font-size:.82rem;line-height:1.5;margin:.2rem 0 .4rem;}
+.reco-total{display:flex;flex-direction:column;gap:2px;align-items:flex-start;margin:6px 0 18px;padding:14px 18px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));}
+.reco-total .rt-lab{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);font-weight:700;}
+.reco-total .rt-num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:2.2rem;color:var(--amber);line-height:1.1;}
+.tier .p-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:2.1rem;margin:10px 0 2px;}
+.tier .p-price small{font-family:"Outfit";font-size:.9rem;color:var(--muted);font-weight:500;}
+.tier .p-setup{color:var(--muted-2);font-size:.82rem;}
+.tier ul{list-style:none;margin:14px 0 18px;padding:0;}
+.tier li{padding:6px 0 6px 22px;position:relative;font-size:.9rem;color:var(--cream);}
+.tier li::before{content:"\2713";position:absolute;left:0;color:var(--green);font-weight:700;}
+.tier .btn{margin-top:auto;}
+.plan-summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border:1px solid rgba(201,169,97,.35);border-radius:14px;background:#14110b;margin:0 0 18px;}
+.plan-summary .ps-ey{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);font-weight:700;}
+.plan-summary .ps-name{font-size:1.15rem;color:#fff;font-weight:700;margin-top:3px;}
+.plan-summary .ps-price{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.7rem;color:var(--amber);white-space:nowrap;}
+.plan-summary .ps-price small{font-family:"Outfit";font-size:.8rem;color:var(--muted);font-weight:500;}
+.price-note{color:var(--muted-2);font-size:.8rem;margin-top:14px;}
+/* Pricing total summary */
+.ptotal{margin-top:22px;border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(242,150,40,.10),rgba(255,255,255,.02));padding:22px 24px;}
+.ptotal .pt-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 0;border-top:1px solid var(--hairline-soft);}
+.ptotal .pt-row:first-of-type{border-top:none;}
+.ptotal .pt-lab{color:var(--muted);font-size:.92rem;}
+.ptotal .pt-val{font-weight:700;font-variant-numeric:tabular-nums;}
+.ptotal .pt-deposit{border-top:1px solid var(--hairline);margin-top:6px;padding-top:14px;}
+.ptotal .pt-deposit .pt-lab{color:var(--cream);font-weight:700;}
+.ptotal .pt-deposit .pt-val{font-family:"Cormorant Garamond",serif;font-size:2rem;background:var(--grad-amber);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.ptotal .pt-monthly .pt-val{color:var(--amber-hi);}
+.ptotal .pt-fine{color:var(--muted-2);font-size:.76rem;line-height:1.5;margin-top:14px;border-top:1px solid var(--hairline-soft);padding-top:12px;}
+
+/* Audit */
+.audit-card{border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(95,208,138,.08),rgba(255,255,255,.02));padding:26px;}
+.audit-card h3{margin:.1rem 0 .4rem;font-size:1.3rem;}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(4,5,8,.74);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50;}
+.overlay.open{display:flex;}
+.modal{width:min(520px,100%);max-height:92vh;overflow:auto;border-radius:var(--radius-xl);border:1px solid var(--hairline);background:linear-gradient(180deg,#15120c,#0a0b0f);box-shadow:var(--shadow);}
+.modal .m-head{padding:24px 26px 6px;}
+.modal .m-body{padding:8px 26px 26px;}
+.modal h3{margin:.2rem 0 .3rem;font-size:1.5rem;font-family:"Cormorant Garamond",serif;}
+.modal .m-sub{color:var(--muted);font-size:.9rem;}
+.inp{width:100%;padding:13px 15px;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);margin-top:12px;}
+.inp:focus{outline:none;box-shadow:var(--focus);border-color:var(--amber);}
+.optin{display:flex;gap:10px;align-items:flex-start;margin-top:14px;color:var(--muted);font-size:.84rem;cursor:pointer;}
+.optin input{margin-top:3px;width:16px;height:16px;accent-color:var(--amber);}
+.form-msg{color:var(--green);font-size:.86rem;margin-top:12px;min-height:1.2em;}
+.x-close{position:absolute;}
+.modal .m-x{float:right;background:var(--surface-2);border:1px solid var(--hairline);color:var(--cream);width:34px;height:34px;border-radius:999px;cursor:pointer;}
+
+.screen{display:none;}
+.screen.active{display:block;animation:fade .35s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.foot{margin-top:22px;color:var(--muted-2);font-size:.78rem;text-align:center;}
+@media(prefers-reduced-motion:reduce){.screen.active{animation:none;}*{scroll-behavior:auto;}}
+/* Optimized recommendation cards */
+.stack-item{
+  border:1px solid rgba(201,169,97,0.15);
+  border-radius:12px;
+  padding:28px;
+  background:linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95));
+  display:flex;flex-direction:column;gap:16px;
+}
+.stack-item .icp-label{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#C9A961;font-weight:700;opacity:0.8;
+  margin:0;
+}
+.stack-item .at-stake{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:#C9A961;
+  line-height:1.1;
+  margin:0;
+}
+.stack-item .at-stake-label{
+  font-size:.9rem;color:var(--muted);opacity:0.7;
+}
+.stack-item .packages{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.stack-item .package-item{
+  font-size:.95rem;color:#F0EDE6;line-height:1.5;padding:0;
+}
+.stack-item .package-item strong{
+  color:#C9A961;font-weight:700;
+}
+.stack-item .demo-btn{
+  margin-top:12px;
+  background:#C9A961;
+  color:#0B2545;
+  border:none;
+  padding:12px 20px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-decoration:none;
+  display:inline-block;
+  text-align:center;
+}
+.stack-item .demo-btn:hover{
+  background:#D4B896;
+  transform:translateY(-2px);
+}
+/* Optimized recommendation cards */
+.stack-item { margin-bottom: 20px; }
+.stack-item .icp-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #C9A961;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.stack-item .at-stake {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #C9A961;
+  line-height: 1;
+  margin: 8px 0 12px;
+}
+.stack-item .demo-btn {
+  display: inline-block;
+  background: #C9A961;
+  color: #0B2545;
+  padding: 12px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+.stack-item .demo-btn:hover {
+  background: #D4B896;
+  transform: translateY(-2px);
+}
+/* Better package list styling */
+.stack-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stack-item li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #F0EDE6;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(201,169,97,0.1);
+}
+.stack-item li:last-child {
+  border-bottom: none;
+}
+.stack-item li .desc {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 4px;
+  opacity: 0.75;
+}
+/* Recommendation card improvements */
+.stack-item { border: 1px solid rgba(201,169,97,0.15); border-radius: 12px; padding: 24px; background: linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95)); }
+.stack-item .icp-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #C9A961; font-weight: 700; margin: 0 0 8px; opacity: 0.8; }
+.stack-item .stack-title { font-size: 1.3rem; font-weight: 700; color: #F0EDE6; margin: 0 0 12px; }
+.stack-item .at-stake { font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; font-weight: 700; color: #C9A961; line-height: 1; margin: 8px 0 4px; }
+.stack-item .at-stake-label { font-size: 0.9rem; color: var(--muted); opacity: 0.7; margin-bottom: 16px; }
+.stack-item .packages { margin-top: 16px; }
+.stack-item ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.stack-item li { font-size: 0.95rem; line-height: 1.6; color: #F0EDE6; padding: 8px 0; border-bottom: 1px solid rgba(201,169,97,0.1); }
+.stack-item li:last-child { border-bottom: none; }
+.stack-item li .desc { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 4px; opacity: 0.75; }
+</style>
+  <style id="rsd-readability">
+  /* RSD readability & rhythm layer — sizing/spacing only. Colors, logic, copy unchanged. Remove this block to fully revert. */
+  html{font-size:clamp(16.5px, calc(15.6px + 0.35vw), 18px);}
+  body{line-height:1.55;}
+  .lede,.tog .t-sub,.stack li .desc,.reco-overview,.addon .a-down,.lane .lane-break{line-height:1.6;}
+  /* section rhythm — 8px grid, a touch more breathing */
+  .wrap{padding:40px 0 72px;}
+  .topbar{margin-bottom:32px;}
+  .stepper{gap:10px;}
+  h1.display{margin:0.4rem 0 0.85rem;}
+  .lede{margin:0 0 18px;}
+  .tog{padding:20px 20px 18px;gap:8px;}
+  .reco-overview{margin:8px 0 24px;padding:20px 22px;}
+  .twin-up{margin-top:24px;padding:24px;}
+  .addon{margin-top:24px;padding:24px;}
+  .social-up{margin-top:24px;padding:24px;}
+  .total-banner{margin-bottom:24px;padding:20px 24px;}
+  .lanes{gap:24px;}
+  .lane{padding:24px;}
+  /* fold the injected video hero into the same scale */
+  #screen-intro .rsd-hero{margin:0 0 34px;}
+  .rsd-hero-eyebrow{font-size:0.86rem;}
+  .rsd-hero-cap .label{font-size:0.95rem;}
+  .rsd-hero-yt{font-size:0.95rem;}
+  /* Optimized recommendation cards */
+.stack-item{
+  border:1px solid rgba(201,169,97,0.15);
+  border-radius:12px;
+  padding:28px;
+  background:linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95));
+  display:flex;flex-direction:column;gap:16px;
+}
+.stack-item .icp-label{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#C9A961;font-weight:700;opacity:0.8;
+  margin:0;
+}
+.stack-item .at-stake{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:#C9A961;
+  line-height:1.1;
+  margin:0;
+}
+.stack-item .at-stake-label{
+  font-size:.9rem;color:var(--muted);opacity:0.7;
+}
+.stack-item .packages{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.stack-item .package-item{
+  font-size:.95rem;color:#F0EDE6;line-height:1.5;padding:0;
+}
+.stack-item .package-item strong{
+  color:#C9A961;font-weight:700;
+}
+.stack-item .demo-btn{
+  margin-top:12px;
+  background:#C9A961;
+  color:#0B2545;
+  border:none;
+  padding:12px 20px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-decoration:none;
+  display:inline-block;
+  text-align:center;
+}
+.stack-item .demo-btn:hover{
+  background:#D4B896;
+  transform:translateY(-2px);
+}
+/* Recommendation card improvements */
+.stack-item { border: 1px solid rgba(201,169,97,0.15); border-radius: 12px; padding: 24px; background: linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95)); }
+.stack-item .icp-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #C9A961; font-weight: 700; margin: 0 0 8px; opacity: 0.8; }
+.stack-item .stack-title { font-size: 1.3rem; font-weight: 700; color: #F0EDE6; margin: 0 0 12px; }
+.stack-item .at-stake { font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; font-weight: 700; color: #C9A961; line-height: 1; margin: 8px 0 4px; }
+.stack-item .at-stake-label { font-size: 0.9rem; color: var(--muted); opacity: 0.7; margin-bottom: 16px; }
+.stack-item .packages { margin-top: 16px; }
+.stack-item ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.stack-item li { font-size: 0.95rem; line-height: 1.6; color: #F0EDE6; padding: 8px 0; border-bottom: 1px solid rgba(201,169,97,0.1); }
+.stack-item li:last-child { border-bottom: none; }
+.stack-item li .desc { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 4px; opacity: 0.75; }
+</style>
+
+<style id="rsd-v2-styles">
+.navbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 18px;}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--hairline);background:var(--surface-2);color:var(--cream);border-radius:999px;padding:9px 16px;font-weight:700;font-size:.86rem;cursor:pointer;transition:.15s ease;}
+.nav-btn:hover:not(:disabled){background:var(--surface-3);border-color:var(--amber);}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed;}
+.nav-hint{color:var(--muted-2);font-size:.78rem;margin-left:auto;}
+@media(max-width:560px){.nav-hint{display:none;}}
+.stack .path-solves{color:var(--muted);font-size:.95rem;line-height:1.6;margin:.45rem 0 .2rem;}
+.success-quote{margin:26px 0 10px;border-radius:var(--radius-lg);border:1px solid var(--hairline);background:linear-gradient(180deg,rgba(242,150,40,.08),rgba(255,255,255,.015));padding:24px;}
+.success-quote .sq-kick{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:800;}
+.success-quote .sq-body{display:flex;gap:20px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+.success-quote .sq-avatar{position:relative;width:96px;height:96px;border-radius:50%;overflow:hidden;flex:0 0 96px;border:2px solid color-mix(in srgb,var(--amber) 50%,transparent);background:linear-gradient(135deg,#3a2c12,#0d0f14);display:grid;place-items:center;}
+.success-quote .sq-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.success-quote .sq-init{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:1.9rem;color:var(--amber-hi);}
+.success-quote blockquote{margin:0;flex:1 1 320px;}
+.success-quote .sq-text{font-family:"Cormorant Garamond",serif;font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.4;color:var(--cream);}
+.success-quote cite{display:block;margin-top:10px;color:var(--amber);font-style:normal;font-weight:700;font-size:.92rem;}
+#printHeader{display:none;}
+#printRecap{display:none;}
+/* v2.1 print: flow-based layout — no blank pages. Page 1 = plan & investment;
+   following pages = the client's own calculator answers + estimates + reflection. */
+@media print{
+  html,body{background:#fff !important;}
+  .topbar,.navbar,.overlay,.audit-overlay,.screen,#screen-intro,#screen-calc,#screen-reco,#screen-pricing,#screen-audit{display:none !important;}
+  #screen-checkout{display:block !important;background:#fff !important;}
+  #screen-checkout .shell{background:#fff !important;border:0 !important;box-shadow:none !important;padding:0 !important;}
+  #screen-checkout .eyebrow,#screen-checkout .display,#screen-checkout .lede,#auditLaunchHost,#auditLaunchHost2,#bonusMeter,#screen-checkout .enh-head,#addonHost,#priceNote,#screen-checkout .btn-row,#screen-checkout .foot{display:none !important;}
+  .pt-row.pt-bonus .pt-lab,.pt-row.pt-bonus .pt-val{color:#2E7D4F !important;-webkit-text-fill-color:#2E7D4F !important;}
+  #printHeader{display:block !important;padding:0 0 14px;border-bottom:2px solid #C9A961;margin-bottom:14px;}
+  #printHeader .ph-brand{font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#111;font-size:13px;}
+  #printHeader .ph-title{font-size:21px;font-weight:800;margin-top:6px;color:#111;}
+  #printHeader .ph-sub{font-size:12px;color:#555;margin-top:2px;}
+  #planSummary .plan-summary{background:#fff !important;border:1px solid #ccc !important;box-shadow:none !important;}
+  #planSummary, #planSummary *{color:#111 !important;-webkit-text-fill-color:#111 !important;}
+  #pricingTotal,.ptotal{background:#fff !important;border:1px solid #ccc !important;box-shadow:none !important;}
+  .ptotal *{color:#111 !important;-webkit-text-fill-color:#111 !important;background:none !important;}
+  .pt-fine{color:#555 !important;}
+  /* ---- recap pages ---- */
+  #printRecap{display:block !important;}
+  .pr-page{page-break-before:always;padding-top:8mm;}
+  .pr-kick{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#C9821F;}
+  .pr-title{font-size:22px;font-weight:800;color:#111;margin:6px 0 12px;font-family:"Outfit",system-ui,sans-serif;}
+  .pr-row{display:flex;justify-content:space-between;gap:12px;padding:7px 2px;border-bottom:1px solid #e5e0d5;font-size:13px;}
+  .pr-lab{color:#333;}
+  .pr-val{font-weight:800;color:#111;}
+  .pr-est{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;padding:12px 16px;border:2px solid #C9A961;border-radius:10px;}
+  .pr-est-lab{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555;}
+  .pr-est-num{font-size:30px;font-weight:800;color:#111;}
+  .pr-break{font-size:12.5px;color:#555;margin:8px 0 0;}
+  .pr-urgent{margin-top:14px;padding:14px 16px;background:#faf6ec !important;border-left:4px solid #C9821F;font-size:13.5px;line-height:1.65;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .pr-urgent b{color:#8a5a14;}
+  .pr-lede{font-size:13.5px;color:#333;line-height:1.65;margin:0 0 14px;}
+  .pr-sense{display:flex;gap:14px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #eee;}
+  .pr-sense svg{width:30px;height:30px;flex:0 0 30px;}
+  .pr-sense .s-name{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#C9821F;}
+  .pr-sense .s-q{font-size:13.5px;color:#111;line-height:1.6;margin-top:2px;}
+  .pr-close{margin-top:18px;font-size:15px;font-weight:800;color:#111;}
+  @page{margin:14mm;}
+}
+</style>
+<style>
+/* ====================== V2 ENHANCEMENT LAYER (2026-07-02) ====================== */
+/* Deposit-first tier pricing */
+.p-deposit-ey{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber,#F2A93B);font-weight:800;margin-top:14px;}
+.p-terms{margin:.4rem 0 .2rem;color:var(--muted,rgba(236,231,221,.66));font-size:.9rem;line-height:1.55;}
+.p-terms b{color:var(--amber-hi,#F8CE7E);}
+/* Helper text under calculator sliders */
+.row-help{margin:-4px 0 10px;color:var(--muted-2,rgba(236,231,221,.5));font-size:.82rem;line-height:1.5;}
+/* Optional Enhancements section header */
+.enh-head{margin:34px 0 6px;padding-top:26px;border-top:1px solid rgba(255,255,255,.08);}
+.enh-head .eyebrow{margin-bottom:4px;}
+.enh-head h2{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(1.5rem,3vw,2.1rem);margin:.1rem 0 .3rem;}
+.enh-head p{color:var(--muted,rgba(236,231,221,.66));font-size:.95rem;max-width:66ch;margin:0;line-height:1.6;}
+/* Launch Your Business Audit — glow-flash + inviting shake */
+.launch-strip{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:18px 0 6px;padding:16px 18px;border-radius:var(--radius-lg,18px);border:1px solid rgba(242,169,59,.35);background:linear-gradient(135deg,rgba(242,169,59,.10),rgba(255,255,255,.02));}
+.launch-strip .launch-sub{color:var(--muted,rgba(236,231,221,.66));font-size:.9rem;line-height:1.5;max-width:44ch;}
+.launch-audit-btn{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;padding:14px 22px;border-radius:999px;font:800 15px/1 "Outfit",system-ui,sans-serif;color:#1c1303;background:var(--grad-amber,linear-gradient(135deg,#F8CE7E 0%,#F2A93B 42%,#C9821F 100%));box-shadow:0 10px 30px rgba(242,150,40,.35),0 0 0 1px rgba(248,206,126,.45) inset;animation:rsdBtnGlow 2.4s ease-in-out infinite, rsdBtnShake 3.4s ease-in-out infinite;transition:transform .18s ease;}
+.launch-audit-btn:hover{transform:translateY(-2px) scale(1.02);animation-play-state:paused,paused;}
+.launch-audit-btn svg{width:18px;height:18px;flex:0 0 18px;}
+@keyframes rsdBtnGlow{0%,100%{box-shadow:0 10px 30px rgba(242,150,40,.30),0 0 0 1px rgba(248,206,126,.45) inset;}50%{box-shadow:0 14px 44px rgba(242,150,40,.62),0 0 22px rgba(248,206,126,.5),0 0 0 1px rgba(248,206,126,.7) inset;}}
+@keyframes rsdBtnShake{0%,86%,100%{transform:translateX(0) rotate(0);}88%{transform:translateX(-2px) rotate(-1.1deg);}90%{transform:translateX(2px) rotate(1.1deg);}92%{transform:translateX(-2px) rotate(-.8deg);}94%{transform:translateX(2px) rotate(.8deg);}96%{transform:translateX(0) rotate(0);}}
+/* Green variant — second launch strip, right before the investment total */
+.launch-strip.green{border-color:rgba(95,208,138,.4);background:linear-gradient(135deg,rgba(95,208,138,.10),rgba(255,255,255,.02));}
+.launch-audit-btn.green{color:#06130b;background:linear-gradient(135deg,#9BE8B8 0%,#5FD08A 45%,#2E8B57 100%);box-shadow:0 10px 30px rgba(95,208,138,.32),0 0 0 1px rgba(155,232,184,.45) inset;animation:rsdBtnGlowG 2.4s ease-in-out infinite, rsdBtnShake 3.4s ease-in-out infinite;}
+@keyframes rsdBtnGlowG{0%,100%{box-shadow:0 10px 30px rgba(95,208,138,.28),0 0 0 1px rgba(155,232,184,.45) inset;}50%{box-shadow:0 14px 44px rgba(95,208,138,.6),0 0 22px rgba(155,232,184,.5),0 0 0 1px rgba(155,232,184,.7) inset;}}
+/* Congratulations pop-up */
+.audit-overlay{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,7,10,.8);backdrop-filter:blur(7px);}
+.audit-overlay.open{display:flex;}
+.audit-pop{position:relative;width:min(560px,94vw);border-radius:var(--radius-xl,28px);border:1px solid rgba(248,206,126,.35);background:linear-gradient(180deg,#12151e,#0a0d14);box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 60px rgba(242,169,59,.12);padding:34px 30px 30px;text-align:center;animation:rsdPopIn .45s cubic-bezier(.2,1.1,.3,1);}
+@keyframes rsdPopIn{from{opacity:0;transform:translateY(18px) scale(.96);}to{opacity:1;transform:none;}}
+.audit-pop .ap-x{position:absolute;top:14px;right:16px;background:none;border:0;color:var(--muted,rgba(236,231,221,.66));font-size:18px;cursor:pointer;}
+.audit-pop .ap-ey{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber,#F2A93B);font-weight:800;}
+.audit-pop h3{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(1.5rem,4vw,2rem);margin:.5rem 0 .4rem;color:#F0EDE6;}
+.audit-pop p{color:var(--muted,rgba(236,231,221,.72));font-size:.98rem;line-height:1.65;margin:0 auto .6rem;max-width:46ch;}
+.audit-pop p b{color:var(--amber-hi,#F8CE7E);}
+.audit-pop .ap-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
+.audit-rocket{width:130px;height:130px;margin:2px auto 8px;display:block;}
+.audit-rocket .rk-ship{animation:rsdRocketHover 2.6s ease-in-out infinite;transform-origin:60px 70px;}
+.audit-rocket .rk-flame{animation:rsdFlame .5s ease-in-out infinite alternate;transform-origin:60px 96px;}
+.audit-rocket .rk-star{animation:rsdTwinkle 1.8s ease-in-out infinite;}
+.audit-rocket .rk-star.s2{animation-delay:.6s;}
+.audit-rocket .rk-star.s3{animation-delay:1.1s;}
+@keyframes rsdRocketHover{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@keyframes rsdFlame{from{transform:scaleY(.75);opacity:.8;}to{transform:scaleY(1.15);opacity:1;}}
+@keyframes rsdTwinkle{0%,100%{opacity:.25;}50%{opacity:1;}}
+/* Commitment bonus pop + meter (v2.2) */
+.bonus-art{width:130px;height:130px;margin:2px auto 8px;}
+.bonus-art svg{width:100%;height:100%;display:block;}
+.bp-list{list-style:none;margin:10px auto 0;padding:0;max-width:52ch;text-align:left;}
+.bp-list li{padding:9px 0 9px 26px;position:relative;color:var(--muted,rgba(236,231,221,.78));font-size:.94rem;line-height:1.55;border-bottom:1px solid rgba(255,255,255,.07);}
+.bp-list li:last-child{border-bottom:none;}
+.bp-list li::before{content:"🎁";position:absolute;left:0;top:9px;font-size:.85rem;}
+.bp-list li b{color:#F0EDE6;}
+.pt-row.pt-bonus .pt-lab,.pt-row.pt-bonus .pt-val{color:var(--green,#5FD08A);font-weight:700;}
+.bonus-meter{margin:18px 0 14px;padding:16px 18px;border-radius:var(--radius-lg,18px);border:1px solid rgba(255,255,255,.1);background:linear-gradient(135deg,rgba(183,156,255,.06),rgba(255,255,255,.015));}
+.bonus-meter.active{border-color:rgba(242,169,59,.4);}
+.bm-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.bm-title{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber,#F2A93B);font-weight:800;}
+.bm-msg{color:var(--muted,rgba(236,231,221,.66));font-size:.85rem;}
+.bm-bar{position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
+.bm-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#B9C0CE 0%,#F2A93B 60%,#9CD8FF 100%);transition:width .5s ease;}
+.bm-notch{position:absolute;top:0;bottom:0;width:2px;background:rgba(10,12,18,.55);z-index:2;}
+.bm-chips{display:flex;justify-content:space-between;gap:8px;margin-top:9px;flex-wrap:wrap;}
+.bm-chip{font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted-2,rgba(236,231,221,.5));background:rgba(255,255,255,.03);}
+.bm-chip.on{color:#0d0f14;}
+.bm-chip.bm-silver.on{background:linear-gradient(135deg,#EDEFF4,#B9C0CE);border-color:#B9C0CE;}
+.bm-chip.bm-gold.on{background:linear-gradient(135deg,#F8CE7E,#F2A93B);border-color:#F2A93B;}
+.bm-chip.bm-diamond.on{background:linear-gradient(135deg,#E8FBFF,#9CD8FF);border-color:#9CD8FF;}
+.bm-chip.bm-lunar.on{background:linear-gradient(135deg,#EAF4FF,#B9CFEA);border-color:#B9CFEA;color:#12203a;}
+.bm-chip.bm-solar.on{background:linear-gradient(135deg,#FFF3D6,#F2A93B);border-color:#F2A93B;color:#3a2408;}
+.bm-chip.bm-supernova.on{background:linear-gradient(135deg,#F2E9FF,#B79CFF);border-color:#B79CFF;color:#2a1a4d;}
+.p-from{font-family:"Outfit";font-size:.5em;color:var(--muted);font-weight:500;letter-spacing:.02em;}
+.p-reassure{color:var(--green,#5FD08A);font-size:.8rem;line-height:1.5;margin:.3rem 0 .2rem;}
+.agency-badge{display:inline-block;margin:6px 0 2px;font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#231603;background:var(--grad-amber,linear-gradient(90deg,#F2A93B,#F8CE7E));padding:5px 12px;border-radius:999px;}
+.addon.base-service{border-style:solid;border-color:color-mix(in srgb,var(--amber) 45%,transparent);}
+.addon.base-service ul{list-style:none;margin:10px 0 12px;padding:0;}
+.addon.base-service li{padding:5px 0 5px 20px;position:relative;font-size:.88rem;color:var(--cream,#ECE7DD);}
+.addon.base-service li::before{content:"\2713";position:absolute;left:0;color:var(--green,#5FD08A);font-weight:700;}
+.whynow{margin:30px 0 8px;padding-top:26px;border-top:1px solid rgba(255,255,255,.08);}
+.whynow .wn-title{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(1.4rem,2.6vw,1.9rem);margin:.2rem 0 .4rem;line-height:1.2;}
+.whynow .wn-lead{color:var(--muted,rgba(236,231,221,.66));font-size:.95rem;line-height:1.65;max-width:70ch;margin:0 0 18px;}
+.wn-stat{display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);border-radius:var(--radius-lg,16px);background:linear-gradient(180deg,rgba(242,169,59,.08),rgba(255,255,255,.015));margin:0 0 22px;}
+.wn-num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(2.4rem,6vw,3.4rem);color:var(--amber-hi,#F8CE7E);line-height:1;}
+.wn-num-sub{color:var(--cream,#ECE7DD);font-size:.95rem;line-height:1.5;font-weight:600;}
+.wn-num-sub em{display:block;color:var(--muted-2,rgba(236,231,221,.5));font-size:.78rem;font-style:normal;font-weight:500;margin-top:4px;letter-spacing:.04em;}
+.wn-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));}
+.wn-card{border:1px solid var(--hairline-soft,rgba(255,255,255,.08));border-radius:var(--radius-lg,16px);background:var(--surface,rgba(255,255,255,.02));padding:18px;}
+.wn-ic{width:30px;height:30px;margin-bottom:8px;}
+.wn-ic svg{width:30px;height:30px;display:block;}
+.wn-k{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--amber,#F2A93B);margin-bottom:6px;}
+.wn-card p{color:var(--muted,rgba(236,231,221,.7));font-size:.88rem;line-height:1.55;margin:0;}
+@media(max-width:520px){.audit-pop{padding:26px 18px 22px;}.audit-pop .ap-btns .btn{width:100%;}.launch-strip{flex-direction:column;align-items:flex-start;}.bm-chips{justify-content:flex-start;}}
+@media print{.audit-overlay,.launch-strip{display:none !important;}}
+@media (prefers-reduced-motion:reduce){.launch-audit-btn,.audit-rocket .rk-ship,.audit-rocket .rk-flame,.audit-rocket .rk-star{animation:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand-mark" href="https://realspacedigital.net">Real Space Digital</a>
+    <div class="stepper" id="stepper">
+      <b class="s1 on">1 · Identify</b><span class="sep">/</span>
+      <b class="s2">2 · Calculate</b><span class="sep">/</span>
+      <b class="s3">3 · Your details</b><span class="sep">/</span>
+      <b class="s4">4 · Your plan</b><span class="sep">/</span>
+      <b class="s5">5 · Checkout</b>
+    </div>
+  </div>
+  <div class="navbar" id="navbar">
+    <button class="nav-btn" type="button" id="navBack" disabled>← Back</button>
+    <button class="nav-btn" type="button" id="navFwd" disabled>Forward →</button>
+    <span class="nav-hint">Your numbers are saved as you go — move back and forth anytime.</span>
+  </div>
+
+  <!-- ============ SCREEN 1: IDENTIFY ============ -->
+  <section id="screen-intro" class="screen active">
+<!-- RSD HERO VIDEO (injected) -->
+<style>
+  #screen-intro .rsd-hero{margin:0 0 30px;}
+  .rsd-hero-eyebrow{display:flex;align-items:center;gap:8px;color:var(--amber,#F2A93B);font:700 12px/1.2 'Outfit',system-ui,sans-serif;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 12px;}
+  .rsd-hero-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--amber,#F2A93B);box-shadow:0 0 0 4px rgba(242,169,59,.18);}
+  .rsd-hero-frame{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--hairline,rgba(201,169,97,.28));border-radius:var(--radius-xl,28px);overflow:hidden;background:var(--ink-2,#0d0f14);box-shadow:var(--shadow,0 40px 120px rgba(0,0,0,.6));cursor:pointer;}
+  .rsd-hero-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease,filter .4s ease;}
+  .rsd-hero-frame:hover .rsd-hero-thumb{transform:scale(1.03);filter:brightness(1.05);}
+  .rsd-hero-veil{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 60%,rgba(8,9,12,.12),rgba(8,9,12,.62));}
+  .rsd-hero-ring{position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px rgba(248,206,126,.22) inset;pointer-events:none;}
+  .rsd-hero-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:84px;height:84px;border:0;border-radius:50%;background:var(--grad-amber,linear-gradient(135deg,#F8CE7E 0%,#F2A93B 42%,#C9821F 100%));box-shadow:0 14px 44px rgba(242,150,40,.45),0 0 0 1px rgba(248,206,126,.45) inset;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;}
+  .rsd-hero-frame:hover .rsd-hero-play{transform:translate(-50%,-50%) scale(1.07);box-shadow:0 18px 56px rgba(242,150,40,.6),0 0 0 1px rgba(248,206,126,.6) inset;}
+  .rsd-hero-play svg{width:30px;height:30px;margin-left:4px;fill:#1c1303;}
+  .rsd-hero-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
+  .rsd-hero-cap{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap;}
+  .rsd-hero-cap .label{color:var(--muted,rgba(236,231,221,.66));font:600 13px/1.3 'Outfit',system-ui,sans-serif;letter-spacing:.3px;}
+  .rsd-hero-yt{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--amber-hi,#F8CE7E);border:1px solid var(--hairline,rgba(201,169,97,.4));padding:8px 14px;border-radius:999px;font:700 13px/1 'Outfit',system-ui,sans-serif;transition:background .2s ease,border-color .2s ease;}
+  .rsd-hero-yt:hover{background:rgba(242,169,59,.1);border-color:var(--amber,#F2A93B);}
+  @media(max-width:520px){.rsd-hero-play{width:64px;height:64px}.rsd-hero-play svg{width:24px;height:24px}}
+/* Recommendation card improvements */
+.stack-item { border: 1px solid rgba(201,169,97,0.15); border-radius: 12px; padding: 24px; background: linear-gradient(135deg,rgba(11,37,69,0.8),rgba(5,10,21,0.95)); }
+.stack-item .icp-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #C9A961; font-weight: 700; margin: 0 0 8px; opacity: 0.8; }
+.stack-item .stack-title { font-size: 1.3rem; font-weight: 700; color: #F0EDE6; margin: 0 0 12px; }
+.stack-item .at-stake { font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; font-weight: 700; color: #C9A961; line-height: 1; margin: 8px 0 4px; }
+.stack-item .at-stake-label { font-size: 0.9rem; color: var(--muted); opacity: 0.7; margin-bottom: 16px; }
+.stack-item .packages { margin-top: 16px; }
+.stack-item ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.stack-item li { font-size: 0.95rem; line-height: 1.6; color: #F0EDE6; padding: 8px 0; border-bottom: 1px solid rgba(201,169,97,0.1); }
+.stack-item li:last-child { border-bottom: none; }
+.stack-item li .desc { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 4px; opacity: 0.75; }
+</style>
+<div class="rsd-hero">
+  <div class="rsd-hero-eyebrow"><span class="dot"></span>Watch this first</div>
+  <div class="rsd-hero-frame" id="rsdHeroFrame" role="button" tabindex="0" aria-label="Play the Real Space Digital video">
+    <img class="rsd-hero-thumb" src="https://i.ytimg.com/vi/kydN5OnSwqI/maxresdefault.jpg" alt="Real Space Digital — watch the overview" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/kydN5OnSwqI/hqdefault.jpg';">
+    <div class="rsd-hero-veil"></div>
+    <div class="rsd-hero-ring"></div>
+    <button class="rsd-hero-play" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></button>
+  </div>
+  <div class="rsd-hero-cap">
+    <span class="label">Real Space Digital &mdash; Digitizing Reality, Elevating Sales&trade;</span>
+    <a class="rsd-hero-yt" href="https://youtu.be/kydN5OnSwqI" target="_blank" rel="noopener">Open in YouTube &#8599;</a>
+  </div>
+</div>
+<script>
+(function(){
+  var f=document.getElementById('rsdHeroFrame');
+  if(!f||f.dataset.wired)return; f.dataset.wired='1';
+  function play(){
+    if(f.dataset.playing)return; f.dataset.playing='1';
+    var i=document.createElement('iframe');
+    i.className='rsd-hero-iframe';
+    i.src='https://www.youtube-nocookie.com/embed/kydN5OnSwqI?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    i.title='Real Space Digital';
+    i.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    i.setAttribute('allowfullscreen','');
+    f.innerHTML=''; f.appendChild(i); f.style.cursor='default';
+  }
+  f.addEventListener('click',play);
+  f.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();play();}});
+})();
+</script>
+<!-- /RSD HERO VIDEO -->
+
+    <div class="shell hero-bg pad">
+      <div class="eyebrow">Always-On Revenue Calculator</div>
+      <h1 class="display">See what's quietly costing you.<br>Then see how to win it back.</h1>
+      <p class="lede">Pick what fits your business and switch on what's hurting. We'll open a calculator for each one, using your own numbers — no pricing until you ask for it.</p>
+
+      <label class="field-label" for="icp">What kind of business are you?</label>
+      <select id="icp" class="sel" aria-label="Business type">
+        <option value="">Select your business type…</option>
+      </select>
+
+      <label class="field-label">What would you most like to fix? <span style="color:var(--muted-2);font-weight:400;">(switch on any that apply)</span></label>
+      <div class="toggle-grid" id="toggles"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-amber" id="openCalc" disabled>Open my calculators →</button>
+      </div>
+      <p class="hint" id="introHint">Switch on at least one focus above to continue.</p>
+    </div>
+    <p class="foot">Digitizing Reality, Elevating Sales™ · © 2026 Real Space Digital · Your numbers stay private — we only use them to build your report.</p>
+  </section>
+
+  <!-- ============ SCREEN 2: CALCULATE ============ -->
+  <section id="screen-calc" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Run your numbers</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Your numbers, your leak.</h1>
+      <p class="lede">Every calculator starts at $0. Drag each slider to your real numbers and watch what's actually at stake appear, live. When it looks right, see your report.</p>
+
+      <div class="total-banner" id="totalBanner" style="display:none;">
+        <span class="lab">Total estimated annual leak</span>
+        <span class="num" id="totalNum">$0</span>
+        <span class="sub" id="totalSub">Based on your own numbers across the focuses you switched on.</span>
+      </div>
+
+      <div class="lanes" id="lanes"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="backToIntro">← Change focus</button>
+        <button class="btn btn-amber" id="toReport">See my report →</button>
+      </div>
+    </div>
+    <p class="foot">Estimates are conservative and based on the inputs you provide.</p>
+  </section>
+
+  <!-- ============ SCREEN 3: RECOMMENDATION ============ -->
+  <section id="screen-reco" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Your recommended path</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Based on your numbers, here's the fix.</h1>
+      <p class="lede" id="recoLede">Here's the Real Space Digital path that targets your biggest leak first. No pricing yet — see it when you're ready, or claim your free Online Presence Report.</p>
+
+      <div class="reco-total" id="recoTotal" style="display:none;"></div>
+
+      <div class="reco-overview" id="recoOverview">
+        <b>What this is.</b> You just saw what's quietly slipping away. This isn't about adding cost — it's about turning that loss into a system that <b>answers, qualifies, and books on its own</b>, so you regain your evenings, lose the chasing, and expand your ROI online. You're welcome to look — no call needed.
+      </div>
+
+            <div class="stack-grid" id="stacks"></div>
+
+      <!-- Storefront-only: Online Store + Product Photo Shoot recommendations (no price) -->
+      <div id="storefrontReco"></div>
+
+      <!-- Social Avatar / True Twin / Rapid Response selectors now live on the pricing page (page 4). -->
+
+      <!-- ===== Client Success Report (testimonial) ===== -->
+      <div class="success-quote">
+        <div class="sq-kick">Client Success Report</div>
+        <div class="sq-body">
+          <div class="sq-avatar"><img src="/reviews/hans-raj.jpg" alt="Hans Raj" loading="lazy" onerror="this.remove();"><span class="sq-init">HR</span></div>
+          <blockquote>
+            <div class="sq-text">&ldquo;We got 3 bookings; 2 weddings and 1 bridal shower within a month and a half of working with Real Space Digital, completely paying for the service.&rdquo;</div>
+            <cite>— Hans Raj</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <!-- ===== RSD GOOGLE REVIEWS SLIDER ===== -->
+      <div id="google-reviews-widget"
+           data-place-id="ChIJt5dCG_H5RCcRtlvrDa86ORg"
+           data-api-key="AIzaSyC8qcrUW9lYcO-IfH5zcyOqaCNsQOR_PBI"
+           data-theme="dark"
+           data-min-rating="1"
+           data-max-reviews="8"
+           data-show-header="true"
+           data-autoplay="true"
+           data-interval="5200"
+           data-review-url="https://maps.app.goo.gl/GcowMoHCrt9nkvb37">
+      </div>
+      <div id="rsd-map-anchor" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+      <style>
+        #google-reviews-widget{ width:100%; }
+        #google-reviews-widget .rsd-grev{
+          --line: rgba(255,255,255,.10);
+          --line-soft: rgba(255,255,255,.06);
+          --text: rgba(236,231,221,.94);
+          --sub: rgba(236,231,221,.68);
+          --muted: rgba(236,231,221,.52);
+          --panel: rgba(13,15,20,.88);
+          --panel2: rgba(18,21,30,.95);
+          --purple:#B79CFF;
+          --gold:#F2A93B;
+          --gold2:#F8CE7E;
+          --shadow: 0 20px 50px rgba(0,0,0,.4);
+          font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+          color: var(--text);
+          border-top:1px solid var(--line-soft);
+          border-bottom:1px solid var(--line-soft);
+          padding:28px 0;
+          background:
+            radial-gradient(1000px 300px at 18% 0%, rgba(183,156,255,.16), transparent 55%),
+            radial-gradient(1000px 300px at 82% 100%, rgba(242,169,59,.12), transparent 55%),
+            linear-gradient(180deg, #07080d, #0a0d14 100%);
+          border-radius:20px;
+          margin-top:8px;
+        }
+        #google-reviews-widget .rsd-wrap{ width:100%; margin:0 auto; padding:0 16px; }
+        #google-reviews-widget .rsd-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:18px; }
+        #google-reviews-widget .rsd-kicker{ font-size:12px; font-weight:900; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
+        #google-reviews-widget .rsd-title{ margin:8px 0 6px; font-family:"Cormorant Garamond",serif; font-size:clamp(24px, 3vw, 38px); line-height:1.04; font-weight:700; letter-spacing:-.01em; }
+        #google-reviews-widget .rsd-sub{ margin:0; color:var(--sub); font-size:14px; max-width:760px; }
+        #google-reviews-widget .rsd-cta{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 18px; border-radius:999px; text-decoration:none; font-weight:800; color:#231603; background:linear-gradient(90deg, var(--gold), var(--gold2)); border:1px solid rgba(255,255,255,.12); box-shadow:0 10px 28px rgba(242,169,59,.20); white-space:nowrap; transition:transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+        #google-reviews-widget .rsd-cta:hover{ transform:translateY(-1px); box-shadow:0 16px 36px rgba(242,169,59,.24); filter:brightness(1.02); }
+        #google-reviews-widget .rsd-rail{ position:relative; border-radius:18px; border:1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)), linear-gradient(180deg, var(--panel), var(--panel2)); padding:16px; overflow:hidden; box-shadow:var(--shadow); }
+        #google-reviews-widget .rsd-summary{ display:flex; align-items:center; justify-content:space-between; gap:18px; padding:4px 2px 16px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:16px; }
+        #google-reviews-widget .rsd-summary-right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+        #google-reviews-widget .rsd-place{ font-weight:900; font-size:15px; }
+        #google-reviews-widget .rsd-rateRow{ display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap; }
+        #google-reviews-widget .rsd-rate{ font-size:20px; font-weight:900; }
+        #google-reviews-widget .rsd-stars{ color:var(--gold); font-weight:900; letter-spacing:.06em; }
+        #google-reviews-widget .rsd-count{ font-size:12px; color:var(--sub); font-weight:800; }
+        #google-reviews-widget .rsd-badge{ display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); font-size:12px; font-weight:800; color:var(--sub); white-space:nowrap; }
+        #google-reviews-widget .rsd-navWrap{ display:inline-flex; align-items:center; gap:10px; padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); }
+        #google-reviews-widget .rsd-track{ display:flex; gap:14px; overflow:auto; scroll-snap-type:x mandatory; padding:4px 2px 10px; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+        #google-reviews-widget .rsd-track::-webkit-scrollbar{ height:8px; }
+        #google-reviews-widget .rsd-track::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
+        #google-reviews-widget .rsd-track::-webkit-scrollbar-track{ background:transparent; }
+        #google-reviews-widget .rsd-card{ flex:0 0 auto; width:min(420px, 84vw); min-height:226px; scroll-snap-align:start; border-radius:16px; border:1px solid rgba(255,255,255,.10); background: radial-gradient(420px 160px at 16% 0%, rgba(183,156,255,.16), transparent 58%), radial-gradient(440px 180px at 86% 100%, rgba(242,169,59,.12), transparent 60%), linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); padding:16px 16px 14px; box-shadow:inset 0 1px 0 rgba(255,255,255,.03); }
+        #google-reviews-widget .rsd-row{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+        #google-reviews-widget .rsd-avatar{ width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.10); background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); object-fit:cover; flex:0 0 42px; }
+        #google-reviews-widget .rsd-avatar-fallback{ display:flex; align-items:center; justify-content:center; font-weight:900; color:var(--gold); font-size:14px; }
+        #google-reviews-widget .rsd-name{ font-size:13px; font-weight:900; }
+        #google-reviews-widget .rsd-date{ font-size:12px; color:var(--sub); font-weight:700; margin-top:2px; }
+        #google-reviews-widget .rsd-text{ margin:12px 0 0; color:var(--text); font-size:14px; line-height:1.62; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+        #google-reviews-widget .rsd-nav{ width:42px; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.06); color:#fff; font-size:22px; font-weight:900; line-height:1; cursor:pointer; transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease; }
+        #google-reviews-widget .rsd-nav:hover{ transform:translateY(-1px); background:rgba(255,255,255,.10); border-color:rgba(242,169,59,.34); }
+        #google-reviews-widget .rsd-nav:disabled{ opacity:.45; cursor:not-allowed; }
+        #google-reviews-widget .rsd-status{ margin-top:12px; font-size:12px; line-height:1.45; color:var(--sub); font-weight:800; white-space:pre-wrap; border-top:1px solid rgba(255,255,255,.06); padding-top:12px; }
+        #google-reviews-widget .rsd-loading{ display:grid; grid-template-columns:repeat(3, minmax(200px,1fr)); gap:14px; }
+        #google-reviews-widget .rsd-skel{ min-height:226px; border-radius:16px; border:1px solid rgba(255,255,255,.08); background: linear-gradient(90deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.07) 18%, rgba(255,255,255,.03) 36%); background-size:220% 100%; animation:rsdShimmer 1.4s linear infinite; }
+        @keyframes rsdShimmer{ 0%{ background-position:200% 0; } 100%{ background-position:-20% 0; } }
+        @media (max-width:920px){ #google-reviews-widget .rsd-head{ flex-direction:column; align-items:flex-start; } #google-reviews-widget .rsd-summary{ flex-direction:column; align-items:flex-start; } #google-reviews-widget .rsd-summary-right{ width:100%; justify-content:space-between; } #google-reviews-widget .rsd-loading{ grid-template-columns:repeat(2, minmax(160px,1fr)); } }
+        @media (max-width:760px){ #google-reviews-widget .rsd-cta{ width:100%; } #google-reviews-widget .rsd-summary-right{ flex-direction:column; align-items:stretch; } #google-reviews-widget .rsd-badge, #google-reviews-widget .rsd-navWrap{ width:100%; justify-content:center; } #google-reviews-widget .rsd-loading{ grid-template-columns:1fr; } }
+        @media print{ #google-reviews-widget{ display:none !important; } }
+      </style>
+      <script>
+      (function(){
+        "use strict";
+        var mount = document.getElementById("google-reviews-widget");
+        if (!mount) return;
+        var cfg = {
+          placeId: (mount.dataset.placeId || "").trim(),
+          apiKey: (mount.dataset.apiKey || "").trim(),
+          theme: ((mount.dataset.theme || "dark").toLowerCase() === "light" ? "light" : "dark"),
+          minRating: Math.max(0, Math.min(5, parseFloat(mount.dataset.minRating || "1"))),
+          maxReviews: Math.max(1, parseInt(mount.dataset.maxReviews || "8", 10)),
+          showHeader: (mount.dataset.showHeader || "true").toLowerCase() !== "false",
+          autoplay: (mount.dataset.autoplay || "true").toLowerCase() !== "false",
+          interval: Math.max(2500, parseInt(mount.dataset.interval || "5200", 10)),
+          reviewUrl: (mount.dataset.reviewUrl || "").trim()
+        };
+        function esc(s){ return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+        function stars(r){ var n = Math.max(0, Math.min(5, Math.round(Number(r) || 0))); return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
+        function trunc(text, max){ var t = String(text || "").trim(); return t.length <= max ? t : t.slice(0, max - 1).trimEnd() + "…"; }
+        function fmtDate(input){ if (!input) return ""; var d = input instanceof Date ? input : new Date(input); if (Number.isNaN(d.getTime())) return ""; return d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" }); }
+        function initials(name){ var safe = String(name || "G").trim(); var parts = safe.split(/\s+/).slice(0,2); return parts.map(function(p){ return p.charAt(0).toUpperCase(); }).join("") || "G"; }
+        function reviewTimeValue(r){ if (typeof r.time === "number") return r.time; if (r.time) { var parsed = new Date(r.time).getTime(); if (!Number.isNaN(parsed)) return Math.floor(parsed / 1000); } return 0; }
+        function setStatus(msg){ var el = mount.querySelector("#rsdStatus"); if (el) el.textContent = msg; }
+        function setNavState(){ var prev = mount.querySelector("#rsdPrev"); var next = mount.querySelector("#rsdNext"); if (!prev || !next) return; prev.disabled = false; next.disabled = false; }
+        function wrapNext(){ var t = mount.querySelector("#rsdTrack"); if(!t) return; var end = (t.scrollLeft + t.clientWidth) >= (t.scrollWidth - 6); if(end){ t.scrollTo({ left:0, behavior:"smooth" }); } else { t.scrollBy({ left: cardWidth(), behavior:"smooth" }); } }
+        function wrapPrev(){ var t = mount.querySelector("#rsdTrack"); if(!t) return; var start = t.scrollLeft <= 6; if(start){ t.scrollTo({ left:t.scrollWidth, behavior:"smooth" }); } else { t.scrollBy({ left: -cardWidth(), behavior:"smooth" }); } }
+        if (!cfg.placeId || !cfg.apiKey || cfg.apiKey.indexOf("YOUR_") === 0) {
+          mount.innerHTML = '<section class="rsd-grev rsd-grev--'+cfg.theme+'"><div class="rsd-wrap"><div class="rsd-rail"><div class="rsd-status">Missing Place ID or API key. Add both values to the data attributes, then refresh.</div></div></div></section>';
+          return;
+        }
+        mount.innerHTML =
+          '<section class="rsd-grev rsd-grev--'+cfg.theme+'"><div class="rsd-wrap">'+
+            (cfg.showHeader ? '<div class="rsd-head"><div><div class="rsd-kicker">Real Space Digital • Google Reviews</div><div class="rsd-title">What people have said about working with us</div><p class="rsd-sub">Real, verified Google reviews from the businesses we build always-on systems for — proof you can see before you ever book a call.</p></div></div>' : "")+
+            '<div class="rsd-rail"><div class="rsd-summary" id="rsdSum"><div><div class="rsd-place">Loading place data…</div><div class="rsd-rateRow"><span class="rsd-rate">—</span><span class="rsd-stars">☆☆☆☆☆</span></div></div><div class="rsd-summary-right"><div class="rsd-badge">Live Google review feed</div><div class="rsd-navWrap"><button class="rsd-nav" type="button" id="rsdPrev" aria-label="Previous reviews">‹</button><button class="rsd-nav" type="button" id="rsdNext" aria-label="Next reviews">›</button></div></div></div>'+
+            '<div class="rsd-track" id="rsdTrack" aria-live="polite"><div class="rsd-loading" style="display:contents;"><div class="rsd-skel"></div><div class="rsd-skel"></div><div class="rsd-skel"></div></div></div>'+
+            '<div class="rsd-status" id="rsdStatus">Loading Google reviews…</div></div></div></section>';
+        var track = mount.querySelector("#rsdTrack");
+        var sumEl = mount.querySelector("#rsdSum");
+        var prevBtn = mount.querySelector("#rsdPrev");
+        var nextBtn = mount.querySelector("#rsdNext");
+        var ctaEl = mount.querySelector(".rsd-cta");
+        function cardWidth(){ var card = track.querySelector(".rsd-card"); return card ? card.getBoundingClientRect().width + 14 : 360; }
+        prevBtn.addEventListener("click", wrapPrev);
+        nextBtn.addEventListener("click", wrapNext);
+        track.addEventListener("scroll", setNavState, { passive:true });
+        window.addEventListener("resize", setNavState);
+        var timer = null;
+        function stopAuto(){ if (timer) clearInterval(timer); timer = null; }
+        function startAuto(){ if (!cfg.autoplay) return; stopAuto(); timer = setInterval(function(){ var endReached = (track.scrollLeft + track.clientWidth) >= (track.scrollWidth - 10); track.scrollTo({ left: endReached ? 0 : (track.scrollLeft + cardWidth()), behavior: "smooth" }); }, cfg.interval); }
+        ["pointerdown","wheel","touchstart","mouseenter","focusin"].forEach(function(evt){ track.addEventListener(evt, stopAuto, { passive:true }); });
+        track.addEventListener("mouseleave", startAuto, { passive:true });
+        function render(place){
+          var name = place.name || "Google Reviews";
+          var rating = Number(place.rating || 0);
+          var total = Number(place.user_ratings_total || 0);
+          var url = cfg.reviewUrl || place.url || "";
+          if (ctaEl && url) { ctaEl.setAttribute("href", url); }
+          sumEl.innerHTML = '<div><div class="rsd-place">'+esc(name)+'</div><div class="rsd-rateRow"><span class="rsd-rate">'+(rating ? rating.toFixed(1) : "—")+'</span><span class="rsd-stars">'+stars(rating)+'</span><span class="rsd-count">'+(total ? "("+total.toLocaleString()+" reviews)" : "")+'</span></div></div><div class="rsd-summary-right"><div class="rsd-badge">Live Google review feed</div><div class="rsd-navWrap"><button class="rsd-nav" type="button" id="rsdPrev" aria-label="Previous reviews">‹</button><button class="rsd-nav" type="button" id="rsdNext" aria-label="Next reviews">›</button></div></div>';
+          prevBtn = mount.querySelector("#rsdPrev");
+          nextBtn = mount.querySelector("#rsdNext");
+          prevBtn.addEventListener("click", wrapPrev);
+          nextBtn.addEventListener("click", wrapNext);
+          var all = Array.isArray(place.reviews) ? place.reviews.slice() : [];
+          all.sort(function(a, b){ return reviewTimeValue(b) - reviewTimeValue(a); });
+          var filtered = all.filter(function(r){ return Number(r.rating || 0) >= cfg.minRating; }).slice(0, cfg.maxReviews);
+          if (!filtered.length) { track.innerHTML = ""; setStatus('No matching reviews returned. For testing, keep data-min-rating="1".'); setNavState(); return; }
+          track.innerHTML = filtered.map(function(r){
+            var author = esc(r.author_name || "Google User");
+            var photo = r.profile_photo_url || "";
+            var date = esc(fmtDate(r.time ? new Date(r.time * 1000) : ""));
+            var text = esc(trunc(r.text || "", 320));
+            var rate = Number(r.rating || 0);
+            var init = esc(initials(r.author_name || "Google User"));
+            return '<article class="rsd-card" aria-label="Review by '+author+'"><div class="rsd-row">'+
+              (photo ? '<img class="rsd-avatar" src="'+esc(photo)+'" alt="'+author+'" loading="lazy" referrerpolicy="no-referrer">' : '<div class="rsd-avatar rsd-avatar-fallback" aria-hidden="true">'+init+'</div>')+
+              '<div><div class="rsd-name">'+author+'</div><div class="rsd-date">'+date+'</div></div></div>'+
+              '<div class="rsd-stars">'+stars(rate)+'</div><p class="rsd-text">'+(text || "—")+'</p></article>';
+          }).join("");
+          setStatus("Showing live Google reviews. Reviews are sorted newest-first from the Google response.");
+          setNavState(); startAuto();
+        }
+        function showFail(status){ setStatus("Could not load reviews. Places status: " + status + "\nCheck browser console for the exact Google Maps error."); }
+        window.__rsdMapsReady = function(){
+          try{
+            var mapAnchor = document.getElementById("rsd-map-anchor");
+            var dummyMap = new google.maps.Map(mapAnchor, { center:{ lat:0, lng:0 }, zoom:1, disableDefaultUI:true });
+            var svc = new google.maps.places.PlacesService(dummyMap);
+            svc.getDetails({ placeId: cfg.placeId, fields:["name","rating","user_ratings_total","reviews","url"] }, function(place, status){
+              if (status === google.maps.places.PlacesServiceStatus.OK && place) { render(place); }
+              else { console.error("[RSD Reviews] PlacesService status:", status); showFail(status); }
+            });
+          } catch(err){ console.error("[RSD Reviews] init error:", err); setStatus("Google Maps init error: " + err.message); }
+        };
+        function loadMaps(){
+          if (window.google && window.google.maps && window.google.maps.places) { return window.__rsdMapsReady(); }
+          if (document.querySelector('script[data-rsd-maps="1"]')) return;
+          var s = document.createElement("script");
+          s.async = true; s.dataset.rsdMaps = "1";
+          s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(cfg.apiKey) + "&libraries=places&callback=__rsdMapsReady";
+          s.onerror = function(){ setStatus("Failed to load Google Maps script."); };
+          document.head.appendChild(s);
+        }
+        loadMaps();
+        setTimeout(loadMaps, 600);
+      })();
+      </script>
+
+      <div class="btn-row">
+        <button class="btn btn-amber" id="toPricing">See pricing that fits this →</button>
+        <button class="btn btn-ghost" id="toAudit">Not ready? Get a free business audit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4: YOUR PLAN (3 core packages) ============ -->
+  <section id="screen-pricing" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Pricing that fits your plan</div>
+      <div class="agency-badge">Top 2% Agency Dev Team</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Built for what you actually need.</h1>
+      <p class="lede">Your recommended AlwaysOn system is highlighted. Every package is one uniform build plus monthly RSD Partner dues — and every one is built to recover more than it costs against the leak you just measured. Pick one — you'll add any Enhancements &amp; Additional Services at the next step.</p>
+      <div class="price-grid" id="tiers"></div>
+      <div id="pkgRewardMeter"></div>
+      <section class="whynow" aria-label="Why AlwaysOn, why now">
+        <div class="eyebrow">Why AlwaysOn — why now</div>
+        <h2 class="wn-title">Your buyers stopped keeping business hours. Your business shouldn't either.</h2>
+        <p class="wn-lead">In an age of accelerationism — a world speeding up in technology and uncertainty — people move to the businesses they can reach, and trust, the moment they're ready. Always-on, 24/7 authority is how your quality of business shows up after hours and on weekends, when they're actually buying.</p>
+        <div class="wn-stat"><span class="wn-num">53%</span><span class="wn-num-sub">of buyers begin — or make — their buying decision outside traditional 9-to-5 hours.<em>Recent industry studies</em></span></div>
+        <div class="wn-grid">
+          <div class="wn-card"><div class="wn-ic"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 16c3.5-6 8-9 13-9s9.5 3 13 9c-3.5 6-8 9-13 9S6.5 22 3 16Z" stroke="#F2A93B" stroke-width="2"/><circle cx="16" cy="16" r="4.5" stroke="#F2A93B" stroke-width="2"/><circle cx="16" cy="16" r="1.6" fill="#F2A93B"/></svg></div><div class="wn-k">See · AlwaysOn</div><p>A trained web agent answers, qualifies, and books the instant interest peaks — day, night, weekend.</p></div>
+          <div class="wn-card"><div class="wn-ic"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a6.5 6.5 0 0 1 13 0c0 4.5-4 5-4.5 8.5-.3 2.2-1.6 3.5-3.5 3.5-1.7 0-2.8-1-3.2-2.4" stroke="#F2A93B" stroke-width="2" stroke-linecap="round"/><path d="M14 13a2.8 2.8 0 0 1 5.6 0" stroke="#F2A93B" stroke-width="2" stroke-linecap="round"/></svg></div><div class="wn-k">Hear · ConversionOS</div><p>A trained voice receptionist picks up after hours and on weekends, so no call goes unanswered.</p></div>
+          <div class="wn-card"><div class="wn-ic"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 27C9 22 5 17.5 5 12.5 5 9 7.6 6.5 10.8 6.5c2 0 3.9 1.1 5.2 2.9 1.3-1.8 3.2-2.9 5.2-2.9C24.4 6.5 27 9 27 12.5 27 17.5 23 22 16 27Z" stroke="#F2A93B" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="wn-k">Feel · Growth OS</div><p>Managed marketing and a 4-post/week social presence keep your brand felt everywhere — with a weekly strategy hour.</p></div>
+        </div>
+      </section>
+      <div class="btn-row">
+        <button class="btn btn-amber" id="toCheckout">Continue to checkout →</button>
+        <button class="btn btn-ghost" id="toAuditPlan">Prefer a free Report first?</button>
+      </div>
+      <p class="price-note">A credit card is kept securely on file for any per-hour, out-of-scope work and your monthly RSD Partner-level dues. Know that no monthly dues begin until your build goes live — a 60–90 day ETA — or day 90 at the latest. Every AlwaysOn package is a deliverable within 90 days.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 5: CHECKOUT (optional add-ons + running total) ============ -->
+  <section id="screen-checkout" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">Checkout</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Make it yours, then review.</h1>
+      <p class="lede">Your selected package is locked in. Stack any Optional Enhancements below — each one is a power-up built to compound your always-on system. Your running total updates live.</p>
+      <div id="printHeader"><div class="ph-brand">Real Space Digital</div><div class="ph-title">Your Always-On Plan &amp; Investment</div><div class="ph-sub">Digitizing Reality, Elevating Sales™ · calculate.rsddirect.com</div></div>
+      <div id="planSummary"></div>
+      <div id="auditLaunchHost"></div>
+      <div class="enh-head"><div class="eyebrow">Base &amp; Enhancement Services</div><h2>Enhancements &amp; Additional Services.</h2><p>Start with the Tour2Booking one-time build, then stack any additional services — each one compounds the always-on system you just chose. Add or remove anything; your investment updates live.</p></div>
+      <div id="addonHost"></div>
+      <div id="auditLaunchHost2"></div>
+      <div id="bonusMeter"></div>
+      <div id="pricingTotal"></div>
+      <div id="printRecap" aria-hidden="true"></div>
+      <p class="price-note" id="priceNote">One-time package pricing shown, mirrored from the RSD funnel. Founder Lock pricing (5–15% off) and ongoing AlwaysOn plans are confirmed on your call.</p>
+      <div class="btn-row">
+        <a class="btn btn-amber" id="bookCall" href="#" target="_blank" rel="noopener">Book a 15-minute walkthrough →</a>
+        <button class="btn btn-ghost" id="backToPlan">← Change package</button>
+        <button class="btn btn-ghost" id="toAudit2">Prefer a free Report first?</button>
+        <button class="btn btn-ghost" id="downloadPdf">⤓ Download PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 5: AUDIT ============ -->
+  <section id="screen-audit" class="screen">
+    <div class="shell pad">
+      <div class="eyebrow">No pressure — start with a look</div>
+      <h1 class="display" style="font-size:clamp(1.9rem,4vw,2.8rem);">Get a free Online Presence Report.</h1>
+      <div class="audit-card">
+        <h3>We'll find the leaks for you.</h3>
+        <p class="lede" style="margin-bottom:6px;">Not ready to look at pricing? We'll build your Online Presence Report and show you exactly where revenue is slipping — <b>in person across Virginia, online anywhere else.</b> No cost, no obligation.</p>
+        <div class="btn-row" style="margin-top:18px;">
+          <a class="btn btn-amber" id="bookAudit" href="#" target="_blank" rel="noopener">Claim Your Free Online Presence Report →</a>
+          <button class="btn btn-ghost" id="auditBackPricing">See pricing instead</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ MODAL: LEAD CAPTURE ============ -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="m-head">
+      <button class="m-x" id="modalX" aria-label="Close">✕</button>
+      <div class="eyebrow">Almost there</div>
+      <h3 id="modalTitle">Where should we send your report?</h3>
+      <p class="m-sub">We'll email your estimate and your recommended path. No pricing until you ask.</p>
+    </div>
+    <div class="m-body">
+      <form id="leadForm" novalidate>
+        <input class="inp" id="f-first" type="text" placeholder="First name" autocomplete="given-name" required>
+        <input class="inp" id="f-last" type="text" placeholder="Last name" autocomplete="family-name">
+        <input class="inp" id="f-company" type="text" placeholder="Business name" autocomplete="organization">
+        <input class="inp" id="f-email" type="email" placeholder="Email address" autocomplete="email" required>
+        <input class="inp" id="f-phone" type="tel" placeholder="Mobile phone" autocomplete="tel">
+        <label class="optin"><input type="checkbox" id="f-sms"> Text me my report and occasional updates. Message &amp; data rates may apply; reply STOP to opt out.</label>
+        <label class="optin"><input type="checkbox" id="f-email-optin" checked> Email me my report and occasional insights.</label>
+        <div class="btn-row" style="margin-top:18px;">
+          <button class="btn btn-amber" type="submit" id="leadSubmit" style="width:100%;">See my recommended plan →</button>
+        </div>
+        <p class="form-msg" id="formMsg"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: CONGRATULATIONS — FREE BUSINESS AUDIT (v2) ============ -->
+<div class="audit-overlay" id="auditOverlay" role="dialog" aria-modal="true" aria-labelledby="auditPopTitle">
+  <div class="audit-pop">
+    <button class="ap-x" id="auditPopX" aria-label="Close">✕</button>
+    <svg class="audit-rocket" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="rkBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F8CE7E"/><stop offset=".55" stop-color="#F2A93B"/><stop offset="1" stop-color="#C9821F"/>
+        </linearGradient>
+        <linearGradient id="rkFlame" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F8CE7E"/><stop offset="1" stop-color="#E4572E"/>
+        </linearGradient>
+      </defs>
+      <circle class="rk-star" cx="22" cy="26" r="1.8" fill="#F8CE7E"/>
+      <circle class="rk-star s2" cx="98" cy="20" r="1.4" fill="#ECE7DD"/>
+      <circle class="rk-star s3" cx="88" cy="44" r="1.2" fill="#F2A93B"/>
+      <circle class="rk-star s2" cx="30" cy="52" r="1.2" fill="#ECE7DD"/>
+      <g class="rk-flame">
+        <path d="M60 88 C55 98 57 106 60 112 C63 106 65 98 60 88 Z" fill="url(#rkFlame)"/>
+        <path d="M60 90 C57.5 97 58.5 102 60 106 C61.5 102 62.5 97 60 90 Z" fill="#FFF3D6"/>
+      </g>
+      <g class="rk-ship">
+        <path d="M60 14 C69 26 72 42 72 56 C72 68 68 78 60 84 C52 78 48 68 48 56 C48 42 51 26 60 14 Z" fill="url(#rkBody)" stroke="rgba(28,19,3,.35)" stroke-width="1"/>
+        <circle cx="60" cy="46" r="7.5" fill="#0d0f14" stroke="#F8CE7E" stroke-width="2"/>
+        <circle cx="60" cy="46" r="3.4" fill="#B79CFF" opacity=".85"/>
+        <path d="M48 58 C40 64 37 74 38 82 C44 79 49 74 51 68 Z" fill="#C9821F"/>
+        <path d="M72 58 C80 64 83 74 82 82 C76 79 71 74 69 68 Z" fill="#C9821F"/>
+        <rect x="56.5" y="82" width="7" height="6" rx="2" fill="#8a5a14"/>
+      </g>
+      <rect x="30" y="104" width="60" height="4" rx="2" fill="rgba(236,231,221,.35)"/>
+      <rect x="40" y="108" width="40" height="4" rx="2" fill="rgba(236,231,221,.22)"/>
+      <rect x="44" y="98" width="4" height="8" rx="1.5" fill="rgba(236,231,221,.3)"/>
+      <rect x="72" y="98" width="4" height="8" rx="1.5" fill="rgba(236,231,221,.3)"/>
+    </svg>
+    <div class="ap-ey">Congratulations</div>
+    <h3 id="auditPopTitle">You just took the first step to reclaim control of your business's future.</h3>
+    <p>That decision earned you something real: a <b>free Online-Presence Report</b> with Real Space Digital. We'll map exactly where revenue is leaking and what your always-on system recovers first — no cost, no obligation.</p>
+    <div class="ap-btns">
+      <a class="btn btn-amber" id="auditScheduleBtn" href="#" target="_blank" rel="noopener">Claim Your Free Online Presence Report →</a>
+      <button class="btn btn-ghost" id="auditCustomizeBtn" type="button">Customize Further Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: COMMITMENT BONUS (v2.2) ============ -->
+<div class="audit-overlay" id="bonusOverlay" role="dialog" aria-modal="true" aria-labelledby="bonusTitle">
+  <div class="audit-pop bonus-pop">
+    <button class="ap-x" id="bonusPopX" aria-label="Close">✕</button>
+    <div id="bonusArt" class="bonus-art"></div>
+    <div class="ap-ey" id="bonusEy">Reward Unlocked</div>
+    <h3 id="bonusTitle"></h3>
+    <div id="bonusBody"></div>
+    <div class="ap-btns"><button class="btn btn-amber" id="bonusClaimBtn" type="button">Claim &amp; keep building →</button></div>
+  </div>
+</div>
+
+<script>
+/* ====================== SHARED CONFIG (cloned from live) ====================== */
+var RSD_CONFIG = {
+  LEAD_WEBHOOK_URL: "https://services.leadconnectorhq.com/hooks/LjdaKqrcYOPlIye3j9O6/webhook-trigger/e48376b4-3b34-4c61-824e-6426e39ba2fc",
+  CTA_URL: "https://calendly.com/realspacedigital/30min",
+  AUDIT_URL: "https://calendly.com/realspacedigital/business-audit-discovery",
+  EMAILJS: { PUBLIC_KEY:"6OzKpW_yrm-g1htg4", SERVICE_ID:"service_bgsc5fk", TEMPLATE_ID:"template_3uf5wsr", RSD_EMAIL:"info@realspacedigital.net" }
+};
+
+/* ===== Demo page wiring — each "See demo" button deep-links to its focus anchor on the demo page.
+   Anchors mirror the Genie Vee Demo Page Story Scripts (one hero + ten service scripts).
+   Where the calculator has no exact demo yet, we point to the closest anchor as a HOLDING ZONE
+   so every button is live; the demo page makes the unclear clear. ===== */
+var DEMO_BASE = "https://demo.rsddirect.com";
+var DEMO_ANCHORS = {
+  /* calculator service keys -> demo anchors */
+  "virtualtour":"#tour-to-booking",
+  "tour2booking":"#tour-to-booking",
+  "authority":"#always-on-authority",
+  "flywheel":"#reputation-flywheel",
+  "avatar-social":"#social-avatar",
+  "twin":"#digital-twin",
+  "social":"#social-avatar",
+  "photo":"#product-photo",
+  "seasonal":"#seasonal-shoots",
+  "rapid":"#always-on-authority",      /* live web booking agent demo */
+  "rapid-voice":"#always-on-operations", /* after-hours phone receptionist — holding zone */
+  /* package keys -> demo anchors */
+  "pkg_t2b":"#tour-to-booking",
+  "pkg_ao":"#always-on-authority",
+  "pkg_os":"#conversion-os",
+  "pkg_growth":"#conversion-os",
+  "store_first":"#always-on-operations",
+  /* pillar deep-links for the reco "See this in the demo" buttons (color-matched to each pillar) */
+  "focus-revenue":"#loss-revenue-leverage",
+  "focus-bookings":"#tour-to-booking",
+  "focus-hassle":"#always-on-operations"
+};
+function demoUrl(key){ return DEMO_BASE + (DEMO_ANCHORS[key] || "/"); }
+/* Build a "See demo" button. key=anchor key, label optional, small=compact. */
+function demoBtn(key, label, small){
+  return '<a class="btn btn-demo'+(small?" sm":"")+'" href="'+demoUrl(key)+'" target="_blank" rel="noopener">▶ '+(label||"See the demo")+'</a>';
+}
+/* Route each focus path's reco demo button to its PILLAR section (color-matched), not the recommended SKU. */
+var FOCUS_DEMO = { designbuild:"focus-revenue", venues:"focus-bookings", storefront:"focus-hassle" };
+
+var PHASE1_NAMES = {
+  "virtualtour":"Matterport Virtual Tour",
+  "tour2booking":"Tour2Booking™ — 24/7 capture & booking",
+  "authority":"AlwaysOn Authority Page",
+  "flywheel":"Reputation Flywheel Video Package",
+  "avatar-social":"Social Avatar Presence Program"
+};
+
+/* ===== Single source of pricing truth — mirrors qualify.rsddirect.com /public/pricing.js ===== */
+var PRICING = {
+  note:"AlwaysOn membership: one uniform build plus monthly RSD Partner dues. Dues begin when your build goes live (60–90 day ETA) or at day 90 — whichever comes first.",
+  /* v3 (2026-07-06): Tour2Booking as an AlwaysOn System. Three monthly-membership packages.
+     Uniform one-time build base (price) across all three; the tier differs by monthly Partner dues
+     and what's included. The former one-time Tour2Booking package now sits at the top of the
+     Base & Enhancement Services section (see PRICING.baseService). */
+  tiers:[
+    { key:"pkg_ao", name:"AlwaysOn", eyebrow:"Start here — AlwaysOn System", badge:"Most chosen",
+      sub:"Your live 24/7 booking system — answers, qualifies, and books new prospects on its own, day, night, and weekends.",
+      from:true, monthly:750, price:6549,
+      includes:["Fully conversationally-trained 24/7 web booking agent — trained on your business to book, answer questions, and qualify leads online, all year round","AlwaysOn Authority Page that builds trust while you sleep","Instant lead capture with real-time alerts","Reviews & reputation, handled for you","Automated follow-up that never forgets a lead"] },
+    { key:"pkg_os", name:"AlwaysOn ConversionOS", eyebrow:"Next level — Voice + Web",
+      sub:"Everything in AlwaysOn, plus a conversationally-trained voice agent that answers the phone and books after hours and on weekends.",
+      monthly:1500, price:6549,
+      includes:["Everything in AlwaysOn","Conversationally-trained 24/7 voice agent — trained on what to say, what not to, and how to book","Your digital 24/7 executive booking receptionist for after-hours & weekends — answers, supports Q&A, and books while your doors are closed","Reactivation & nurture engine that revives cold leads"] },
+    { key:"pkg_growth", name:"AlwaysOn Growth OS", eyebrow:"Full autopilot — Marketing + Social",
+      sub:"The full stack — capture, convert, retain, and grow — with managed marketing and a scalable social presence running on autopilot.",
+      monthly:3000, price:6549,
+      includes:["Everything in AlwaysOn & ConversionOS in full","Social Avatar Presence Program — 4 done-for-you posts / week","Marketing & Ad Management across your channels","A weekly marketing strategy hour with Real Space Digital","Priority build + quarterly strategy"] }
+  ],
+  /* Base & Enhancement Services — the former one-time Tour2Booking package (no retainer, no monthly),
+     now the lead item at the top of the enhancements section. */
+  baseService:{ key:"base_t2b", name:"Tour2Booking™ — one-time build", price:5549,
+    ey:"Base Service · one-time, no retainer",
+    sub:"The original Tour2Booking build as a one-time asset — a virtual tour that books 24/7, with the booking moment built right where interest peaks. No monthly dues.",
+    includes:["Tour2Booking™ — book from inside the tour","AlwaysOn Authority Page","Instant lead capture & alerts","Reviews & reputation, handled"] },
+  /* Premium add-on — flashing-green upgrade. Price hidden until the pricing page. */
+  twin:{ key:"dt_avatar", name:"True Digital Twin Avatar Clone", price:9000, downPct:25,
+    videos:6,
+    sub:"A true-voice, true-likeness digital clone of you, your spokesperson, or a company rep — for infinite scale. Comes with 6 featured True Avatar Videos produced and ready to deploy." },
+  /* AlwaysOn RSD Rapid Response — live web booking & FAQ agent (standalone), with an optional
+     after-hours & weekends phone-receptionist upgrade toggled on top. INCLUDED with AlwaysOn packages (pkg_ao, pkg_os). */
+  rapid:{
+    inPackages:["pkg_ao","pkg_os","pkg_growth"],
+    base:{ key:"rr_web", name:"AlwaysOn RSD Rapid Response — Live Web Booking & FAQ Agent",
+      monthly:497,
+      sub:"A 24/7 live web agent that answers your FAQs, qualifies visitors, and books appointments right on your existing business page — trained on your pricing, your services, your company culture, and how you want it to handle inquiries. Booking to one calendar or a shared calendar is included.",
+      usage:"Up to $50/mo of per-text and per-call usage is included; anything beyond is billed to the card on file." },
+    voice:{ key:"rr_voice", name:"Afterhours & Weekends AlwaysOn Phone Support & Bookings Receptionist",
+      monthly:250,
+      sub:"Pair the web agent with a full phone receptionist — 24/7 extended hours, availability, and booking for after-hours, when you're unavailable, and weekends — so you capture the 53% of leads shopping while you're closed." },
+    setupFee:450,
+    setupNote:"AlwaysOn systems include a one-time setup commitment: on average 3 dedicated setup meetings with the RSD team and a $450 setup fee." },
+  /* Social Avatar Presence Program — 3 levels, priced from the funnel social rates (soc1/2/3).
+     Post counts are sensible defaults — confirm against the funnel's social page. */
+  social:{ key:"social", name:"Social Avatar Presence Program",
+    sub:"Scalable, customizable media production at a fraction of the time and cost of pro shoot days, built to keep attention flowing to your always-on system 24/7 — your company's presence on like a real person, without the shoots, makeup, or hours out of your week.",
+    levels:[
+      { key:"soc1", name:"Essentials", posts:"2 posts / week (~8 / mo)",  monthly:750 },
+      { key:"soc2", name:"Growth",     posts:"4 posts / week (~16 / mo)", monthly:1500 },
+      { key:"soc3", name:"Dominate",   posts:"6 posts / week (~26 / mo)", monthly:2250 }
+    ] },
+  /* Founder Lock tiers (from canonical table) */
+  founder:{ gf1:0.05, gf2:0.10, gf3:0.15, priorityFee:497 },
+
+  /* Authority & Audience Video Program — replaces Seasonal Campaign Boosters (v2.1).
+     Prices mirror qualify.rsddirect.com /public/pricing.js: vid_authority 1800,
+     vid_single 500 (per-quarter at half-day shoot rate), photo_half 400 / photo_full 800. */
+  videoProg:{
+    suggested:{ key:"vid_authority", name:"Authority Booster Video", price:1800,
+      sub:"A cinematic, credibility-first brand video that tells your story and anchors your always-on system — the single strongest trust asset on your site and socials." },
+    feature:{ key:"vid_feature", name:"Pro Photo + Video Feature", price:2499,
+      sub:"Professional photography and a produced video feature in one shoot — a service or product announcement, a special, a highlight reel of your best work, or a what-our-clients-say focus. Up to 5 hours of shooting, edited and delivered ready to convert.",
+      priceNote:"from $2,499" },
+    stills:{ name:"Still Photography Package",
+      sub:"Optional add-on from the same shoot day — scroll-stopping stills of your spaces, your team, and your work, ready for web and social.",
+      levels:[
+        { key:"photo_half", name:"Half-day stills", price:400 },
+        { key:"photo_full", name:"Full-day stills", price:800 }
+      ] } },
+
+  /* ===== Storefront-only add-ons (show only when the Storefront path is selected) ===== */
+  store:{
+    online:{ key:"store_first", name:"Online Store — First Phase", price:4450,
+      benefits:"In-store pickup with pickup-store selected at checkout — convenient online ordering first, more foot traffic into the store, and built to scale into shipping later.",
+      sub:"Phase one of your digital storefront — one-time build." },
+    support:{ name:"Online Store Support & Management",
+      sub:"Storefront upkeep, SKU updates, and order-flow refinement — handled for you.",
+      base:747, /* +33% per doubling of volume */
+      levels:[
+        { key:"store_20", name:"Up to 20 SKUs / 10 services" },
+        { key:"store_40", name:"Up to 40 SKUs / 20 services" },
+        { key:"store_80", name:"Up to 80 SKUs / 40 services" }
+      ] }
+  },
+  photo:{ name:"Product Photo Shoot",
+    sub:"Scroll-stopping product imagery — your catalog shot, styled, and retouched to sell, so every SKU looks worth its price online.",
+    benefits:"Professional, conversion-ready product photography that makes your storefront look the part and lifts every listing.",
+    levels:[
+      { key:"photo_1_3",  name:"1–3 products",        price:350 },
+      { key:"photo_6_9",  name:"6–9 products",        price:850 },
+      { key:"photo_9_12", name:"9–12 products",       price:1300 },
+      { key:"photo_21_30", name:"21–30 products",     price:1995 },
+      { key:"photo_vol",  name:"30+ products (volume)", price:2200 }
+    ] },
+
+  /* ===== Full qualify.rsddirect.com catalog (v2.2) — every remaining a-la-carte item.
+     Prices mirror /public/pricing.js exactly. Seasonal shoots intentionally excluded. ===== */
+  extras:{
+    capture:{ name:"Capture & Media", ey:"Additional Service · Capture &amp; media",
+      sub:"Professional capture, a la carte — add exactly the media your system needs. Select any that fit; each mirrors the canonical RSD funnel pricing.",
+      items:[
+        { key:"scan_base",      name:"Matterport 3D Scan — Standard",    price:1299 },
+        { key:"scan_guided",    name:"Matterport 3D Scan — Guided Tour", price:1799 },
+        { key:"vid_single",     name:"Professional Video — Single",      price:500 },
+        { key:"vid_pack",       name:"Video Pack (3 videos)",            price:1200 },
+        { key:"vid_testimonial",name:"Client Testimonial Video",         price:1800 },
+        { key:"drone_half",     name:"Drone Capture — Half Day",         price:350 },
+        { key:"drone_full",     name:"Drone Capture — Full Day",         price:600 }
+      ] },
+    web:{ name:"Web Presence", ey:"Additional Service · Web presence",
+      sub:"Pages engineered to convert the attention your always-on system captures — built on your story, wired to your booking flow.",
+      items:[
+        { key:"lp_base",       name:"Landing Page — Core",       price:1800 },
+        { key:"lp_conv",       name:"Conversion Landing Page",   price:2800 },
+        { key:"lp_prem",       name:"Premium Landing Page",      price:3500 },
+        { key:"lp_about",      name:"About / Story Page",        price:500 },
+        { key:"lp_extra_page", name:"Additional Page",           price:450 }
+      ] },
+    ao:{ name:"AlwaysOn AI Concierge", ey:"Additional Service · AlwaysOn AI",
+      sub:"Your intelligent front desk — answers, qualifies, and books in real time, trained on your business. Pick the level that matches how your clients reach you.",
+      pageItem:{ key:"ao_page", name:"AlwaysOn Authority Page — managed", monthly:1499 },
+      levels:[
+        { key:"ao_ai_base",  name:"AI Concierge — Text &amp; Web", monthly:1995 },
+        { key:"ao_ai_voice", name:"AI Concierge — + Voice",        monthly:2495 },
+        { key:"ao_ai_full",  name:"AI Concierge — Full Stack",     monthly:2995 }
+      ] },
+    ads:{ name:"Marketing & Ad Management", ey:"Additional Service · Paid growth",
+      sub:"Managed campaigns that keep qualified attention flowing into your always-on system — switch on any channel.",
+      items:[
+        { key:"ad_mgmt",  name:"Marketing Ad Management",    monthly:1495 },
+        { key:"ad_local", name:"Local Ads (Google / LSA)",   monthly:995 },
+        { key:"ad_meta",  name:"Meta Ads Management",        monthly:1295 }
+      ] } },
+
+  /* ===== Reward Constellation (v3 gamification) — cosmic theme.
+     Lunar unlocks on choosing ConversionOS; Solar on choosing Growth OS;
+     Supernova on adding $9K+ in enhancements on the checkout page. ===== */
+  bonus:{
+    tiers:[
+      { rank:1, key:"lunar",     name:"Lunar",     trigger:"pkg_os",     hint:"Choose ConversionOS" },
+      { rank:2, key:"solar",     name:"Solar",     trigger:"pkg_growth", hint:"Choose Growth OS" },
+      { rank:3, key:"supernova", name:"Supernova", trigger:"enh", min:9000, hint:"$9K+ enhancements" }
+    ],
+    freeVideoValue:1800,
+    featureValue:2499,
+    enhMin:9000 }
+};
+/* Derive store-support monthly prices: base, then +33% per doubling. */
+(function(){
+  var b=PRICING.store.support.base, lv=PRICING.store.support.levels;
+  lv[0].monthly=b;
+  lv[1].monthly=Math.round(b*1.33);
+  lv[2].monthly=Math.round(lv[1].monthly*1.33);
+})();
+/* Plain-language context for each recommended service (shown on the pre-pricing page). */
+var SERVICE_DESC = {
+  "virtualtour":"An immersive 3D Matterport walkthrough of your space — the foundation that lets prospects explore and book 24/7, even after hours.",
+  "tour2booking":"Your virtual tour becomes a booking tool — visitors book right inside it, 24/7, even after hours and on weekends.",
+  "authority":"An always-on page that answers, qualifies, and captures every inquiry automatically, so nothing slips when you're not there.",
+  "flywheel":"A reputation video package that turns your happy clients into a steady stream of trust, proof, and referrals.",
+  "avatar-social":"Your social presence on autopilot — a branded avatar tells your story consistently without you posting every day."
+};
+/* band -> package key (higher rank wins across lanes) */
+var BAND_TIER = {
+  "Focused start":"pkg_ao","Booking-first":"pkg_ao","Momentum":"pkg_growth",
+  "Trust-first":"pkg_ao","Reputation":"pkg_os","Leverage":"pkg_growth",
+  "Streamline start":"pkg_ao","Automate":"pkg_os","Always-On Ops":"pkg_growth"
+};
+var TIER_RANK = { pkg_ao:1, pkg_os:2, pkg_growth:3 };
+
+/* Range-driven recommendation per profile (cloned + storefront added). */
+var RECOMMEND = {
+  designbuild:[
+    { min:0,      band:"Trust-first", consider:"authority",     also:["flywheel"] },
+    { min:200000, band:"Reputation",  consider:"flywheel",      also:["authority"] },
+    { min:500000, band:"Leverage",    consider:"avatar-social", also:["authority","flywheel"] }
+  ],
+  venues:[
+    { min:0,      band:"Focused start", consider:"authority",    also:["virtualtour"] },
+    { min:80000,  band:"Booking-first", consider:"tour2booking", also:["virtualtour","authority"] },
+    { min:250000, band:"Momentum",      consider:"flywheel",     also:["tour2booking","virtualtour","authority"] }
+  ],
+  storefront:[
+    { min:0,      band:"Streamline start", consider:"authority",     also:[] },
+    { min:60000,  band:"Automate",         consider:"tour2booking",  also:["authority"] },
+    { min:150000, band:"Always-On Ops",    consider:"avatar-social", also:["tour2booking","authority"] }
+  ]
+};
+
+/* ====================== THREE ICP PROFILES ====================== */
+/* toggle key -> profile id. Each lane has its own lane color. */
+var PROFILES = {
+  /* TOGGLE: revenue (Lost Revenue Prevention) */
+  designbuild:{
+    id:"designbuild", toggle:"revenue", lane:"var(--green)", color:"#5FD08A",
+    label:"Design-Build", icp:"Lost revenue",
+    title:"Revenue sitting in your past-client list & lost leads",
+    inputs:[
+      { key:"pastClients", label:"Past clients in your database", min:0, max:2000, step:5, default:120, format:"number", help:"Everyone you've ever done a project for — your list." },
+      { key:"reactivationRate", label:"Past clients who'd hire you again this year", min:0, max:50, step:1, default:6, format:"percent", help:"A realistic share — most firms see 5–10% ready for a new project." },
+      { key:"avgProjectValue", label:"Average project value", min:0, max:1000000, step:5000, default:85000, format:"currency" },
+      { key:"estimatesPerMonth", label:"Estimates / site visits per month", min:0, max:60, step:1, default:8, format:"number" },
+      { key:"deadEstimatePct", label:"Estimates that never close", min:0, max:100, step:1, default:70, format:"percent", help:"Of the estimates you run each month, the share that go quiet." },
+      { key:"hoursPerEstimate", label:"Hours per estimate", min:0, max:20, step:0.5, default:4, format:"number" },
+      { key:"ownerHourValue", label:"Your hour is worth", min:0, max:1000, step:25, default:200, format:"currency" }
+    ],
+    compute:function(s){
+      var reactivated=s.pastClients*(s.reactivationRate/100);
+      var idleRevenue=reactivated*s.avgProjectValue;
+      var deadEst=s.estimatesPerMonth*(s.deadEstimatePct/100);
+      var wastedHrs=deadEst*s.hoursPerEstimate*12;
+      var timeLeak=wastedHrs*s.ownerHourValue;
+      return { hero:idleRevenue+timeLeak,
+        breakdown:"≈ "+reactivated.toFixed(1)+" past clients would build again — plus the cost of time lost to bids that never close.",
+        metrics:[ {label:"Revenue waiting in your list",value:fmt(idleRevenue)},
+                  {label:"Value of time lost bidding",value:fmt(timeLeak)} ] };
+    }
+  },
+  /* TOGGLE: time (Save Time & Win Bookings) */
+  venues:{
+    id:"venues", toggle:"time", lane:"var(--amber)", color:"#F2A93B",
+    label:"Event Venue", icp:"Time & bookings",
+    title:"What slow replies cost your venue",
+    inputs:[
+      { key:"monthlyInquiries", label:"Inquiries you get each month", min:0, max:500, step:1, default:50, format:"number", help:"Calls, emails, forms and DMs asking about your venue." },
+      { key:"afterHoursPct", label:"Inquiries that arrive after hours", min:0, max:100, step:1, default:65, format:"percent", help:"Evenings & weekends — when nobody's there to reply." },
+      { key:"slowResponseLossPct", label:"Lost to slow replies", min:0, max:100, step:1, default:20, format:"percent", help:"Share that books somewhere else before you respond." },
+      { key:"tourToBookingPct", label:"Tours that turn into bookings", min:0, max:100, step:1, default:25, format:"percent", help:"Your client conversion rate — for every 5 people who tour or meet with you, how many book? (1 of 5 = 20%)" },
+      { key:"avgBookingValue", label:"Average booking value", min:0, max:100000, step:500, default:10000, format:"currency", help:"Typical revenue from one booked event." }
+    ],
+    compute:function(s){
+      var afterHours=s.monthlyInquiries*(s.afterHoursPct/100);
+      var lost=afterHours*(s.slowResponseLossPct/100);
+      var lostBookings=lost*(s.tourToBookingPct/100);
+      var annual=lostBookings*s.avgBookingValue*12;
+      return { hero:annual,
+        breakdown:"≈ "+lostBookings.toFixed(1)+" bookings a month slip away → "+fmt(annual)+" a year.",
+        metrics:[ {label:"Bookings slipping away monthly",value:lostBookings.toFixed(1)},
+                  {label:"Peak-season dates each year — every one is invaluable",value:"~52 / yr"} ] };
+    }
+  },
+  /* TOGGLE: hassle (Reduce Hassle, Manual Workflows & Stress) */
+  storefront:{
+    id:"storefront", toggle:"hassle", lane:"var(--violet)", color:"#B79CFF",
+    label:"Storefront / Service", icp:"Hassle & stress",
+    title:"The cost of manual work and missed walk-in demand",
+    inputs:[
+      { key:"weeklyManualHours", label:"Hours a week on manual admin & repeat tasks", min:0, max:80, step:1, default:15, format:"number" },
+      { key:"teamHourValue", label:"What an hour of that time is worth", min:0, max:500, step:5, default:75, format:"currency" },
+      { key:"monthlyInquiries", label:"Calls, messages & online inquiries a month", min:0, max:1000, step:5, default:80, format:"number" },
+      { key:"missedResponsePct", label:"Share missed or answered too late", min:0, max:100, step:1, default:30, format:"percent", help:"The ones that slip through while everyone's busy." },
+      { key:"inquiryToSalePct", label:"Answered inquiries that become sales", min:0, max:100, step:1, default:35, format:"percent", help:"For every 10 inquiries you answer well, how many buy? (3 of 10 = 30%)" },
+      { key:"avgTicket", label:"Average sale value", min:0, max:50000, step:100, default:1200, format:"currency" }
+    ],
+    compute:function(s){
+      var wastedHrs=s.weeklyManualHours*52;
+      var timeCost=wastedHrs*s.teamHourValue;
+      var missed=s.monthlyInquiries*(s.missedResponsePct/100);
+      var lostSalesMo=missed*(s.inquiryToSalePct/100);
+      var lostSalesYr=lostSalesMo*s.avgTicket*12;
+      return { hero:timeCost+lostSalesYr,
+        breakdown:"≈ "+Math.round(wastedHrs).toLocaleString()+" hours a year on manual work, plus "+fmt(lostSalesYr)+" in missed sales.",
+        metrics:[ {label:"Hours a year you could reclaim",value:Math.round(wastedHrs).toLocaleString()},
+                  {label:"Missed sales a year",value:fmt(lostSalesYr)} ] };
+    }
+  }
+};
+
+/* Toggle definitions in display order */
+var TOGGLES = [
+  { key:"revenue", profile:"designbuild", title:"Lost revenue prevention", sub:"Leads & jobs slipping away that you never recover.", icp:"Design-Build" },
+  { key:"time",    profile:"venues",      title:"Save time & win bookings", sub:"Slow replies and after-hours inquiries that book elsewhere.", icp:"Event Venue" },
+  { key:"hassle",  profile:"storefront",  title:"Reduce hassle & stress",  sub:"Manual workflows and missed demand draining your team.", icp:"Storefront / Service" }
+];
+
+/* Headline label for a profile = the FOCUS the visitor switched on (first-page selection),
+   not the internal ICP archetype. Keeps reco/calculator headings in line with what they picked. */
+function focusTitle(pid){
+  for(var i=0;i<TOGGLES.length;i++){ if(TOGGLES[i].profile===pid) return TOGGLES[i].title; }
+  return PROFILES[pid] ? PROFILES[pid].label : pid;
+}
+
+/* ICP dropdown — every business RSD fits, each pre-selecting its primary focus */
+var ICP_OPTIONS = [
+  { label:"Service-based business (HVAC, plumbing, electrical, cleaning…)", on:["hassle"] },
+  { label:"Dental / medical / professional practice", on:["hassle"] },
+  { label:"Event venue / event space", on:["time"] },
+  { label:"Vineyard / winery", on:["time"] },
+  { label:"Wedding venue", on:["time"] },
+  { label:"Hotel / resort / retreat", on:["time"] },
+  { label:"Museum / attraction / tour", on:["time"] },
+  { label:"Design-build firm", on:["revenue"] },
+  { label:"Custom home builder", on:["revenue"] },
+  { label:"Remodeler / renovation", on:["revenue"] },
+  { label:"Deck, fence & outdoor living", on:["revenue"] },
+  { label:"Landscape / hardscape", on:["revenue"] },
+  { label:"Pool & spa builder", on:["revenue"] },
+  { label:"Dive shop / scuba center", on:["hassle"] },
+  { label:"Stone & countertop showroom", on:["hassle"] },
+  { label:"Specialty / luxury retail", on:["hassle"] },
+  { label:"Auto / marine / powersports", on:["hassle"] },
+  { label:"Med spa / aesthetics clinic", on:["hassle"] },
+  { label:"Other high-ticket local business", on:["revenue","time","hassle"] }
+];
+
+/* ====================== STATE ====================== */
+var state = {
+  icp:"",
+  toggles:{ revenue:false, time:false, hassle:false },
+  upgradeTwin:false,
+  social:{ added:false, level:"soc2" },
+  rapid:{ webAdded:false, voiceAdded:false }, // standalone web agent toggle + after-hours phone toggle
+  video:{ authority:false, feature:false, stills:null }, // Authority Booster / Pro Photo+Video Feature / stills tier
+  extras:{ capture:{}, web:{}, aoLevel:null, aoPage:false, ads:{} }, // full qualify catalog selections
+  _bonusCelebrated:0, // highest reward rank already celebrated (1 Lunar / 2 Solar / 3 Supernova)
+  store:{ online:false, supportLevel:null },  // storefront online store + support tier
+  photo:{ level:null },     // product photo shoot tier
+  selectedPkg:null,
+  baseT2B:false, // Tour2Booking one-time build (Base & Enhancement Services)
+  values:{}, // profileId -> {key:val}
+  results:{} // profileId -> compute result
+};
+// v2: every calculator loads at $0 — the visitor builds their own number.
+// (Each input's `default` is kept on the definition as a reference benchmark, but sliders start at 0.)
+Object.keys(PROFILES).forEach(function(pid){
+  state.values[pid]={};
+  PROFILES[pid].inputs.forEach(function(i){ state.values[pid][i.key]=0; });
+});
+
+/* ====================== HELPERS ====================== */
+function fmt(n){ n=Math.round(n||0); return "$"+n.toLocaleString("en-US"); }
+function fmtInput(v,format){
+  if(format==="currency") return "$"+Number(v).toLocaleString("en-US");
+  if(format==="percent") return v+"%";
+  return Number(v).toLocaleString("en-US");
+}
+function activeProfiles(){
+  return TOGGLES.filter(function(t){return state.toggles[t.key];}).map(function(t){return t.profile;});
+}
+function recommend(profileId, hero){
+  var bands=RECOMMEND[profileId]; var pick=bands[0];
+  for(var i=0;i<bands.length;i++){ if(hero>=bands[i].min) pick=bands[i]; }
+  return pick;
+}
+function $(id){ return document.getElementById(id); }
+
+/* ====================== SCREEN NAV ====================== */
+function showScreen(id, step){
+  ["screen-intro","screen-calc","screen-reco","screen-pricing","screen-checkout","screen-audit"].forEach(function(s){
+    $(s).classList.toggle("active", s===id);
+  });
+  // stepper
+  [1,2,3,4,5].forEach(function(n){ var el=document.querySelector(".stepper .s"+n); if(el) el.classList.toggle("on", n<=step); });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ====================== SCREEN 1: build toggles + dropdown ====================== */
+function buildIntro(){
+  var sel=$("icp");
+  ICP_OPTIONS.forEach(function(o,idx){
+    var opt=document.createElement("option"); opt.value=idx; opt.textContent=o.label; sel.appendChild(opt);
+  });
+  sel.addEventListener("change", function(){
+    var o=ICP_OPTIONS[this.value];
+    state.toggles={revenue:false,time:false,hassle:false};
+    if(o){ o.on.forEach(function(k){ state.toggles[k]=true; }); }
+    state.icp = o ? o.label : "";
+    renderToggles(); refreshIntroCTA();
+  });
+
+  var grid=$("toggles");
+  TOGGLES.forEach(function(t){
+    var p=PROFILES[t.profile];
+    var b=document.createElement("button");
+    b.className="tog"; b.type="button"; b.setAttribute("aria-pressed","false");
+    b.style.setProperty("--lane",p.color);
+    b.dataset.key=t.key;
+    b.innerHTML =
+      '<span class="check">✓</span>'+
+      '<span class="t-top"><span class="dot"></span><span class="t-icp">'+t.icp+'</span></span>'+
+      '<span class="t-title">'+t.title+'</span>'+
+      '<span class="t-sub">'+t.sub+'</span>';
+    b.addEventListener("click", function(){
+      state.toggles[t.key]=!state.toggles[t.key];
+      renderToggles(); refreshIntroCTA();
+    });
+    grid.appendChild(b);
+  });
+  renderToggles(); refreshIntroCTA();
+}
+function renderToggles(){
+  Array.prototype.forEach.call(document.querySelectorAll(".tog"),function(b){
+    b.setAttribute("aria-pressed", state.toggles[b.dataset.key] ? "true":"false");
+  });
+}
+function refreshIntroCTA(){
+  var any=activeProfiles().length>0;
+  $("openCalc").disabled=!any;
+  $("introHint").textContent = any ? "We'll open "+activeProfiles().length+" calculator"+(activeProfiles().length>1?"s":"")+" for you." : "Switch on at least one focus above to continue.";
+}
+
+/* ====================== SCREEN 2: lanes ====================== */
+function buildLanes(){
+  var host=$("lanes"); host.innerHTML="";
+  activeProfiles().forEach(function(pid){
+    var p=PROFILES[pid];
+    var lane=document.createElement("div");
+    lane.className="lane"; lane.style.setProperty("--lane",p.color);
+    var rows="";
+    p.inputs.forEach(function(inp){
+      var v=state.values[pid][inp.key];
+      rows+='<div class="row">'+
+        '<div class="rl"><span class="name">'+inp.label+'</span><span class="val" id="v-'+pid+'-'+inp.key+'">'+fmtInput(v,inp.format)+'</span></div>'+
+        (inp.help?'<div class="row-help">'+inp.help+'</div>':'')+
+        '<input type="range" min="'+inp.min+'" max="'+inp.max+'" step="'+inp.step+'" value="'+v+'" '+
+        'data-pid="'+pid+'" data-key="'+inp.key+'" data-format="'+inp.format+'"></div>';
+    });
+    lane.innerHTML =
+      '<div class="lane-icp">'+p.icp+'</div>'+
+      '<h3>'+focusTitle(pid)+' calculator</h3>'+
+      '<div class="lane-num" id="num-'+pid+'">$0</div>'+
+      '<div class="lane-break" id="break-'+pid+'"></div>'+
+      rows+
+      '<div class="metrics" id="metrics-'+pid+'"></div>';
+    host.appendChild(lane);
+  });
+  Array.prototype.forEach.call(host.querySelectorAll('input[type=range]'),function(r){
+    r.addEventListener("input", function(){
+      var pid=this.dataset.pid, key=this.dataset.key;
+      state.values[pid][key]=parseFloat(this.value);
+      $("v-"+pid+"-"+key).textContent=fmtInput(this.value,this.dataset.format);
+      computeLane(pid); updateTotal();
+    });
+  });
+  activeProfiles().forEach(computeLane);
+  updateTotal();
+}
+function computeLane(pid){
+  var p=PROFILES[pid];
+  var r=p.compute(state.values[pid]);
+  state.results[pid]=r;
+  $("num-"+pid).textContent=fmt(r.hero);
+  $("break-"+pid).textContent=r.breakdown;
+  var m=$("metrics-"+pid); m.innerHTML="";
+  r.metrics.forEach(function(x){
+    var d=document.createElement("div"); d.className="m";
+    d.innerHTML='<div class="ml">'+x.label+'</div><div class="mv">'+x.value+'</div>';
+    m.appendChild(d);
+  });
+}
+function totalLeak(){
+  return activeProfiles().reduce(function(sum,pid){ return sum + (state.results[pid]?state.results[pid].hero:0); },0);
+}
+function updateTotal(){
+  var banner=$("totalBanner");
+  if(activeProfiles().length>1){ banner.style.display="flex"; $("totalNum").textContent=fmt(totalLeak()); }
+  else { banner.style.display="none"; }
+}
+
+/* Concise "what problem this path solves" per focus — shown on the reco cards. */
+var PATH_SOLVES = {
+  designbuild: "A system that answers and books new prospects 24/7 — so the job you'd have lost gets booked instead.",
+  venues: "A system that catches every after-hours and weekend inquiry and books it on the spot — so prime dates stop slipping away.",
+  storefront: "A system that removes the repetitive manual work and answers every lead automatically — so missed demand and wasted hours stop draining the team."
+};
+/* ====================== SCREEN 3: recommendation ====================== */
+function buildReco(){
+  var host=$("stacks"); host.innerHTML="";
+  var _rt=$("recoTotal"); if(_rt){ _rt.style.display="block"; _rt.innerHTML='<span class="rt-lab">Total slipping past you each year</span><span class="rt-num">'+fmt(totalLeak())+'</span>'; }
+  activeProfiles().forEach(function(pid){
+    var p=PROFILES[pid]; var r=state.results[pid]||p.compute(state.values[pid]);
+    var rec=recommend(pid, r.hero);
+    var card=document.createElement("div");
+    card.className="stack"; card.style.setProperty("--lane",p.color);
+    card.innerHTML=
+      '<div class="band">'+p.icp+' · '+rec.band+'</div>'+
+      '<h3>'+focusTitle(pid)+' — '+fmt(r.hero)+' at stake</h3>'+
+      '<p class="path-solves">'+(PATH_SOLVES[pid]||"")+'</p>'+
+      '<div class="demo-row">'+demoBtn(FOCUS_DEMO[pid]||rec.consider, "See this in the demo", true)+'</div>';
+    host.appendChild(card);
+  });
+  // layout: move "What this is" under the path cards; drop the storefront reco section
+  var _ov=$("recoOverview"), _st=$("stacks"); if(_ov&&_st&&_st.parentNode){ _st.parentNode.insertBefore(_ov, _st.nextSibling); }
+  var _sf=$("storefrontReco"); if(_sf) _sf.parentNode.removeChild(_sf);
+  // (Social Avatar / True Twin / Rapid Response selectors now live on the pricing page.)
+}
+
+/* ====================== SCREEN 4: pricing ====================== */
+function topTierKey(){
+  var rank=0, key="pkg_ao";
+  activeProfiles().forEach(function(pid){
+    var r=state.results[pid]||PROFILES[pid].compute(state.values[pid]);
+    var rec=recommend(pid,r.hero); var tk=BAND_TIER[rec.band]||"pkg_ao";
+    if(TIER_RANK[tk]>rank){ rank=TIER_RANK[tk]; key=tk; }
+  });
+  return key;
+}
+/* v2: page 4 shows DEPOSIT TO START only (25% of package). Full totals live on the
+   investment summary (page 5) — deposit is the number people actually decide on. */
+function depositOf(price){ return Math.round(price*0.25); }
+function termLine(price){
+  var dep=depositOf(price), bal=price-dep;
+  return 'then 3 payments of <b>'+fmt(Math.round(bal/3))+'/mo</b> — or 6 of <b>'+fmt(Math.round(bal/6))+'/mo</b>. Pay it off anytime.';
+}
+function buildPricing(){
+  var host=$("tiers"); host.innerHTML=""; var reco=topTierKey();
+  if(!state.selectedPkg) state.selectedPkg=reco;     // default selection = recommended
+  PRICING.tiers.forEach(function(t){
+    var isSel=(t.key===state.selectedPkg), isReco=(t.key===reco);
+    var div=document.createElement("div");
+    div.className="tier"+(isSel?" reco":"");
+    var lis=t.includes.map(function(x){return '<li>'+x+'</li>';}).join("");
+    div.innerHTML=
+      (t.badge?'<span class="pin pin-chosen">'+t.badge+'</span>':'')+
+      (isReco?'<span class="pin">Recommended for you</span>':'')+
+      (t.eyebrow?'<div class="p-eyebrow">'+t.eyebrow+'</div>':'')+
+      '<h3>'+t.name+'</h3>'+
+      '<p class="p-sub">'+t.sub+'</p>'+
+      (t.valueline?'<p class="p-who">'+t.valueline+'</p>':'')+
+      (t.who?'<p class="p-who">'+t.who+'</p>':'')+
+      '<div class="p-price">'+(t.from?'<span class="p-from">from </span>':'')+fmt(t.monthly)+'<small> /mo Partner dues</small></div>'+
+      '<div class="p-deposit-ey">'+fmt(depositOf(t.price))+' deposit + $450 onboarding starts your build</div>'+
+      '<p class="p-terms">'+termLine(t.price)+'</p>'+
+      '<p class="p-reassure">No monthly dues until your build goes live — 60–90 day ETA, or day 90 at the latest.</p>'+
+      '<div class="p-setup">Founder Lock pricing available · full breakdown on the next page</div>'+
+      '<ul>'+lis+'</ul>'+
+      '<button class="btn '+(isSel?"btn-amber":"btn-ghost")+'" data-pkg="'+t.key+'">'+(isSel?"✓ Selected":"Select "+t.name)+'</button>'+
+      '<div class="demo-row" style="margin-top:10px;">'+demoBtn(t.key, "See this in the demo", true)+'</div>';
+    host.appendChild(div);
+  });
+  Array.prototype.forEach.call(host.querySelectorAll("button[data-pkg]"), function(b){
+    b.addEventListener("click", function(){ state.selectedPkg=this.dataset.pkg; buildPricing(); });
+  });
+  // Reward Constellation on the packages page + pop when the selection lifts a tier
+  var selRank=pkgRewardRank(state.selectedPkg);
+  renderBonusMeter(selRank, "pkgRewardMeter");
+  if(selRank>(state._bonusCelebrated||0)){ state._bonusCelebrated=selRank; saveState(); showBonusPop(selRank, bonusRewards(selRank)); }
+}
+
+/* ====================== SCREEN 5: checkout (Optional Enhancements + running total) ====================== */
+/* v2: "Launch Your Business Audit" — earned-reward CTA pinned under the selected package. */
+/* ====================== REWARD CONSTELLATION ENGINE (v3) ======================
+   Reward rank derives from the package chosen (Lunar = ConversionOS, Solar = Growth OS) and,
+   on the checkout page, from enhancements added (Supernova = $9K+). Rewards are value-adds —
+   they never change the charged totals or the 25% deposit. */
+function pkgRewardRank(pkgKey){
+  if(pkgKey==="pkg_growth") return 2; // Solar
+  if(pkgKey==="pkg_os")     return 1; // Lunar
+  return 0;
+}
+function bonusRankFor(enhTotal, pkgKey){
+  var r=pkgRewardRank(pkgKey||state.selectedPkg);
+  if((enhTotal||0) >= (PRICING.bonus.enhMin||9000)) r=3; // Supernova tops all
+  return r;
+}
+function bonusTierName(rank){
+  var t=PRICING.bonus.tiers.filter(function(x){return x.rank===rank;})[0]; return t?t.name:"";
+}
+function anyVideoSelected(){
+  return !!(state.video.authority||state.video.feature||state.upgradeTwin||
+    state.extras.capture.vid_single||state.extras.capture.vid_pack||state.extras.capture.vid_testimonial);
+}
+function bonusRewards(rank){
+  var lines=[], fine="";
+  if(rank>=1){
+    lines.push({ label:"Lunar unlock — a free Authority Booster Video produced with your build", value:fmt(PRICING.bonus.freeVideoValue)+" value" });
+    fine+=" Lunar reward: one Authority Booster Video ("+fmt(PRICING.bonus.freeVideoValue)+" value) is produced free alongside your build.";
+  }
+  if(rank>=2){
+    lines.push({ label:"Solar unlock — a Pro Photo + Video Feature added to your launch, plus a priority build slot", value:fmt(PRICING.bonus.featureValue)+" value" });
+    fine+=" Solar reward: a Pro Photo + Video Feature ("+fmt(PRICING.bonus.featureValue)+" value) is added to your launch, plus a priority build slot.";
+  }
+  if(rank>=3){
+    lines.push({ label:"Supernova unlock — your first full month of RSD Partner dues, on us", value:"1 month, on us" });
+    fine+=" Supernova reward: your first full month of RSD Partner dues is on us, plus priority production across your entire build.";
+  }
+  if(lines.length){ fine+=" Reward gifts begin mid-build — after your first package payment, once your deposit is in."; }
+  return { lines:lines, fine:fine };
+}
+function renderBonusMeter(rank, hostId){
+  var host=$(hostId||"bonusMeter"); if(!host) return;
+  var msg = rank>=3 ? "Supernova reached — every reward is yours."
+    : rank>=2 ? "Solar unlocked. Add $9K+ in enhancements next to ignite Supernova."
+    : rank>=1 ? "Lunar unlocked. Step up to Growth OS for Solar."
+    : "Choose ConversionOS to light your first reward.";
+  var chips='<div class="bm-chips">'+PRICING.bonus.tiers.map(function(t){
+    var on=rank>=t.rank;
+    return '<span class="bm-chip bm-'+t.key+(on?" on":"")+'">'+(on?"✓ ":"")+t.name+' · '+t.hint+'</span>';
+  }).join("")+'</div>';
+  var pct = rank>=3?100 : rank>=2?66 : rank>=1?33 : 6;
+  host.innerHTML=
+    '<div class="bonus-meter'+(rank?" active":"")+'">'+
+      '<div class="bm-head"><span class="bm-title">Reward Constellation</span><span class="bm-msg">'+msg+'</span></div>'+
+      '<div class="bm-bar"><div class="bm-notch" style="left:33%"></div><div class="bm-notch" style="left:66%"></div><div class="bm-fill" style="width:'+pct+'%"></div></div>'+
+      chips+
+    '</div>';
+}
+var BONUS_SVGS={
+  1:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="agLun" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#EAF4FF"/><stop offset=".6" stop-color="#B9CFEA"/><stop offset="1" stop-color="#7E93B4"/></radialGradient></defs><circle class="rk-star" cx="24" cy="26" r="1.8" fill="#EAF4FF"/><circle class="rk-star s2" cx="96" cy="30" r="1.5" fill="#B9CFEA"/><circle class="rk-star s3" cx="90" cy="16" r="1.2" fill="#EAF4FF"/><circle class="rk-star s2" cx="30" cy="94" r="1.3" fill="#B9CFEA"/><path d="M78 20a42 42 0 1 0 0 80 34 34 0 0 1 0-80Z" fill="url(#agLun)" stroke="rgba(30,44,70,.35)" stroke-width="1.5"/><circle cx="52" cy="44" r="4" fill="rgba(30,44,70,.12)"/><circle cx="46" cy="66" r="6" fill="rgba(30,44,70,.12)"/><circle cx="64" cy="78" r="3" fill="rgba(30,44,70,.12)"/></svg>',
+  2:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="agSol" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF3D6"/><stop offset=".55" stop-color="#F8CE7E"/><stop offset="1" stop-color="#F2A93B"/></radialGradient></defs><g stroke="url(#agSol)" stroke-width="4" stroke-linecap="round"><path d="M60 8v14"/><path d="M60 98v14"/><path d="M8 60h14"/><path d="M98 60h14"/><path d="M23 23l10 10"/><path d="M87 87l10 10"/><path d="M97 23L87 33"/><path d="M33 87L23 97"/></g><circle cx="60" cy="60" r="26" fill="url(#agSol)" stroke="rgba(120,72,8,.4)" stroke-width="1.5"/><circle class="rk-star" cx="16" cy="18" r="1.6" fill="#FFF3D6"/><circle class="rk-star s2" cx="104" cy="16" r="1.4" fill="#F8CE7E"/></svg>',
+  3:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="agSup" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".4" stop-color="#E6C9FF"/><stop offset=".75" stop-color="#B79CFF"/><stop offset="1" stop-color="#7A5CE0"/></radialGradient></defs><circle cx="60" cy="60" r="46" fill="url(#agSup)" opacity=".18"/><g fill="url(#agSup)" stroke="rgba(90,60,180,.35)" stroke-width="1"><path d="M60 10l9 34 34 9-34 9-9 34-9-34-34-9 34-9z"/></g><path d="M60 30l4 20 M60 90l-4-20 M30 60l20 4 M90 60l-20-4" stroke="#F2E9FF" stroke-width="2" stroke-linecap="round"/><circle class="rk-star" cx="20" cy="24" r="2" fill="#E6C9FF"/><circle class="rk-star s2" cx="100" cy="22" r="1.6" fill="#B79CFF"/><circle class="rk-star s3" cx="96" cy="96" r="1.6" fill="#E6C9FF"/><circle class="rk-star s2" cx="22" cy="98" r="1.4" fill="#B79CFF"/></svg>'
+}
+function showBonusPop(rank, info){
+  var o=$("bonusOverlay"); if(!o) return;
+  // never stack on top of the audit congratulations pop — wait our turn
+  var a=$("auditOverlay");
+  if(a && a.classList.contains("open")){ setTimeout(function(){ showBonusPop(rank, info); }, 1400); return; }
+  $("bonusArt").innerHTML=BONUS_SVGS[rank]||"";
+  $("bonusEy").textContent=bonusTierName(rank)+" Reward Unlocked";
+  $("bonusTitle").textContent = rank===3
+    ? "Supernova. You just lit the whole system up."
+    : "You just unlocked the "+bonusTierName(rank)+" reward.";
+  var rewardsHtml=info.lines.map(function(b){ return '<li><b>'+b.label+'</b> — '+b.value+' value, free.</li>'; }).join("");
+  $("bonusBody").innerHTML='<p>A commitment at this level deserves to be rewarded. Added to your build, on us:</p><ul class="bp-list">'+rewardsHtml+'</ul><p style="font-size:.74rem;color:var(--muted-2,rgba(236,231,221,.5));margin-top:10px;line-height:1.5;">Reward gifts begin mid-build — after your first package payment, once your deposit is in.</p>';
+  o.classList.add("open");
+}
+function closeBonusPop(){ var o=$("bonusOverlay"); if(o) o.classList.remove("open"); }
+function wireBonusPop(){
+  var x=$("bonusPopX"), c=$("bonusClaimBtn"), o=$("bonusOverlay");
+  if(x) x.addEventListener("click", closeBonusPop);
+  if(c) c.addEventListener("click", closeBonusPop);
+  if(o) o.addEventListener("click", function(e){ if(e.target===this) closeBonusPop(); });
+}
+
+var LAUNCH_ROCKET_SVG='<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2c2.6 1.9 4 4.8 4 8 0 2.6-.9 4.9-2.6 6.4h-2.8C8.9 14.9 8 12.6 8 10c0-3.2 1.4-6.1 4-8Z" fill="#1c1303"/><circle cx="12" cy="9" r="1.6" fill="#F8CE7E"/><path d="M8.4 13.5c-1.7 1-2.4 2.8-2.4 4.5 1.7 0 3.5-.7 4.5-2.4M15.6 13.5c1.7 1 2.4 2.8 2.4 4.5-1.7 0-3.5-.7-4.5-2.4M12 17v4" stroke="#1c1303" stroke-width="1.6" stroke-linecap="round"/></svg>';
+function renderAuditLaunch(){
+  var spots=[
+    { host:"auditLaunchHost",  cls:"",       btn:"launchAuditBtn",
+      sub:"You earned it — a free business &amp; online-presence Report with RSD. We find the leaks; you keep the map." },
+    { host:"auditLaunchHost2", cls:" green", btn:"launchAuditBtn2",
+      sub:"Before the numbers below — your zero-risk first step is still on the table. We'll walk the leaks with you, free, before you spend a dollar." }
+  ];
+  spots.forEach(function(s){
+    var host=$(s.host); if(!host || host.dataset.wired) return; host.dataset.wired="1";
+    host.innerHTML=
+      '<div class="launch-strip'+s.cls+'">'+
+        '<button class="launch-audit-btn'+s.cls+'" type="button" id="'+s.btn+'">'+LAUNCH_ROCKET_SVG+'Claim Your Free Online Presence Report</button>'+
+        '<span class="launch-sub">'+s.sub+'</span>'+
+      '</div>';
+    $(s.btn).addEventListener("click", function(){
+      try{ firePricingEmail(); }catch(e){}
+      window.open(RSD_CONFIG.AUDIT_URL, "_blank", "noopener");
+    });
+  });
+}
+function buildCheckout(){
+  renderAuditLaunch();
+  var ps=$("planSummary");
+  if(ps){
+    var selT=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0]||PRICING.tiers[0];
+    ps.innerHTML='<div class="plan-summary"><div><div class="ps-ey">Your selected package</div><div class="ps-name">'+selT.name+'</div></div><div class="ps-price">'+(selT.from?'<span style="font-size:.5em;color:var(--muted);font-family:Outfit;">from </span>':'')+fmt(selT.monthly)+'<small> /mo · '+fmt(depositOf(selT.price))+' + $450 to start</small></div></div>';
+  }
+  var ah=$("addonHost"); if(!ah) return; ah.innerHTML="";
+
+  // ---- AlwaysOn RSD Rapid Response — live web booking agent + after-hours/weekends phone toggle ----
+  // Included free with AlwaysOn packages (pkg_ao, pkg_os); $497/mo standalone otherwise.
+  var rr=PRICING.rapid;
+  var rrPkg=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0]||{};
+  var isAO=rr.inPackages.indexOf(state.selectedPkg)!==-1;   // package bundles the web agent
+  var webOn=isAO||state.rapid.webAdded;                     // web agent present at all?
+  if(state.rapid.voiceAdded && !webOn){ state.rapid.webAdded=true; webOn=true; } // phone needs the base
+  var rrEl=document.createElement("div");
+  rrEl.className="rr-card"+(webOn?" added":"");
+  var baseLine=isAO
+    ? '<span class="rr-incl">✓ Included with your '+(rrPkg.name||"AlwaysOn")+' package</span>'
+    : '<div class="rr-price">'+fmt(rr.base.monthly)+'<small> /mo</small></div>';
+  var baseBtn=isAO
+    ? '<div class="btn-row" style="margin-top:12px;">'+demoBtn("rapid","See the demo",true)+'</div>'
+    : '<div class="btn-row" style="margin-top:14px;">'+
+        '<button class="btn '+(state.rapid.webAdded?"btn-ghost":"btn-social")+'" id="rrWebToggle">'+(state.rapid.webAdded?"Remove Rapid Response agent":"＋ Add Rapid Response agent — "+fmt(rr.base.monthly)+"/mo")+'</button>'+
+        demoBtn("rapid","See the demo",true)+
+      '</div>';
+  rrEl.innerHTML=
+    '<div class="rr-ey">AlwaysOn · Rapid Response receptionist'+(webOn?" · Active":"")+'</div>'+
+    '<h3>'+rr.base.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+rr.base.sub+'</p>'+
+    baseLine+
+    baseBtn+
+    '<div class="rr-switch'+(state.rapid.voiceAdded?" on":"")+'" id="rrVoiceSwitch">'+
+      '<button class="sw" type="button" role="switch" aria-checked="'+(state.rapid.voiceAdded?"true":"false")+'" aria-label="Turn on Afterhours and Weekends phone receptionist"></button>'+
+      '<span class="sw-label"><b>Add Afterhours &amp; Weekends Phone Support &amp; Bookings Receptionist — +'+fmt(rr.voice.monthly)+'/mo</b>'+
+        '<span class="sw-sub">'+rr.voice.sub+'</span></span>'+
+    '</div>'+
+    '<div class="rr-fine">'+rr.base.usage+' '+rr.setupNote+(webOn?'':' (Setup &amp; monthly activate when you add the agent or choose an AlwaysOn package.)')+'</div>';
+  ah.appendChild(rrEl);
+  var rwt=$("rrWebToggle");
+  if(rwt) rwt.addEventListener("click", function(){ state.rapid.webAdded=!state.rapid.webAdded; if(!state.rapid.webAdded) state.rapid.voiceAdded=false; buildCheckout(); });
+  var rvs=$("rrVoiceSwitch");
+  if(rvs){
+    var toggleVoice=function(){ state.rapid.voiceAdded=!state.rapid.voiceAdded; buildCheckout(); };
+    var swEl=rvs.querySelector(".sw"); if(swEl) swEl.addEventListener("click", toggleVoice);
+    var lblEl=rvs.querySelector(".sw-label"); if(lblEl) lblEl.addEventListener("click", toggleVoice);
+  }
+
+  // ---- Social Avatar Presence Program (3 levels) — True Twin sits directly below this ----
+  var soc=PRICING.social;
+  var lvlHtml=soc.levels.map(function(l){
+    var sel = state.social.added && state.social.level===l.key;
+    return '<div class="lvl'+(sel?" sel":"")+'" data-lvl="'+l.key+'">'+
+      '<div class="l-name">'+l.name+'</div>'+
+      '<div class="l-posts">'+l.posts+'</div>'+
+      '<div class="l-price">'+fmt(l.monthly)+'<small> /mo</small></div></div>';
+  }).join("");
+  var socEl=document.createElement("div");
+  socEl.className="addon gold"+(state.social.added?" reco":"");
+  socEl.innerHTML=
+    '<div class="a-ey gold">Additional Service · Always-on presence'+(state.social.added?" · Added":"")+'</div>'+
+    '<h3>'+soc.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+soc.sub+'</p>'+
+    '<div class="lvls">'+lvlHtml+'</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.social.added?"btn-ghost":"btn-social")+'" id="socialPriceToggle">'+(state.social.added?"Remove Social Avatar":"＋ Add Social Avatar")+'</button>'+
+      demoBtn("social","See the demo",true)+
+    '</div>';
+  ah.appendChild(socEl);
+  Array.prototype.forEach.call(socEl.querySelectorAll(".lvl"), function(el){
+    el.addEventListener("click", function(){ state.social.added=true; state.social.level=this.dataset.lvl; buildCheckout(); });
+  });
+  var spt=$("socialPriceToggle");
+  if(spt) spt.addEventListener("click", function(){ state.social.added=!state.social.added; buildCheckout(); });
+
+  // ---- True Digital Twin Avatar Clone — directly BELOW Social Avatar (price + 25% down, 6 featured videos) ----
+  var tw=PRICING.twin, down=Math.round(tw.price*tw.downPct/100);
+  var twEl=document.createElement("div");
+  twEl.className="addon"+(state.upgradeTwin?" reco":"");
+  twEl.innerHTML=
+    '<div class="a-ey">Premium Enhancement · Infinite scale'+(state.upgradeTwin?" · Added":"")+'</div>'+
+    '<h3>'+tw.name+'</h3>'+
+    '<p class="p-sub" style="max-width:64ch;">'+tw.sub+'</p>'+
+    '<div class="a-price">'+fmt(tw.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time enhancement · includes '+tw.videos+' featured True Avatar Videos</small></div>'+
+    '<div class="a-down">'+tw.downPct+'% down to add it on — '+fmt(down)+' to start.</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.upgradeTwin?"btn-twin":"btn-ghost")+'" id="twinPriceToggle">'+(state.upgradeTwin?"✓ Added to your plan":"⚡ Add the True Digital Twin")+'</button>'+
+      demoBtn("twin","See the demo",true)+
+    '</div>';
+  ah.appendChild(twEl);
+  var tpt=$("twinPriceToggle");
+  if(tpt) tpt.addEventListener("click", function(){ state.upgradeTwin=!state.upgradeTwin; buildCheckout(); });
+
+  // ---- Authority & Audience Video Program (v2.1 — replaces Seasonal Boosters) ----
+  var vp=PRICING.videoProg;
+  // Suggested: Authority Booster Video (one-time)
+  var vaEl=document.createElement("div");
+  vaEl.className="addon gold"+(state.video.authority?" reco":"");
+  vaEl.innerHTML=
+    '<div class="a-ey gold">Additional Service · Suggested'+(state.video.authority?" · Added":"")+'</div>'+
+    '<h3>'+vp.suggested.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+vp.suggested.sub+'</p>'+
+    '<div class="a-price">'+fmt(vp.suggested.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time</small></div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.video.authority?"btn-ghost":"btn-social")+'" id="vidAuthToggle">'+(state.video.authority?"Remove Authority Booster Video":"＋ Add Authority Booster Video")+'</button>'+
+      demoBtn("flywheel","See the demo",true)+
+    '</div>';
+  ah.appendChild(vaEl);
+  // Tour2Booking one-time base service — placed directly under the Authority Booster Video
+  (function(){
+    var bsOn=!!state.baseT2B, bsB=PRICING.baseService;
+    var bsEl=document.createElement("div");
+    bsEl.className="addon base-service"+(bsOn?" reco":"");
+    var bsLis=bsB.includes.map(function(x){return '<li>'+x+'</li>';}).join("");
+    bsEl.innerHTML=
+      '<div class="a-ey">'+bsB.ey+(bsOn?" · Added":"")+'</div>'+
+      '<h3>'+bsB.name+'</h3>'+
+      '<p class="a-down">'+bsB.sub+'</p>'+
+      '<ul>'+bsLis+'</ul>'+
+      '<div class="a-price">'+fmt(bsB.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time · no monthly</small></div>'+
+      '<button class="btn '+(bsOn?"btn-amber":"btn-ghost")+'" id="baseT2BToggle">'+(bsOn?"✓ Added — remove":"＋ Add Tour2Booking build — "+fmt(bsB.price))+'</button>';
+    ah.appendChild(bsEl);
+    var bsBtn=bsEl.querySelector("#baseT2BToggle");
+    if(bsBtn) bsBtn.addEventListener("click", function(){ state.baseT2B=!state.baseT2B; buildCheckout(); });
+  })();
+  var vat=$("vidAuthToggle");
+  if(vat) vat.addEventListener("click", function(){ state.video.authority=!state.video.authority; buildCheckout(); });
+
+  // Pro Photo + Video Feature — announcement / special / highlight reel / client-voice focus (≤5 hr shoot)
+  var vfEl=document.createElement("div");
+  vfEl.className="addon"+(state.video.feature?" reco":"");
+  vfEl.innerHTML=
+    '<div class="a-ey">Additional Service · Stay in front of your audience'+(state.video.feature?" · Added":"")+'</div>'+
+    '<h3>'+vp.feature.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+vp.feature.sub+'</p>'+
+    '<div class="a-price">'+fmt(vp.feature.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">from '+fmt(vp.feature.price)+' · up to 5 hours of shooting</small></div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      '<button class="btn '+(state.video.feature?"btn-ghost":"btn-social")+'" id="vidFeatToggle">'+(state.video.feature?"Remove Photo + Video Feature":"＋ Add Photo + Video Feature")+'</button>'+
+    '</div>';
+  ah.appendChild(vfEl);
+  var vft=$("vidFeatToggle");
+  if(vft) vft.addEventListener("click", function(){ state.video.feature=!state.video.feature; buildCheckout(); });
+
+  // Optional Still Photography Package (half-day / full-day, from the same shoot)
+  var stl=vp.stills;
+  var stHtml=stl.levels.map(function(l){
+    var on=state.video.stills===l.key;
+    return '<div class="lvl'+(on?" sel":"")+'" data-stills="'+l.key+'">'+
+      '<div class="l-name">'+l.name+'</div>'+
+      '<div class="l-price">'+fmt(l.price)+'<small> one-time</small></div></div>';
+  }).join("");
+  var stEl=document.createElement("div");
+  stEl.className="addon gold"+(state.video.stills?" reco":"");
+  stEl.innerHTML=
+    '<div class="a-ey gold">Additional Service · Still photography'+(state.video.stills?" · Added":"")+'</div>'+
+    '<h3>'+stl.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+stl.sub+'</p>'+
+    '<div class="lvls" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">'+stHtml+'</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      (state.video.stills?'<button class="btn btn-ghost" id="stillsClear">Remove Still Photography</button>':'')+
+    '</div>';
+  ah.appendChild(stEl);
+  Array.prototype.forEach.call(stEl.querySelectorAll(".lvl"), function(el){
+    el.addEventListener("click", function(){ state.video.stills=this.dataset.stills; buildCheckout(); });
+  });
+  var stc=$("stillsClear");
+  if(stc) stc.addEventListener("click", function(){ state.video.stills=null; buildCheckout(); });
+
+  // ---- Full RSD catalog (v2.2) — Capture & Media + Web Presence (one-time, multi-select) ----
+  [["capture","gold"],["web",""]].forEach(function(grp){
+    var g=PRICING.extras[grp[0]], accent=grp[1];
+    var selMap=state.extras[grp[0]];
+    var count=Object.keys(selMap).filter(function(k){return selMap[k];}).length;
+    var itemsHtml=g.items.map(function(it){
+      var on=!!selMap[it.key];
+      return '<div class="lvl'+(on?" sel":"")+'" data-extra="'+grp[0]+':'+it.key+'">'+
+        '<div class="l-name">'+it.name+'</div>'+
+        '<div class="l-price">'+fmt(it.price)+'<small> one-time</small></div></div>';
+    }).join("");
+    var el=document.createElement("div");
+    el.className="addon"+(accent?" "+accent:"")+(count?" reco":"");
+    el.innerHTML=
+      '<div class="a-ey'+(accent?" "+accent:"")+'">'+g.ey+(count?" · "+count+" added":"")+'</div>'+
+      '<h3>'+g.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+g.sub+'</p>'+
+      '<div class="lvls" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));">'+itemsHtml+'</div>';
+    ah.appendChild(el);
+    Array.prototype.forEach.call(el.querySelectorAll(".lvl"), function(lv){
+      lv.addEventListener("click", function(){
+        var pair=this.dataset.extra.split(":"), m=state.extras[pair[0]];
+        if(m[pair[1]]) delete m[pair[1]]; else m[pair[1]]=true;
+        buildCheckout();
+      });
+    });
+  });
+
+  // ---- AlwaysOn AI Concierge (monthly: 3 levels, single-select + managed page toggle) ----
+  var ao=PRICING.extras.ao;
+  var aoLvls=ao.levels.map(function(l){
+    var on=state.extras.aoLevel===l.key;
+    return '<div class="lvl'+(on?" sel":"")+'" data-ao="'+l.key+'">'+
+      '<div class="l-name">'+l.name+'</div>'+
+      '<div class="l-price">'+fmt(l.monthly)+'<small> /mo</small></div></div>';
+  }).join("");
+  var aoEl=document.createElement("div");
+  aoEl.className="addon"+((state.extras.aoLevel||state.extras.aoPage)?" reco":"");
+  aoEl.innerHTML=
+    '<div class="a-ey">'+ao.ey+((state.extras.aoLevel||state.extras.aoPage)?" · Added":"")+'</div>'+
+    '<h3>'+ao.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+ao.sub+'</p>'+
+    '<div class="lvls">'+aoLvls+'</div>'+
+    '<div class="lvls" style="margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));">'+
+      '<div class="lvl'+(state.extras.aoPage?" sel":"")+'" id="aoPageToggle">'+
+        '<div class="l-name">'+ao.pageItem.name+'</div>'+
+        '<div class="l-price">'+fmt(ao.pageItem.monthly)+'<small> /mo</small></div></div>'+
+    '</div>'+
+    '<div class="btn-row" style="margin-top:14px;">'+
+      (state.extras.aoLevel?'<button class="btn btn-ghost" id="aoClear">Remove AI Concierge</button>':'')+
+    '</div>';
+  ah.appendChild(aoEl);
+  Array.prototype.forEach.call(aoEl.querySelectorAll(".lvl[data-ao]"), function(lv){
+    lv.addEventListener("click", function(){ state.extras.aoLevel=this.dataset.ao; buildCheckout(); });
+  });
+  var aopt=$("aoPageToggle");
+  if(aopt) aopt.addEventListener("click", function(){ state.extras.aoPage=!state.extras.aoPage; buildCheckout(); });
+  var aoc=$("aoClear");
+  if(aoc) aoc.addEventListener("click", function(){ state.extras.aoLevel=null; buildCheckout(); });
+
+  // ---- Marketing & Ad Management (monthly, multi-select channels) ----
+  var adg=PRICING.extras.ads;
+  var adCount=Object.keys(state.extras.ads).filter(function(k){return state.extras.ads[k];}).length;
+  var adHtml=adg.items.map(function(it){
+    var on=!!state.extras.ads[it.key];
+    return '<div class="lvl'+(on?" sel":"")+'" data-ad="'+it.key+'">'+
+      '<div class="l-name">'+it.name+'</div>'+
+      '<div class="l-price">'+fmt(it.monthly)+'<small> /mo</small></div></div>';
+  }).join("");
+  var adEl=document.createElement("div");
+  adEl.className="addon gold"+(adCount?" reco":"");
+  adEl.innerHTML=
+    '<div class="a-ey gold">'+adg.ey+(adCount?" · "+adCount+" added":"")+'</div>'+
+    '<h3>'+adg.name+'</h3>'+
+    '<p class="p-sub" style="max-width:66ch;">'+adg.sub+'</p>'+
+    '<div class="lvls">'+adHtml+'</div>';
+  ah.appendChild(adEl);
+  Array.prototype.forEach.call(adEl.querySelectorAll(".lvl[data-ad]"), function(lv){
+    lv.addEventListener("click", function(){
+      var k=this.dataset.ad;
+      if(state.extras.ads[k]) delete state.extras.ads[k]; else state.extras.ads[k]=true;
+      buildCheckout();
+    });
+  });
+
+  // ---- Storefront-only add-ons (Online Store + Support + Product Photo Shoot) ----
+  if(state.toggles.hassle){
+    var st=PRICING.store;
+    // Online Store — First Phase (one-time)
+    var osEl=document.createElement("div");
+    osEl.className="addon"+(state.store.online?" reco":"");
+    osEl.innerHTML=
+      '<div class="a-ey" style="color:var(--violet);">Storefront Enhancement · Digital store'+(state.store.online?" · Added":"")+'</div>'+
+      '<h3>'+st.online.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+st.online.benefits+'</p>'+
+      '<div class="a-price">'+fmt(st.online.price)+' <small style="font-size:.5em;color:var(--muted);font-family:Outfit;">one-time</small></div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        '<button class="btn '+(state.store.online?"btn-ghost":"btn-social")+'" id="storeOnlineToggle">'+(state.store.online?"Remove Online Store":"＋ Add Online Store")+'</button>'+
+      '</div>';
+    ah.appendChild(osEl);
+    var sot=$("storeOnlineToggle");
+    if(sot) sot.addEventListener("click", function(){ state.store.online=!state.store.online; buildCheckout(); });
+
+    // Online Store Support & Management (monthly tiers)
+    var supHtml=st.support.levels.map(function(l){
+      var on=state.store.supportLevel===l.key;
+      return '<div class="lvl'+(on?" sel":"")+'" data-sup="'+l.key+'">'+
+        '<div class="l-name">'+l.name+'</div>'+
+        '<div class="l-price">'+fmt(l.monthly)+'<small> /mo</small></div></div>';
+    }).join("");
+    var supEl=document.createElement("div");
+    supEl.className="addon"+(state.store.supportLevel?" reco":"");
+    supEl.innerHTML=
+      '<div class="a-ey" style="color:var(--violet);">Storefront Enhancement · Ongoing support'+(state.store.supportLevel?" · Added":"")+'</div>'+
+      '<h3>'+st.support.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+st.support.sub+' Volume doubles each tier; pricing rises 33% per step.</p>'+
+      '<div class="lvls">'+supHtml+'</div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        (state.store.supportLevel?'<button class="btn btn-ghost" id="supportClear">Remove Store Support</button>':'')+
+      '</div>';
+    ah.appendChild(supEl);
+    Array.prototype.forEach.call(supEl.querySelectorAll(".lvl"), function(el){
+      el.addEventListener("click", function(){ state.store.supportLevel=this.dataset.sup; buildCheckout(); });
+    });
+    var sclr=$("supportClear");
+    if(sclr) sclr.addEventListener("click", function(){ state.store.supportLevel=null; buildCheckout(); });
+
+    // Product Photo Shoot (tiers)
+    var ph=PRICING.photo;
+    var phHtml=ph.levels.map(function(l){
+      var on=state.photo.level===l.key;
+      return '<div class="lvl'+(on?" sel":"")+'" data-photo="'+l.key+'">'+
+        '<div class="l-name">'+l.name+'</div>'+
+        '<div class="l-price">'+fmt(l.price)+'<small> one-time</small></div></div>';
+    }).join("");
+    var phEl=document.createElement("div");
+    phEl.className="addon gold"+(state.photo.level?" reco":"");
+    phEl.innerHTML=
+      '<div class="a-ey gold">Storefront Enhancement · Product imagery'+(state.photo.level?" · Added":"")+'</div>'+
+      '<h3>'+ph.name+'</h3>'+
+      '<p class="p-sub" style="max-width:66ch;">'+ph.sub+'</p>'+
+      '<div class="lvls">'+phHtml+'</div>'+
+      '<div class="btn-row" style="margin-top:14px;">'+
+        (state.photo.level?'<button class="btn btn-ghost" id="photoClear">Remove Product Photo Shoot</button>':'')+
+      '</div>';
+    ah.appendChild(phEl);
+    Array.prototype.forEach.call(phEl.querySelectorAll(".lvl"), function(el){
+      el.addEventListener("click", function(){ state.photo.level=this.dataset.photo; buildCheckout(); });
+    });
+    var pclr=$("photoClear");
+    if(pclr) pclr.addEventListener("click", function(){ state.photo.level=null; buildCheckout(); });
+  } else {
+    // not storefront — clear any stale storefront selections so they don't affect the total
+    state.store.online=false; state.store.supportLevel=null; state.photo.level=null;
+  }
+
+  // ---- Live total + 25% deposit + monthly note ----
+  var pkg=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0]||PRICING.tiers[0];
+  var rows='<div class="pt-row"><span class="pt-lab">AlwaysOn build — '+pkg.name+' (one-time)</span><span class="pt-val">'+fmt(pkg.price)+'</span></div>';
+  var oneTime=pkg.price;
+  if(state.baseT2B){ oneTime+=PRICING.baseService.price; rows+='<div class="pt-row"><span class="pt-lab">'+PRICING.baseService.name+' (one-time)</span><span class="pt-val">'+fmt(PRICING.baseService.price)+'</span></div>'; }
+  // True Twin (one-time)
+  if(state.upgradeTwin){ oneTime+=PRICING.twin.price; rows+='<div class="pt-row"><span class="pt-lab">True Digital Twin Avatar Clone — incl. '+PRICING.twin.videos+' featured videos (one-time)</span><span class="pt-val">'+fmt(PRICING.twin.price)+'</span></div>'; }
+  // Online Store (one-time, storefront)
+  if(state.toggles.hassle && state.store.online){ oneTime+=PRICING.store.online.price; rows+='<div class="pt-row"><span class="pt-lab">'+PRICING.store.online.name+' (one-time)</span><span class="pt-val">'+fmt(PRICING.store.online.price)+'</span></div>'; }
+  // Product Photo Shoot (one-time, storefront)
+  var phLvl=(state.toggles.hassle&&state.photo.level)?PRICING.photo.levels.filter(function(l){return l.key===state.photo.level;})[0]:null;
+  if(phLvl){ oneTime+=phLvl.price; rows+='<div class="pt-row"><span class="pt-lab">Product Photo Shoot — '+phLvl.name+' (one-time)</span><span class="pt-val">'+fmt(phLvl.price)+'</span></div>'; }
+  // Video program (one-time pieces)
+  if(state.video.authority){ oneTime+=PRICING.videoProg.suggested.price; rows+='<div class="pt-row"><span class="pt-lab">'+PRICING.videoProg.suggested.name+' (one-time)</span><span class="pt-val">'+fmt(PRICING.videoProg.suggested.price)+'</span></div>'; }
+  if(state.video.feature){ oneTime+=PRICING.videoProg.feature.price; rows+='<div class="pt-row"><span class="pt-lab">'+PRICING.videoProg.feature.name+' — up to 5 hrs shooting (one-time)</span><span class="pt-val">'+fmt(PRICING.videoProg.feature.price)+'</span></div>'; }
+  var stSel=state.video.stills?PRICING.videoProg.stills.levels.filter(function(l){return l.key===state.video.stills;})[0]:null;
+  if(stSel){ oneTime+=stSel.price; rows+='<div class="pt-row"><span class="pt-lab">Still Photography — '+stSel.name+' (one-time)</span><span class="pt-val">'+fmt(stSel.price)+'</span></div>'; }
+  // Full catalog — Capture & Media + Web Presence (one-time)
+  ["capture","web"].forEach(function(grpKey){
+    PRICING.extras[grpKey].items.forEach(function(it){
+      if(state.extras[grpKey][it.key]){ oneTime+=it.price; rows+='<div class="pt-row"><span class="pt-lab">'+it.name+' (one-time)</span><span class="pt-val">'+fmt(it.price)+'</span></div>'; }
+    });
+  });
+  // AlwaysOn setup (3 meetings + $450) — applies whenever any AlwaysOn system is active
+  var alwaysOnActive = isAO || webOn || state.rapid.voiceAdded;
+  if(alwaysOnActive){ oneTime+=PRICING.rapid.setupFee; rows+='<div class="pt-row"><span class="pt-lab">AlwaysOn setup — 3 meetings + setup fee (one-time)</span><span class="pt-val">'+fmt(PRICING.rapid.setupFee)+'</span></div>'; }
+  // One-time subtotal + deposit
+  rows+='<div class="pt-row"><span class="pt-lab"><b>One-time investment</b></span><span class="pt-val">'+fmt(oneTime)+'</span></div>';
+  var deposit=Math.round(oneTime*0.25);
+  // Monthly: AlwaysOn Partner dues (begin at build go-live 60–90 days, or day 90) + social + store + rapid
+  var monthly=0, monthlyLines="";
+  monthly+=pkg.monthly;
+  monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">'+pkg.name+' — RSD Partner dues'+(pkg.from?' (from)':'')+'</span><span class="pt-val">'+fmt(pkg.monthly)+' /mo</span></div>';
+  var socLvl=state.social.added?PRICING.social.levels.filter(function(l){return l.key===state.social.level;})[0]:null;
+  if(socLvl){ monthly+=socLvl.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">Social Avatar — '+socLvl.name+' (monthly)</span><span class="pt-val">'+fmt(socLvl.monthly)+' /mo</span></div>'; }
+  var supLvl=(state.toggles.hassle&&state.store.supportLevel)?PRICING.store.support.levels.filter(function(l){return l.key===state.store.supportLevel;})[0]:null;
+  if(supLvl){ monthly+=supLvl.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">Online Store Support — '+supLvl.name+' (monthly)</span><span class="pt-val">'+fmt(supLvl.monthly)+' /mo</span></div>'; }
+  // AlwaysOn Rapid Response — web booking agent (included with AlwaysOn packages, else $497/mo) + optional after-hours phone (+$250/mo)
+  if(isAO){ monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">RSD Rapid Response — Live Web Booking Agent</span><span class="pt-val">Included</span></div>'; }
+  else if(state.rapid.webAdded){ monthly+=PRICING.rapid.base.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">RSD Rapid Response — Live Web Booking Agent (monthly)</span><span class="pt-val">'+fmt(PRICING.rapid.base.monthly)+' /mo</span></div>'; }
+  if(state.rapid.voiceAdded){ monthly+=PRICING.rapid.voice.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">Afterhours &amp; Weekends Phone Receptionist (monthly)</span><span class="pt-val">'+fmt(PRICING.rapid.voice.monthly)+' /mo</span></div>'; }
+  // Full catalog — AlwaysOn AI Concierge + managed page + ad channels (monthly)
+  var aoSel=state.extras.aoLevel?PRICING.extras.ao.levels.filter(function(l){return l.key===state.extras.aoLevel;})[0]:null;
+  if(aoSel){ monthly+=aoSel.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">'+aoSel.name+' (monthly)</span><span class="pt-val">'+fmt(aoSel.monthly)+' /mo</span></div>'; }
+  if(state.extras.aoPage){ monthly+=PRICING.extras.ao.pageItem.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">'+PRICING.extras.ao.pageItem.name+' (monthly)</span><span class="pt-val">'+fmt(PRICING.extras.ao.pageItem.monthly)+' /mo</span></div>'; }
+  PRICING.extras.ads.items.forEach(function(it){
+    if(state.extras.ads[it.key]){ monthly+=it.monthly; monthlyLines+='<div class="pt-row pt-monthly"><span class="pt-lab">'+it.name+' (monthly)</span><span class="pt-val">'+fmt(it.monthly)+' /mo</span></div>'; }
+  });
+  rows+=monthlyLines;
+  if(monthly){ rows+='<div class="pt-row pt-monthly"><span class="pt-lab"><b>Monthly total</b></span><span class="pt-val">'+fmt(monthly)+' /mo</span></div>'; }
+  // ---- Reward Constellation (v3 gamification): Lunar=ConversionOS, Solar=Growth OS, Supernova=$9K+ enhancements ----
+  var baseCost=pkg.price+(alwaysOnActive?PRICING.rapid.setupFee:0);
+  var enhTotal=Math.max(0, oneTime-baseCost);
+  var bonusRank=bonusRankFor(enhTotal, state.selectedPkg);
+  var bonusInfo=bonusRewards(bonusRank);
+  bonusInfo.lines.forEach(function(b){
+    rows+='<div class="pt-row pt-bonus"><span class="pt-lab">✨ '+b.label+'</span><span class="pt-val">FREE — '+b.value+'</span></div>';
+  });
+  renderBonusMeter(bonusRank, "bonusMeter");
+  if(bonusRank>(state._bonusCelebrated||0)){ state._bonusCelebrated=bonusRank; saveState(); showBonusPop(bonusRank, bonusInfo); }
+  rows+='<div class="pt-row pt-deposit"><span class="pt-lab">Deposit to begin (25%)</span><span class="pt-val">'+fmt(deposit)+'</span></div>';
+  var balance=oneTime-deposit;
+  rows+='<div class="pt-row"><span class="pt-lab">Balance after deposit — your pace</span><span class="pt-val">3 payments of '+fmt(Math.round(balance/3))+'/mo — or 6 of '+fmt(Math.round(balance/6))+'/mo</span></div>';
+  var fine="To begin, your 25% deposit plus the $450 setup &amp; onboarding reserves your build and sets it in motion — the balance spreads over the 3- or 6-month pace you choose, and you're free to pay it off anytime. Know that no monthly RSD Partner dues begin until your primary build goes live — an average 60–90 day ETA — or at day 90 at the latest; every AlwaysOn package is a deliverable within 90 days."+
+    (monthly?" Once live, your plan runs at "+fmt(monthly)+"/mo.":"")+
+    (alwaysOnActive?" AlwaysOn Rapid Response includes up to $50/mo of per-text and per-call usage; anything beyond bills to the card on file.":"")+
+    " A card is kept securely on file for any per-hour out-of-scope work and your monthly Partner-level dues."+
+    (bonusInfo.fine||"");
+  $("pricingTotal").innerHTML=
+    '<div class="ptotal">'+
+      '<div style="font-weight:700;font-size:1.05rem;margin-bottom:6px;">Your selection</div>'+
+      rows+
+      '<div class="pt-fine">'+fine+'</div>'+
+    '</div>';
+}
+
+/* ====================== PRINT RECAP (v2.1) ======================
+   Fills the PDF's trailing pages: one page per calculator with the client's own
+   answers + estimate + an urgency statement, then a 5-senses reflection page. */
+var SENSE_ICONS={
+  see:'<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 16c3.5-6 8-9 13-9s9.5 3 13 9c-3.5 6-8 9-13 9S6.5 22 3 16Z" stroke="#C9821F" stroke-width="2"/><circle cx="16" cy="16" r="4.5" stroke="#C9821F" stroke-width="2"/><circle cx="16" cy="16" r="1.6" fill="#C9821F"/></svg>',
+  hear:'<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a6.5 6.5 0 0 1 13 0c0 4.5-4 5-4.5 8.5-.3 2.2-1.6 3.5-3.5 3.5-1.7 0-2.8-1-3.2-2.4" stroke="#C9821F" stroke-width="2" stroke-linecap="round"/><path d="M14 13a2.8 2.8 0 0 1 5.6 0" stroke="#C9821F" stroke-width="2" stroke-linecap="round"/></svg>',
+  feel:'<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 17V8.8a1.8 1.8 0 0 1 3.6 0V15m0-4.2V7a1.8 1.8 0 0 1 3.6 0v8m0-6.8a1.8 1.8 0 0 1 3.6 0V16m0-4.4a1.8 1.8 0 0 1 3.6 0v7.9c0 4.7-3.3 8-7.9 8-3.9 0-5.9-1.9-7.8-5.6l-1.9-3.7a1.9 1.9 0 0 1 3.2-1.9L9 17" stroke="#C9821F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  breathe:'<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12h11a3 3 0 1 0-3-3M4 17h18a3.2 3.2 0 1 1-3.2 3.2M7 22h9a2.8 2.8 0 1 1-2.8 2.8" stroke="#C9821F" stroke-width="2" stroke-linecap="round"/></svg>',
+  savor:'<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5c0 5 3 5.5 3 9 0 2-1.2 3-3 3s-3-1-3-3c0-3.5 3-4 3-9Zm0 12v10M22 5v22M22 5c-3 1-4.5 3.5-4.5 7 0 2.5 1.8 4 4.5 4" stroke="#C9821F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function buildPrintRecap(){
+  var host=$("printRecap"); if(!host) return;
+  var profs=activeProfiles(), html="";
+  profs.forEach(function(pid){
+    var p=PROFILES[pid];
+    var r=state.results[pid]||p.compute(state.values[pid]);
+    var rowsH=p.inputs.map(function(inp){
+      return '<div class="pr-row"><span class="pr-lab">'+inp.label+'</span><span class="pr-val">'+fmtInput(state.values[pid][inp.key],inp.format)+'</span></div>';
+    }).join("");
+    html+='<div class="pr-page">'+
+      '<div class="pr-kick">Your numbers · '+p.icp+'</div>'+
+      '<h2 class="pr-title">'+focusTitle(pid)+' — measured by you, with your own numbers</h2>'+
+      rowsH+
+      '<div class="pr-est"><span class="pr-est-lab">Estimated annual leak</span><span class="pr-est-num">'+fmt(r.hero)+'</span></div>'+
+      '<p class="pr-break">'+r.breakdown+'</p>'+
+      '<p class="pr-urgent">Nobody handed you these numbers — you measured them. Every month this stays unsolved, roughly <b>'+fmt(r.hero/12)+'</b> slips past your business. It doesn\'t wait for a better season, and it doesn\'t refund. Reclaiming it starts with one decision — and the plan on page one of this document was built for exactly that.</p>'+
+    '</div>';
+  });
+  if(profs.length){
+    html+='<div class="pr-page">'+
+      '<div class="pr-kick">Before you file this away</div>'+
+      '<h2 class="pr-title">What does solved feel like?</h2>'+
+      '<p class="pr-lede">Put yourself twelve months ahead — the system in this plan running quietly underneath your business. Take ten seconds on each of these:</p>'+
+      '<div class="pr-sense">'+SENSE_ICONS.see+'<div><div class="s-name">See it</div><div class="s-q">A calendar that fills itself and evenings that belong to you again — what does that actually look like in your week?</div></div></div>'+
+      '<div class="pr-sense">'+SENSE_ICONS.hear+'<div><div class="s-name">Hear it</div><div class="s-q">Booking confirmations arriving on their own instead of missed-call voicemail — what do you hear at the dinner table with your family instead?</div></div></div>'+
+      '<div class="pr-sense">'+SENSE_ICONS.feel+'<div><div class="s-name">Feel it</div><div class="s-q">Will you feel less stressed? Where does the tension leave first — your shoulders, your inbox, or your Sunday nights?</div></div></div>'+
+      '<div class="pr-sense">'+SENSE_ICONS.breathe+'<div><div class="s-name">Breathe it</div><div class="s-q">Morning coffee without the scramble — time that finally feels, and smells, like yours.</div></div></div>'+
+      '<div class="pr-sense">'+SENSE_ICONS.savor+'<div><div class="s-name">Savor it</div><div class="s-q">The month the system pays for itself — how will you and the people you built this for celebrate it?</div></div></div>'+
+      '<p class="pr-close">That\'s what '+fmt(totalLeak())+' a year buys back. It\'s already yours — go reclaim it.</p>'+
+    '</div>';
+  }
+  host.innerHTML=html;
+}
+
+/* ====================== MODAL: lead capture ====================== */
+function openModal(){ $("overlay").classList.add("open"); $("f-first").focus(); }
+function closeModal(){ $("overlay").classList.remove("open"); }
+
+/* ====================== MODAL: congratulations — free business audit (v2) ====================== */
+/* Fires ONCE per session, on first arrival at the investment page. Flag rides in saved state. */
+function openAuditPop(){ var o=$("auditOverlay"); if(o) o.classList.add("open"); }
+function closeAuditPop(){ var o=$("auditOverlay"); if(o) o.classList.remove("open"); }
+function maybeAuditCongrats(){
+  if(state._auditCongrats) return;
+  state._auditCongrats=true; saveState();
+  setTimeout(openAuditPop, 350);
+}
+function wireAuditPop(){
+  var sch=$("auditScheduleBtn"), cus=$("auditCustomizeBtn"), x=$("auditPopX"), o=$("auditOverlay");
+  if(sch){ sch.href=RSD_CONFIG.AUDIT_URL; sch.addEventListener("click", function(){ try{ firePricingEmail(); }catch(e){} closeAuditPop(); }); }
+  if(cus) cus.addEventListener("click", closeAuditPop);
+  if(x) x.addEventListener("click", closeAuditPop);
+  if(o) o.addEventListener("click", function(e){ if(e.target===this) closeAuditPop(); });
+}
+
+function buildLeadPayload(){
+  var profs=activeProfiles();
+  var total=totalLeak();
+  var first=$("f-first").value.trim(); var last=$("f-last").value.trim(); var name=(first+" "+last).trim();
+  var lanes=profs.map(function(pid){
+    var r=state.results[pid]; var rec=recommend(pid,r.hero);
+    return { profile:pid, label:PROFILES[pid].label, estimate:Math.round(r.hero),
+             band:rec.band, recommended:[rec.consider].concat(rec.also) };
+  });
+  var primary=lanes.slice().sort(function(a,b){return b.estimate-a.estimate;})[0]||{};
+  var allRec=[]; lanes.forEach(function(l){ l.recommended.forEach(function(k){ if(allRec.indexOf(k)===-1) allRec.push(k); }); });
+  var rapidIncluded = PRICING.rapid.inPackages.indexOf(state.selectedPkg)!==-1;
+  return {
+    source:"RSD Always-On Revenue Calculator",
+    profile:profs.join("+"),
+    profile_label_human: lanes.map(function(l){return focusTitle(l.profile);}).join(", "),
+    submitted_at:new Date().toISOString(),
+    name:name, first_name: first, last_name: last,
+    company:$("f-company").value.trim(), email:$("f-email").value.trim(), phone:normPhone($("f-phone").value),
+    sms_optin: $("f-sms").checked ? "yes":"no",
+    upgrade_true_twin: state.upgradeTwin ? "yes":"no",
+    upgrade_true_twin_price: state.upgradeTwin ? fmt(PRICING.twin.price) : "",
+    rapid_response_web: rapidIncluded ? "included_with_package" : (state.rapid.webAdded ? "standalone_497" : "no"),
+    rapid_response_voice: state.rapid.voiceAdded ? "yes":"no",
+    rapid_response_voice_price: state.rapid.voiceAdded ? fmt(PRICING.rapid.voice.monthly)+"/mo" : "",
+    alwayson_setup_fee: (rapidIncluded || state.rapid.webAdded || state.rapid.voiceAdded) ? fmt(PRICING.rapid.setupFee) : "",
+    social_addon: state.social.added ? "yes":"no",
+    social_level: state.social.added ? state.social.level : "",
+    social_level_name: state.social.added ? (function(){var L=PRICING.social.levels.filter(function(x){return x.key===state.social.level;})[0];return L?L.name:"";})() : "",
+    social_monthly: state.social.added ? (function(){var L=PRICING.social.levels.filter(function(x){return x.key===state.social.level;})[0];return L?fmt(L.monthly)+"/mo":"";})() : "",
+    video_authority_booster: state.video.authority ? "yes":"no",
+    video_feature: state.video.feature ? "yes":"no",
+    video_stills: state.video.stills || "",
+    extras_selected: (function(){
+      var out=[];
+      ["capture","web"].forEach(function(g){ PRICING.extras[g].items.forEach(function(it){ if(state.extras[g][it.key]) out.push(it.key); }); });
+      if(state.extras.aoLevel) out.push(state.extras.aoLevel);
+      if(state.extras.aoPage) out.push("ao_page");
+      PRICING.extras.ads.items.forEach(function(it){ if(state.extras.ads[it.key]) out.push(it.key); });
+      return out.join(",");
+    })(),
+    bonus_tier: bonusTierName(state._bonusCelebrated||0).toLowerCase(),
+    email_optin: $("f-email-optin").checked ? "yes":"no",
+    estimate: Math.round(total), estimate_formatted: fmt(total),
+    breakdown: lanes.map(function(l){return focusTitle(l.profile)+" — "+fmt(l.estimate);}).join("\n"),
+    recommended_phase: primary.recommended?primary.recommended[0]:"",
+    recommended_phase_name: primary.recommended?PHASE1_NAMES[primary.recommended[0]]:"",
+    recommended_paths: allRec.join(","),
+    recommended_paths_names: allRec.map(function(k){return PHASE1_NAMES[k];}).join(", "),
+    range_band: primary.band||"",
+    icp: state.icp,
+    lanes_json: JSON.stringify(lanes),
+    selected_pkg_name: (function(){var t=PRICING.tiers.filter(function(x){return x.key===state.selectedPkg;})[0];return t?t.name:"";})(),
+    inputs_json: JSON.stringify(state.values)
+  };
+}
+function pricingSummaryText(){
+  var el=$("pricingTotal"); if(!el) return "";
+  var lines=["YOUR SELECTED PLAN & INVESTMENT",""];
+  var rows=el.querySelectorAll(".pt-row");
+  for(var i=0;i<rows.length;i++){ var lab=rows[i].querySelector(".pt-lab"), val=rows[i].querySelector(".pt-val"); if(lab&&val) lines.push(lab.textContent.replace(/\s+/g," ").trim()+": "+val.textContent.trim()); }
+  lines.push(""); lines.push("Prepared with the RSD Always-On Revenue Calculator - calculate.rsddirect.com");
+  return lines.join("\n");
+}
+function firePricingEmail(){
+  try{
+    var pp=buildLeadPayload(); var txt=pricingSummaryText(); pp.pricing_summary=txt;
+    if(pp.email && validEmail(pp.email) && txt && txt!==state._lastPricingSent){
+      sendEmails(pp, txt, "final"); pushGHL(pp); state._lastPricingSent=txt;
+    }
+  }catch(e){ console.error("pricing email error",e); }
+}
+/* ====================== EMAIL CONTENT BLOCKS (v2.3) ======================
+   The page composes fully-rendered, email-safe HTML blocks and passes them to the
+   EmailJS template (template_3uf5wsr) as {{{triple-brace}}} params. One template
+   serves both stages: "midway" (report + earned audit gift) and "final" (page-5
+   buttons — full plan overview, rewards, pricing, contact data). */
+function calcOneTimeTotal(){
+  var pkg=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0]||PRICING.tiers[0];
+  var oneTime=pkg.price;
+  if(state.baseT2B) oneTime+=PRICING.baseService.price;
+  if(state.upgradeTwin) oneTime+=PRICING.twin.price;
+  if(state.toggles.hassle && state.store.online) oneTime+=PRICING.store.online.price;
+  var phLvl=(state.toggles.hassle&&state.photo.level)?PRICING.photo.levels.filter(function(l){return l.key===state.photo.level;})[0]:null;
+  if(phLvl) oneTime+=phLvl.price;
+  if(state.video.authority) oneTime+=PRICING.videoProg.suggested.price;
+  if(state.video.feature) oneTime+=PRICING.videoProg.feature.price;
+  var stSel=state.video.stills?PRICING.videoProg.stills.levels.filter(function(l){return l.key===state.video.stills;})[0]:null;
+  if(stSel) oneTime+=stSel.price;
+  ["capture","web"].forEach(function(g){ PRICING.extras[g].items.forEach(function(it){ if(state.extras[g][it.key]) oneTime+=it.price; }); });
+  var isAO=PRICING.rapid.inPackages.indexOf(state.selectedPkg)!==-1;
+  if(isAO||state.rapid.webAdded||state.rapid.voiceAdded) oneTime+=PRICING.rapid.setupFee;
+  return oneTime;
+}
+function emailBlocks(p, stage){
+  /* Styled to match the production v3/v4 EmailJS template: dark panels (#14110b / #101218),
+     gold hairlines rgba(201,169,97,.3), cream text #ECE7DD, amber #F2A93B, gold-hi #F8CE7E. */
+  var CREAM="#ECE7DD", MUT="rgba(236,231,221,0.66)", HAIR="rgba(201,169,97,0.3)";
+  // Earned gift — free business & online-presence audit (carries the audit CTA)
+  var gift='<div style="padding:20px 24px;border:1px solid '+HAIR+';border-left:3px solid #F2A93B;border-radius:14px;background:#14110b;margin:0 0 24px;">'+
+    '<div style="color:#F2A93B;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Your earned gift</div>'+
+    '<div style="font-family:Georgia,\'Cormorant Garamond\',serif;font-size:22px;color:#ffffff;margin:6px 0 6px;">A free Online-Presence Report</div>'+
+    '<div style="color:rgba(236,231,221,0.72);font-size:14px;line-height:1.6;margin-bottom:16px;">Taking this step earned it. We\'ll map exactly where revenue is leaking and what your always-on system recovers first &mdash; in person across Virginia, online anywhere else. No cost, no obligation.</div>'+
+    '<a href="'+RSD_CONFIG.AUDIT_URL+'" target="_blank" style="display:block;text-align:center;text-decoration:none;color:#1c1303;background-color:#F2A93B;padding:14px 22px;border-radius:12px;font-weight:800;font-size:15px;">Claim Your Free Online Presence Report &rarr;</a>'+
+    '</div>';
+  // Commitment rewards — unlocked list, or a reminder of what's still on the table (final only)
+  var bonusHtml="";
+  if(stage==="final"){
+    var oneTimeE=calcOneTimeTotal();
+    var baseE=PRICING.tiers.filter(function(t){return t.key===state.selectedPkg;})[0];
+    var isAOE=PRICING.rapid.inPackages.indexOf(state.selectedPkg)!==-1;
+    var enhE=Math.max(0, oneTimeE-((baseE?baseE.price:0))-(isAOE?PRICING.rapid.setupFee:0));
+    var rank=bonusRankFor(enhE, state.selectedPkg);
+    if(rank>0){
+      var rw=bonusRewards(rank);
+      bonusHtml='<div style="padding:20px 24px;border:1px solid rgba(95,208,138,0.35);border-left:3px solid #5FD08A;border-radius:14px;background:rgba(95,208,138,0.06);margin:0 0 24px;">'+
+        '<div style="color:#5FD08A;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">&#127873; '+bonusTierName(rank)+' Reward &mdash; unlocked, included free</div>'+
+        rw.lines.map(function(b){ return '<div style="color:'+CREAM+';font-size:14px;line-height:1.6;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);">'+b.label+' &mdash; <strong style="color:#F8CE7E;">'+b.value+' value, free</strong></div>'; }).join("")+
+        '</div>';
+    } else {
+      bonusHtml='<div style="padding:20px 24px;border:1px solid '+HAIR+';border-left:3px solid #F2A93B;border-radius:14px;background:rgba(242,169,59,0.06);margin:0 0 24px;">'+
+        '<div style="color:#F2A93B;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Commitment Rewards &mdash; still on the table</div>'+
+        '<div style="color:rgba(236,231,221,0.78);font-size:14px;line-height:1.9;margin-top:8px;">'+
+        '<strong style="color:#F8CE7E;">Lunar</strong> (choose ConversionOS): a free Authority Booster Video, produced with your build.<br>'+
+        '<strong style="color:#F8CE7E;">Solar</strong> (choose Growth OS): the above, plus a Pro Photo + Video Feature and a priority build slot.<br>'+
+        '<strong style="color:#F8CE7E;">Supernova</strong> ($9K+ in enhancements): everything above, plus your first full month of RSD Partner dues on us.'+
+        '</div></div>';
+    }
+  }
+  // Plan & investment — guidance line at midway; full priced-out table at final (mirrors page 5)
+  var planHtml;
+  if(stage==="final"){
+    var tr="", el=$("pricingTotal");
+    if(el){
+      var rws=el.querySelectorAll(".pt-row");
+      for(var i=0;i<rws.length;i++){
+        var lab=rws[i].querySelector(".pt-lab"), val=rws[i].querySelector(".pt-val");
+        if(lab&&val){
+          var isBonus=rws[i].className.indexOf("pt-bonus")!==-1;
+          tr+='<tr><td style="padding:8px 2px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:13.5px;color:'+(isBonus?"#5FD08A":"rgba(236,231,221,0.78)")+';line-height:1.5;">'+lab.textContent.replace(/\s+/g," ").trim()+'</td>'+
+              '<td align="right" style="padding:8px 2px;border-bottom:1px solid rgba(255,255,255,0.07);font-size:13.5px;font-weight:700;color:'+(isBonus?"#5FD08A":"#F8CE7E")+';white-space:nowrap;vertical-align:top;">'+val.textContent.trim()+'</td></tr>';
+        }
+      }
+    }
+    planHtml = tr
+      ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;border-collapse:collapse;">'+tr+'</table>'
+      : '<div style="margin-top:12px;color:'+CREAM+';font-size:15px;line-height:1.7;white-space:pre-line;">'+(pricingSummaryText()||"Your full investment breakdown is on the pricing page at calculate.rsddirect.com.")+'</div>';
+  } else {
+    planHtml='<div style="margin-top:12px;color:'+CREAM+';font-size:15px;line-height:1.7;">Build your plan on the pricing page and tap any button there to get your full investment breakdown &mdash; deposit to start, monthly pace, and every enhancement &mdash; emailed to you.</div>';
+  }
+  var headline = stage==="midway" ? "here’s your estimate." : "here’s your complete plan.";
+  var intro = stage==="midway"
+    ? "Thank you for running your numbers. Know that this is an estimate built only from what you entered — not a guarantee — but it’s a clear place to start. And taking this step already earned you something real — it’s below."
+    : "Here’s everything you built — your numbers, your selections priced out, your rewards, and your next step. Your plan is saved; you can pick it back up anytime.";
+  return { stage:stage, stage_headline:headline, stage_intro:intro, audit_url:RSD_CONFIG.AUDIT_URL,
+    gift_block_html:gift, bonus_block_html:bonusHtml, plan_investment_html:planHtml,
+    pricing_block_html:planHtml };
+}
+function sendEmails(p, pricingText, stage){
+  try{
+    emailjs.init({ publicKey: RSD_CONFIG.EMAILJS.PUBLIC_KEY });
+    var blocks=emailBlocks(p, stage||"final");
+    var defaultPricing="Build your plan on the pricing page and tap 'Save / Download PDF' to get your full investment breakdown emailed to you.";
+    var tp={
+      to_name:p.first_name, to_email:p.email,
+      client_first:p.first_name||p.name, client_email:p.email,
+      from_name:"Real Space Digital",
+      reply_to:RSD_CONFIG.EMAILJS.RSD_EMAIL,
+      cc_email:RSD_CONFIG.EMAILJS.RSD_EMAIL,
+      bcc_email:RSD_CONFIG.EMAILJS.RSD_EMAIL,
+      company:p.company||"your business",
+      phone:p.phone||"",
+      lead_name:p.name||((p.first_name||"")+" "+(p.last_name||"")).trim(),
+      lead_phone:(function(){var e=document.getElementById("f-phone");return (e&&e.value)?e.value:(p.phone||"");})(),
+      lead_phone_tel:p.phone||"",
+      lead_email:p.email||"",
+      lead_company:p.company||"",
+      sms_optin:p.sms_optin||"no",
+      profile_label:(p.profile_label_human||p.profile), estimate_formatted:p.estimate_formatted,
+      breakdown:p.breakdown, range_band:p.range_band,
+      recommended_phase_name:p.recommended_phase_name,
+      recommended_paths_names:p.recommended_paths_names,
+      pricing_summary:(pricingText&&pricingText.trim())?pricingText:defaultPricing,
+      plan_name:p.selected_pkg_name||"",
+      qualify_url:"https://calculate.rsddirect.com",
+      package_url:"https://calculate.rsddirect.com",
+      calendly_url:RSD_CONFIG.CTA_URL,
+      rsd_email:RSD_CONFIG.EMAILJS.RSD_EMAIL
+    };
+    for(var bk in blocks){ if(Object.prototype.hasOwnProperty.call(blocks,bk)) tp[bk]=blocks[bk]; }
+    return emailjs.send(RSD_CONFIG.EMAILJS.SERVICE_ID, RSD_CONFIG.EMAILJS.TEMPLATE_ID, (function(o){var r={};for(var k in o){var v=o[k];r[k]=(v===undefined||v===null)?'':(typeof v==='object'?JSON.stringify(v):v);}return r;})(tp));
+  }catch(e){ console.error("EmailJS error",e); return Promise.resolve(); }
+}
+function pushGHL(p){
+  var url=RSD_CONFIG.LEAD_WEBHOOK_URL;
+  if(!url || url.indexOf("example.com")!==-1) return;
+  var body=JSON.stringify(p);
+  try{
+    if(navigator && typeof navigator.sendBeacon==="function"){
+      if(navigator.sendBeacon(url, new Blob([body],{type:"text/plain;charset=UTF-8"}))) return;
+    }
+  }catch(e){ console.error("sendBeacon",e); }
+  fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body,mode:"no-cors",keepalive:true})
+    .catch(function(err){ console.error("GHL fetch",err); });
+}
+/* ====================== NAV HISTORY + STATE CACHE (v2) ====================== */
+var screenHist=[], hi=-1;
+function rebuildFor(id){
+  if(id==="screen-calc"){ buildLanes(); }
+  else if(id==="screen-reco"){ buildReco(); }
+  else if(id==="screen-pricing"){ buildPricing(); }
+  else if(id==="screen-checkout"){ buildCheckout(); }
+}
+function syncNav(){
+  var b=$("navBack"), f=$("navFwd");
+  if(b) b.disabled = hi<=0;
+  if(f) f.disabled = hi>=screenHist.length-1;
+}
+function go(id, step){
+  if(hi<screenHist.length-1) screenHist=screenHist.slice(0,hi+1);
+  if(!screenHist.length || screenHist[hi].id!==id){ screenHist.push({id:id,step:step}); hi=screenHist.length-1; }
+  else { screenHist[hi]={id:id,step:step}; }
+  showScreen(id,step); syncNav(); saveState();
+  try{ history.pushState({id:id,step:step},""); }catch(e){}
+}
+function navTo(i){
+  if(i<0||i>=screenHist.length) return;
+  hi=i; var h=screenHist[hi]; rebuildFor(h.id); showScreen(h.id,h.step); syncNav(); saveState();
+  try{ history.pushState({id:h.id,step:h.step},""); }catch(e){}
+}
+function goBack(){ if(hi>0) navTo(hi-1); }
+function goForward(){ if(hi<screenHist.length-1) navTo(hi+1); }
+function onPopState(e){
+  if(e && e.state && e.state.id){
+    var idx=-1, i; for(i=screenHist.length-1;i>=0;i--){ if(screenHist[i].id===e.state.id){ idx=i; break; } }
+    if(idx>=0) hi=idx;
+    var h=screenHist[hi]||{id:e.state.id,step:e.state.step||1};
+    rebuildFor(h.id); showScreen(h.id,h.step||1); syncNav();
+  }
+}
+function wireNav(){ var b=$("navBack"), f=$("navFwd"); if(b) b.addEventListener("click",goBack); if(f) f.addEventListener("click",goForward); syncNav(); }
+function saveState(){ try{ sessionStorage.setItem("rsd_calc_v2", JSON.stringify({state:state, hi:hi, hist:screenHist})); }catch(e){} }
+function loadState(){
+  var raw=null; try{ raw=sessionStorage.getItem("rsd_calc_v2"); }catch(e){}
+  if(!raw) return false;
+  var data=null; try{ data=JSON.parse(raw); }catch(e){ return false; }
+  if(!data || !data.state || !data.hist || !data.hist.length) return false;
+  try{
+    var s=data.state;
+    state.icp=s.icp||""; if(s.toggles) state.toggles=s.toggles; state.upgradeTwin=!!s.upgradeTwin;
+    if(s.social) state.social=s.social; if(s.rapid) state.rapid=s.rapid;
+    if(s.video) state.video=s.video;
+    if(s.store) state.store=s.store; if(s.photo) state.photo=s.photo; state.selectedPkg=s.selectedPkg||null; state.baseT2B=!!s.baseT2B;
+    if(s.values) state.values=s.values; if(s.results) state.results=s.results;
+    if(s.extras){ state.extras={ capture:s.extras.capture||{}, web:s.extras.web||{}, aoLevel:s.extras.aoLevel||null, aoPage:!!s.extras.aoPage, ads:s.extras.ads||{} }; }
+    state._bonusCelebrated=(typeof s._bonusCelebrated==="number")?s._bonusCelebrated:0;
+    state._auditCongrats=!!s._auditCongrats;
+    renderToggles(); refreshIntroCTA();
+    var sel=$("icp"); if(sel){ for(var i=0;i<ICP_OPTIONS.length;i++){ if(ICP_OPTIONS[i].label===state.icp){ sel.value=i; break; } } }
+    screenHist=data.hist; hi=(typeof data.hi==="number"&&data.hi>=0&&data.hi<screenHist.length)?data.hi:screenHist.length-1;
+    var h=screenHist[hi]; rebuildFor(h.id); showScreen(h.id,h.step); syncNav();
+    try{ history.replaceState({id:h.id,step:h.step},""); }catch(e){}
+    return true;
+  }catch(e){ return false; }
+}
+
+/* ====================== FORM HARDENING (v2) ====================== */
+var NAME_RE=/^[A-Za-zÀ-ɏ’' \-]+$/;
+function onlyLetters(v){ return String(v).replace(/[^A-Za-zÀ-ɏ’' \-]/g,""); }
+function naFmt(d){ var o="+1"; if(d.length>0) o+=" ("+d.slice(0,3); if(d.length>3) o+=") "+d.slice(3,6); else if(d.length===3) o+=") "; else return o; if(d.length>6) o+="-"+d.slice(6,10); return o; }
+function fmtPhone(v){ v=String(v||""); var hasPlus=v.indexOf("+")>-1; var d=v.replace(/\D/g,""); if(!hasPlus){ if(d.charAt(0)==="1") d=d.slice(1); return naFmt(d.slice(0,10)); } if(d.charAt(0)==="1"){ return naFmt(d.slice(1,11)); } var cc=d.slice(0,2), nat=d.slice(2,15); var s="+"+cc; if(nat.length) s+=" "+nat.replace(/(\d{3,4})(?=\d)/g,"$1 ").trim(); return s.trim(); }
+function normPhone(v){ var hasPlus=/\+/.test(String(v)); var d=String(v).replace(/\D/g,""); if(!d) return ""; if(!hasPlus){ if(d.charAt(0)!=="1") d="1"+d; d=d.slice(0,11); return "+"+d; } return "+"+d; }
+function validatePhone(v){ var hasPlus=/\+/.test(v); var d=String(v).replace(/\D/g,""); if(!hasPlus){ if(d.charAt(0)==="1") d=d.slice(1); return d.length===10; } if(d.charAt(0)==="1"){ return d.slice(1).length===10; } return d.length>=8 && d.length<=15; }
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v)); }
+function hardenForm(){
+  ["f-first","f-last"].forEach(function(id){ var el=$(id); if(!el) return;
+    el.setAttribute("maxlength","40"); el.setAttribute("autocapitalize","words"); el.setAttribute("inputmode","text");
+    el.addEventListener("input", function(){ var p=this.selectionStart; this.value=onlyLetters(this.value); try{ this.setSelectionRange(p,p); }catch(e){} });
+  });
+  var ph=$("f-phone"); if(ph){ ph.setAttribute("inputmode","tel"); ph.setAttribute("maxlength","25"); ph.addEventListener("input", function(){ this.value=fmtPhone(this.value); }); }
+  var em=$("f-email"); if(em){ em.setAttribute("inputmode","email"); em.setAttribute("autocapitalize","off"); em.setAttribute("spellcheck","false"); }
+}
+function validateForm(){
+  var first=$("f-first").value.trim(), last=$("f-last").value.trim(), email=$("f-email").value.trim(), phone=$("f-phone").value.trim();
+  if(!first) return {ok:false,msg:"Please enter your first name."};
+  if(!NAME_RE.test(first)) return {ok:false,msg:"First name should contain letters only — no numbers or symbols."};
+  if(last && !NAME_RE.test(last)) return {ok:false,msg:"Last name should contain letters only — no numbers or symbols."};
+  if(!email) return {ok:false,msg:"Please enter your email address."};
+  if(!validEmail(email)) return {ok:false,msg:"That email doesn't look right. Please check and try again."};
+  if(phone){ if(!validatePhone(phone)) return {ok:false,msg:"Please enter a valid phone number (e.g. +1 (434) 215-4276), or leave it blank."}; }
+  return {ok:true};
+}
+
+/* ====================== WIRING ====================== */
+document.addEventListener("DOMContentLoaded", function(){
+  buildIntro();
+  $("bookCall").href=RSD_CONFIG.CTA_URL; $("bookCall").addEventListener("click", firePricingEmail);
+  $("bookAudit").href=RSD_CONFIG.AUDIT_URL;
+  $("openCalc").addEventListener("click", function(){
+    if(!activeProfiles().length) return;
+    buildLanes(); go("screen-calc",2);
+  });
+  $("backToIntro").addEventListener("click", function(){ go("screen-intro",1); });
+  $("toReport").addEventListener("click", openModal);
+  $("modalX").addEventListener("click", closeModal);
+  $("overlay").addEventListener("click", function(e){ if(e.target===this) closeModal(); });
+  $("leadForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var _v=validateForm();
+    if(!_v.ok){ $("formMsg").style.color="var(--amber)"; $("formMsg").textContent=_v.msg; return; }
+    var btn=$("leadSubmit"); btn.disabled=true; btn.textContent="Sending…";
+    var payload=buildLeadPayload();
+    sendEmails(payload, "", "midway");
+    pushGHL(payload);
+    $("formMsg").style.color="var(--green)";
+    $("formMsg").textContent="Sent — your report is on its way to your inbox.";
+    setTimeout(function(){
+      btn.disabled=false; btn.textContent="See my recommended plan →";
+      closeModal(); buildReco(); go("screen-reco",3);
+    }, 650);
+  });
+  $("toPricing").addEventListener("click", function(){ buildPricing(); go("screen-pricing",4); });
+  $("toCheckout").addEventListener("click", function(){ buildCheckout(); go("screen-checkout",5); firePricingEmail(); maybeAuditCongrats(); });
+  var _tap=$("toAuditPlan"); if(_tap) _tap.addEventListener("click", function(){ go("screen-audit",5); });
+  var _btp=$("backToPlan"); if(_btp) _btp.addEventListener("click", function(){ buildPricing(); go("screen-pricing",4); });
+  $("toAudit").addEventListener("click", function(){ go("screen-audit",4); });
+  $("toAudit2").addEventListener("click", function(){ firePricingEmail(); go("screen-audit",5); });
+  $("auditBackPricing").addEventListener("click", function(){ buildPricing(); go("screen-pricing",4); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ closeModal(); closeAuditPop(); closeBonusPop(); } });
+  wireNav(); hardenForm(); wireAuditPop(); wireBonusPop();
+  var _pdf=$("downloadPdf"); if(_pdf) _pdf.addEventListener("click", function(){ firePricingEmail(); buildPrintRecap(); window.print(); });
+  window.addEventListener("beforeprint", buildPrintRecap);
+  window.addEventListener("popstate", onPopState);
+  window.addEventListener("beforeunload", saveState);
+  setInterval(saveState, 1500);
+  if(!loadState()){ go("screen-intro",1); }
+});
+</script>
+</body>
+</html>
